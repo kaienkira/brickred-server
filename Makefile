@@ -40,8 +40,16 @@ ifeq ($(BR_BUILD_TEST), yes)
 	@$(MAKE) -f mak/test/echo_server2.mak $@
 	@$(call ECHO, "[build flash_policy]")
 	@$(MAKE) -f mak/test/flash_policy.mak $@
+	@$(call ECHO, "[build http_client]")
+	@$(MAKE) -f mak/test/http_client.mak $@
+	@$(call ECHO, "[build http_server]")
+	@$(MAKE) -f mak/test/http_server.mak $@
 	@$(call ECHO, "[build port_scan]")
 	@$(MAKE) -f mak/test/port_scan.mak $@
+	@$(call ECHO, "[build ws_echo_client]")
+	@$(MAKE) -f mak/test/ws_echo_client.mak $@
+	@$(call ECHO, "[build ws_echo_server]")
+	@$(MAKE) -f mak/test/ws_echo_server.mak $@
 	@$(call ECHO, "[build udp_echo_client]")
 	@$(MAKE) -f mak/test/udp_echo_client.mak $@
 	@$(call ECHO, "[build udp_echo_server]")

@@ -21,6 +21,11 @@ src/brickred/timestamp.cc \
 src/brickred/signal_queue.cc \
 src/brickred/system.cc \
 src/brickred/udp_socket.cc \
+src/brickred/protocol/http_message.cc \
+src/brickred/protocol/http_protocol.cc \
+src/brickred/protocol/http_request.cc \
+src/brickred/protocol/http_response.cc \
+src/brickred/protocol/web_socket_protocol.cc \
 
 LINK_TYPE = static
 INCLUDE = -Isrc
@@ -33,6 +38,8 @@ include mak/main.mak
 
 install:
 	@mkdir -p $(BR_INSTALL_PREFIX)/include/brickred
+	@mkdir -p $(BR_INSTALL_PREFIX)/include/brickred/protocol
 	@cp src/brickred/*.h $(BR_INSTALL_PREFIX)/include/brickred
+	@cp src/brickred/protocol/*.h $(BR_INSTALL_PREFIX)/include/brickred/protocol
 	@mkdir -p $(BR_INSTALL_PREFIX)/lib
 	@cp $(FINAL_TARGET) $(BR_INSTALL_PREFIX)/lib
