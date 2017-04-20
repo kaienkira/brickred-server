@@ -272,6 +272,7 @@ void TimerHeap::Impl::minHeapErase(Timer *timer)
         timer_min_heap_[cur_index]->setHeapPos(child_index);
         timer_min_heap_[child_index]->setHeapPos(cur_index);
         std::swap(timer_min_heap_[cur_index], timer_min_heap_[child_index]);
+
         cur_index = child_index;
     }
 }
