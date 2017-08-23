@@ -3,7 +3,6 @@ include config.mak
 TARGET = build/libbrickredserver
 SRCS = \
 src/brickred/condition_variable.cc \
-src/brickred/socket_address.cc \
 src/brickred/io_device.cc \
 src/brickred/io_service.cc \
 src/brickred/log_core.cc \
@@ -13,13 +12,14 @@ src/brickred/log_stderr_sink.cc \
 src/brickred/mutex.cc \
 src/brickred/random.cc \
 src/brickred/self_pipe.cc \
+src/brickred/signal_queue.cc \
+src/brickred/socket_address.cc \
+src/brickred/system.cc \
 src/brickred/tcp_socket.cc \
 src/brickred/tcp_service.cc \
 src/brickred/thread.cc \
 src/brickred/timer_heap.cc \
 src/brickred/timestamp.cc \
-src/brickred/signal_queue.cc \
-src/brickred/system.cc \
 src/brickred/udp_socket.cc \
 src/brickred/protocol/http_message.cc \
 src/brickred/protocol/http_protocol.cc \
