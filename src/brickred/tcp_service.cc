@@ -161,6 +161,7 @@ public:
     void setSendBufferInitSize(size_t size);
     void setSendBufferExpandSize(size_t size);
     void setSendBufferMaxSize(size_t size);
+    void setAcceptPauseTimeWhenExceedOpenFileLimit(int ms);
 
 private:
     SocketId buildListenSocket(UniquePtr<TcpSocket> &socket);
@@ -173,6 +174,7 @@ private:
     void removeSocketTimer(SocketId socket_id);
 
     void onListenSocketRead(IODevice *io_device);
+    void onListenSocketResumeRead(TimerId timer_id);
     void onAsyncConnectSocketWrite(IODevice *io_device);
     void onAsyncConnectTimeout(TimerId timer_id);
     void onSocketRead(IODevice *io_device);
@@ -207,6 +209,7 @@ private:
     size_t conn_write_buffer_init_size_;
     size_t conn_write_buffer_expand_size_;
     size_t conn_write_buffer_max_size_;
+    int accept_pause_time_when_exceed_open_file_limit_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -215,7 +218,8 @@ TcpService::Impl::Impl(TcpService *thiz, IOService &io_service) :
     conn_read_buffer_init_size_(0), conn_read_buffer_expand_size_(0),
     conn_read_buffer_max_size_(0),
     conn_write_buffer_init_size_(0), conn_write_buffer_expand_size_(0),
-    conn_write_buffer_max_size_(0)
+    conn_write_buffer_max_size_(0),
+    accept_pause_time_when_exceed_open_file_limit_(0)
 {
 }
 
@@ -387,6 +391,22 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
             } else if (ECONNABORTED == errno) {
                 // ignore
                 continue;
+            } else if (EMFILE == errno ||
+                       ENFILE == errno) {
+                // run out of fd
+                if (accept_pause_time_when_exceed_open_file_limit_ > 0) {
+                    BASE_ERROR("socket(%lx) accept failed: %s",
+                               listen_socket->getId(), strerror(errno));
+                    // disable listen for a while to prevent cpu busy wait
+                    listen_socket->setReadCallback(NullFunction());
+                    addSocketTimer(
+                        listen_socket->getId(),
+                        accept_pause_time_when_exceed_open_file_limit_,
+                        BRICKRED_BIND_MEM_FUNC(
+                            &TcpService::Impl::onListenSocketResumeRead,
+                            this));
+                }
+                return;
             } else {
                 BASE_ERROR("socket(%lx) accept failed: %s",
                            listen_socket->getId(), strerror(errno));
@@ -403,6 +423,27 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
             new_conn_cb_(thiz_, listen_socket->getId(), socket_id);
         }
     }
+}
+
+void TcpService::Impl::onListenSocketResumeRead(TimerId timer_id)
+{
+    TimerId_SocketId_Map::iterator iter =
+        timer_to_socket_map_.find(timer_id);
+    if (timer_to_socket_map_.end() == iter) {
+        return;
+    }
+    SocketId socket_id = iter->second;
+    timer_to_socket_map_.erase(iter);
+    socket_to_timer_map_.erase(socket_id);
+
+    TcpSocketMap::iterator iter2 = sockets_.find(socket_id);
+    if (sockets_.end() == iter2) {
+        return;
+    }
+
+    TcpSocket *socket = iter2->second;
+    socket->setReadCallback(BRICKRED_BIND_MEM_FUNC(
+        &TcpService::Impl::onListenSocketRead, this));
 }
 
 void TcpService::Impl::onAsyncConnectSocketWrite(IODevice *io_device)
@@ -941,6 +982,11 @@ void TcpService::Impl::setSendBufferMaxSize(size_t size)
     conn_write_buffer_max_size_ = size;
 }
 
+void TcpService::Impl::setAcceptPauseTimeWhenExceedOpenFileLimit(int ms)
+{
+    accept_pause_time_when_exceed_open_file_limit_ = ms;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 TcpService::Context::~Context()
 {
@@ -956,6 +1002,7 @@ TcpService::TcpService(IOService &io_service) :
     setSendBufferInitSize();
     setSendBufferExpandSize();
     setSendBufferMaxSize();
+    setAcceptPauseTimeWhenExceedOpenFileLimit();
 }
 
 TcpService::~TcpService()
@@ -1087,6 +1134,11 @@ void TcpService::setSendBufferExpandSize(size_t size)
 void TcpService::setSendBufferMaxSize(size_t size)
 {
     pimpl_->setSendBufferMaxSize(size);
+}
+
+void TcpService::setAcceptPauseTimeWhenExceedOpenFileLimit(int ms)
+{
+    pimpl_->setAcceptPauseTimeWhenExceedOpenFileLimit(ms);
 }
 
 } // namespace brickred
