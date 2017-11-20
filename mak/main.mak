@@ -29,7 +29,7 @@ $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .o, $(basename $1)))): $1
 	@$(CC_) -o $$@ $$(CFLAGS) $$(INCLUDES) $$<
 $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .d, $(basename $1)))): $1
 	@$(CC_) -M $$(CFLAGS) $$(INCLUDES) $$< | $(SED_) 's,^.*:,$$@ $$@:,g' | $(SED_) 's/\.d/\.o/' >$$@
-	if [ ! -s $$@ ]; then $(RM_) $$@; fi
+	@if [ ! -s $$@ ]; then $(RM_) $$@; fi
 endef
 
 define make_cc_rule
