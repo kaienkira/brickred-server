@@ -109,7 +109,7 @@ $(foreach SRC, $(filter %.c, $(SRCS)), $(eval $(call make_c_rule, $(SRC))))
 $(foreach SRC, $(filter %.cc, $(SRCS)), $(eval $(call make_cc_rule, $(SRC))))
 
 ifneq ($(MAKECMDGOALS), clean)
-	-include $(DEPS)
+-include $(DEPS)
 endif
 
 clean:
