@@ -1,10 +1,8 @@
 #include <brickred/log_file_sink.h>
 
 #include <cerrno>
-#include <ctime>
 #include <cstdio>
 #include <cstring>
-#include <vector>
 
 #include <brickred/base_logger.h>
 #include <brickred/timestamp.h>

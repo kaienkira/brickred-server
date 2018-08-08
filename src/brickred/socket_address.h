@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include <brickred/class_util.h>
 #include <brickred/unique_ptr.h>
 
 namespace brickred {

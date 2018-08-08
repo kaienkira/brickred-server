@@ -1,11 +1,7 @@
 #include <brickred/udp_socket.h>
 
 #include <unistd.h>
-#include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <netinet/udp.h>
 #include <cerrno>
 
 namespace brickred {

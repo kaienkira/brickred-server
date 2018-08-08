@@ -3,7 +3,6 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <cstddef>
 #include <cstring>
 

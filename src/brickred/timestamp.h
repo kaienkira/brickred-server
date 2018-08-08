@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <cstddef>
 #include <ctime>
-#include <string>
 
 namespace brickred {
 

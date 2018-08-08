@@ -2,7 +2,6 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <cstring>
 
 #include <brickred/io_service.h>
 

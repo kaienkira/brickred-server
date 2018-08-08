@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <cerrno>

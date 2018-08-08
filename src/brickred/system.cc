@@ -1,8 +1,6 @@
 #include <brickred/system.h>
 
 #include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <csignal>
 #include <cstdio>
 

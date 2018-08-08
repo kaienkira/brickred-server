@@ -2,7 +2,6 @@
 #define BRICKRED_IO_DEVICE_H
 
 #include <stdint.h>
-#include <string>
 #include <cstddef>
 
 #include <brickred/class_util.h>

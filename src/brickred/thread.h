@@ -1,8 +1,6 @@
 #ifndef BRICKRED_THREAD_H
 #define BRICKRED_THREAD_H
 
-#include <cstddef>
-
 #include <brickred/class_util.h>
 #include <brickred/function.h>
 #include <brickred/unique_ptr.h>
