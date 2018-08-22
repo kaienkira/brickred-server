@@ -115,6 +115,17 @@ int UdpSocket::sendTo(const char *buffer, size_t size, const SocketAddress &addr
                     addr.getNativeAddressSize());
 }
 
+int UdpSocket::getSocketError()
+{
+    int opt = 0;
+    socklen_t opt_len = sizeof(opt);
+    if (::getsockopt(fd_, SOL_SOCKET, SO_ERROR, &opt, &opt_len) != 0) {
+        return errno;
+    } else {
+        return opt;
+    }
+}
+
 bool UdpSocket::activeOpen(const SocketAddress &remote_addr)
 {
     if (open(remote_addr.getProtocol()) == false) {
