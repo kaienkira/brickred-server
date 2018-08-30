@@ -136,7 +136,7 @@ bool SocketAddress::Impl::setNativeAddress(const void *native_addr)
     } else {
         return false;
     }
-    memcpy(&native_addr_, native_addr, native_addr_size_);
+    ::memcpy(&native_addr_, native_addr, native_addr_size_);
 
     has_addr_ = false;
     has_native_addr_ = true;
