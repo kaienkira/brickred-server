@@ -91,6 +91,8 @@ public:
     void minHeapReserve();
     void minHeapInsert(Timer *timer);
     void minHeapErase(Timer *timer);
+    void minHeapShiftUp(int cur_index);
+    void minHeapShiftDown(int cur_index);
     Timer *minHeapTop() const;
 
 private:
@@ -220,6 +222,33 @@ void TimerHeap::Impl::minHeapInsert(Timer *timer)
     timer_min_heap_.push_back(timer);
     timer->setHeapPos(cur_index);
 
+    minHeapShiftUp(cur_index);
+}
+
+void TimerHeap::Impl::minHeapErase(Timer *timer)
+{
+    int cur_index = timer->getHeapPos();
+    if (cur_index < 0) {
+        return;
+    }
+
+    timer->setHeapPos(-1);
+    timer_min_heap_[cur_index] = timer_min_heap_.back();
+    timer_min_heap_[cur_index]->setHeapPos(cur_index);
+    timer_min_heap_.pop_back();
+
+    int parent_index = cur_index / 2;
+    if (parent_index > 0 &&
+        timer_min_heap_[cur_index]->getTimestamp() <
+        timer_min_heap_[parent_index]->getTimestamp()) {
+        minHeapShiftUp(cur_index);
+    } else {
+        minHeapShiftDown(cur_index);
+    }
+}
+
+void TimerHeap::Impl::minHeapShiftUp(int cur_index)
+{
     for (;;) {
         int parent_index = cur_index / 2;
 
@@ -239,18 +268,8 @@ void TimerHeap::Impl::minHeapInsert(Timer *timer)
     }
 }
 
-void TimerHeap::Impl::minHeapErase(Timer *timer)
+void TimerHeap::Impl::minHeapShiftDown(int cur_index)
 {
-    int cur_index = timer->getHeapPos();
-    if (cur_index < 0) {
-        return;
-    }
-
-    timer->setHeapPos(-1);
-    timer_min_heap_[cur_index] = timer_min_heap_.back();
-    timer_min_heap_[cur_index]->setHeapPos(cur_index);
-    timer_min_heap_.pop_back();
-
     for (;;) {
         int child_index = cur_index * 2;
 
