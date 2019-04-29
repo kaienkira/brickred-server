@@ -237,7 +237,7 @@ void TimerHeap::Impl::minHeapErase(Timer *timer)
     timer_min_heap_[cur_index]->setHeapPos(cur_index);
     timer_min_heap_.pop_back();
 
-    if (timer_min_heap_.size() <= 1) {
+    if (cur_index >= (int)timer_min_heap_.size()) {
         return;
     }
 
