@@ -9,7 +9,7 @@ Random::Random()
     Timestamp now;
     now.setNow();
     seed(now.getSecond() +
-         (now.getSecond() & 0x1 ? -1 : 1) *
+         ((now.getSecond() & 0x1) ? -1 : 1) *
          now.getMilliSecond() * 24 * 60 * 60);
 }
 
