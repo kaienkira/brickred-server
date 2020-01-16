@@ -785,11 +785,11 @@ bool TcpService::Impl::sendMessage(TcpConnection *connection,
 
     TcpSocket *socket = connection->getSocket();
     DynamicBuffer &write_buffer = connection->getWriteBuffer();
-    size_t remain_size = size;
 
     // check write buffer is empty
     if (write_buffer.readableBytes() == 0) {
         // send directly
+        size_t remain_size = size;
         int write_size = socket->send(buffer, size);
         if (write_size < 0) {
             if (errno != EAGAIN) {
@@ -801,12 +801,37 @@ bool TcpService::Impl::sendMessage(TcpConnection *connection,
         } else {
             remain_size -= write_size;
         }
-    }
 
-    if (remain_size > 0) {
+        if (remain_size > 0) {
+            // check buffer overflow
+            if (conn_write_buffer_max_size_ > 0 &&
+                remain_size + write_buffer.readableBytes() >
+                    conn_write_buffer_max_size_) {
+                connection->setError(ENOBUFS);
+                addSocketTimer(socket->getId(), 0, BRICKRED_BIND_MEM_FUNC(
+                    &TcpService::Impl::onSendMessageError, this));
+                return false;
+            }
+
+            // write to write buffer
+            write_buffer.reserveWritableBytes(remain_size);
+            ::memcpy(write_buffer.writeBegin(),
+                buffer + write_size, remain_size);
+            write_buffer.write(remain_size);
+            // set send complete callback
+            connection->setSendCompleteCallback(send_complete_cb);
+            // set writeable callback
+            socket->setWriteCallback(BRICKRED_BIND_MEM_FUNC(
+                &TcpService::Impl::onSocketWrite, this));
+        } else {
+            if (send_complete_cb) {
+                send_complete_cb(thiz_, socket->getId());
+            }
+        }
+    } else {
         // check buffer overflow
         if (conn_write_buffer_max_size_ > 0 &&
-            remain_size + write_buffer.readableBytes() >
+            size + write_buffer.readableBytes() >
                 conn_write_buffer_max_size_) {
             connection->setError(ENOBUFS);
             addSocketTimer(socket->getId(), 0, BRICKRED_BIND_MEM_FUNC(
@@ -815,18 +840,9 @@ bool TcpService::Impl::sendMessage(TcpConnection *connection,
         }
 
         // write to write buffer
-        write_buffer.reserveWritableBytes(remain_size);
-        ::memcpy(write_buffer.writeBegin(), buffer, remain_size);
-        write_buffer.write(remain_size);
-        // set send complete callback
-        connection->setSendCompleteCallback(send_complete_cb);
-        // set writeable callback
-        socket->setWriteCallback(BRICKRED_BIND_MEM_FUNC(
-            &TcpService::Impl::onSocketWrite, this));
-    } else {
-        if (send_complete_cb) {
-            send_complete_cb(thiz_, socket->getId());
-        }
+        write_buffer.reserveWritableBytes(size);
+        ::memcpy(write_buffer.writeBegin(), buffer, size);
+        write_buffer.write(size);
     }
 
     return true;
