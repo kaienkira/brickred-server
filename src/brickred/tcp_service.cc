@@ -797,6 +797,8 @@ bool TcpService::Impl::sendMessage(TcpConnection *connection,
                 addSocketTimer(socket->getId(), 0, BRICKRED_BIND_MEM_FUNC(
                     &TcpService::Impl::onSendMessageError, this));
                 return false;
+            } else {
+                write_size = 0;
             }
         } else {
             remain_size -= write_size;
