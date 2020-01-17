@@ -843,6 +843,8 @@ bool TcpService::Impl::sendMessage(TcpConnection *connection,
         write_buffer.reserveWritableBytes(size);
         ::memcpy(write_buffer.writeBegin(), buffer, size);
         write_buffer.write(size);
+        // set send complete callback
+        connection->setSendCompleteCallback(send_complete_cb);
     }
 
     return true;
