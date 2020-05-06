@@ -396,7 +396,7 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
                 // run out of fd
                 if (accept_pause_time_when_exceed_open_file_limit_ > 0) {
                     BASE_ERROR("socket(%lx) accept failed: %s",
-                               listen_socket->getId(), strerror(errno));
+                               listen_socket->getId(), ::strerror(errno));
                     // disable listen for a while to prevent cpu busy wait
                     listen_socket->setReadCallback(NullFunction());
                     addSocketTimer(
@@ -409,7 +409,7 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
                 return;
             } else {
                 BASE_ERROR("socket(%lx) accept failed: %s",
-                           listen_socket->getId(), strerror(errno));
+                           listen_socket->getId(), ::strerror(errno));
                 return;
             }
         }
