@@ -29,7 +29,7 @@ src/brickred/protocol/web_socket_protocol.cc \
 
 LINK_TYPE = static
 INCLUDE = -Isrc
-CPP_FLAG = $(BR_CORE_CPP_FLAG)
+CPP_FLAG = $(BRICKRED_COMPILE_FLAG)
 BUILD_DIR = build
 
 include mak/main.mak
@@ -37,9 +37,11 @@ include mak/main.mak
 .PHONY: install
 
 install:
-	@mkdir -p $(BR_INSTALL_PREFIX)/include/brickred
-	@mkdir -p $(BR_INSTALL_PREFIX)/include/brickred/protocol
-	@cp src/brickred/*.h $(BR_INSTALL_PREFIX)/include/brickred
-	@cp src/brickred/protocol/*.h $(BR_INSTALL_PREFIX)/include/brickred/protocol
-	@mkdir -p $(BR_INSTALL_PREFIX)/lib
-	@cp $(FINAL_TARGET) $(BR_INSTALL_PREFIX)/lib
+	@mkdir -p "$(BRICKRED_INSTALL_PREFIX)"/include/brickred
+	@mkdir -p "$(BRICKRED_INSTALL_PREFIX)"/include/brickred/protocol
+	@cp src/brickred/*.h \
+		"$(BRICKRED_INSTALL_PREFIX)"/include/brickred
+	@cp src/brickred/protocol/*.h \
+		"$(BRICKRED_INSTALL_PREFIX)"/include/brickred/protocol
+	@mkdir -p "$(BRICKRED_INSTALL_PREFIX)"/lib
+	@cp "$(FINAL_TARGET)" "$(BRICKRED_INSTALL_PREFIX)"/lib

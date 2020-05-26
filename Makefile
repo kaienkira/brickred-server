@@ -11,7 +11,7 @@ endef
 debug release profile clean:
 	@$(call ECHO, "[build libbrickredserver]")
 	@$(MAKE) -f mak/libbrickredserver.mak $@
-ifeq ($(BR_BUILD_TEST), yes)
+ifeq ($(BRICKRED_BUILD_TEST), yes)
 	@$(call ECHO, "[build libbrtest]")
 	@$(MAKE) -f mak/test/libbrtest.mak $@
 	@$(call ECHO, "[build testlog]")
