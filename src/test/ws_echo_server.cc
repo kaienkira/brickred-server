@@ -88,6 +88,7 @@ public:
 
         if (service->setContext(socket_id, context.get()) == false) {
             service->closeSocket(socket_id);
+            return;
         }
         context.release();
     }
