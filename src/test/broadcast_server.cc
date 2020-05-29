@@ -1,8 +1,8 @@
-#include <stdint.h>
 #include <cerrno>
-#include <cstring>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 
 #include <brickred/dynamic_buffer.h>

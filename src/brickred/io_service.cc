@@ -9,8 +9,8 @@
 #include <sys/epoll.h>
 #include <cerrno>
 #include <cstring>
+#include <unordered_set>
 #include <vector>
-#include <ext/hash_set>
 
 #include <brickred/base_logger.h>
 #include <brickred/exception.h>
@@ -27,7 +27,7 @@ public:
     typedef IOService::TimerId TimerId;
     typedef IOService::TimerCallback TimerCallback;
     typedef std::vector<struct epoll_event> EventVector;
-    typedef __gnu_cxx::hash_set<intptr_t> IODeviceSet;
+    typedef std::unordered_set<intptr_t> IODeviceSet;
 
     Impl();
     ~Impl();

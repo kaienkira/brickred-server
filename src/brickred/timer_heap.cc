@@ -2,8 +2,8 @@
 
 #include <cstddef>
 #include <algorithm>
+#include <unordered_map>
 #include <vector>
-#include <ext/hash_map>
 
 #include <brickred/base_logger.h>
 #include <brickred/timestamp.h>
@@ -74,7 +74,7 @@ class TimerHeap::Impl {
 public:
     typedef TimerHeap::TimerId TimerId;
     typedef TimerHeap::TimerCallback TimerCallback;
-    typedef __gnu_cxx::hash_map<TimerId, Timer *> TimerMap;
+    typedef std::unordered_map<TimerId, Timer *> TimerMap;
     typedef std::vector<Timer *> TimerVector;
 
     Impl();

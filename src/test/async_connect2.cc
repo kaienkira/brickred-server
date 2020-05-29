@@ -1,8 +1,8 @@
-#include <stdint.h>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include <ext/hash_set>
+#include <unordered_set>
 
 #include <brickred/command_line_option.h>
 #include <brickred/dynamic_buffer.h>
@@ -141,7 +141,7 @@ private:
     int conn_timeout_;
     bool verbose_;
 
-    __gnu_cxx::hash_set<TcpService::SocketId> connecting_sockets_;
+    std::unordered_set<TcpService::SocketId> connecting_sockets_;
 };
 
 static void printUsage(const char *progname)

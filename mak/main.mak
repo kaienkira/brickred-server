@@ -9,7 +9,7 @@ RM_ ?= rm -f
 SED_ ?= sed
 
 CFLAGS ?= -Wall -c -std=c99 -D_POSIX_C_SOURCE=2 $(C_FLAG)
-CPPFLAGS ?= -Wall -Wno-deprecated -c $(CPP_FLAG)
+CPPFLAGS ?= -Wall -c $(CPP_FLAG)
 ELFLAGS ?= $(EL_FLAG)
 DLFLAGS ?= -shared -fPIC
 INCLUDES += $(INCLUDE)

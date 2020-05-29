@@ -3,7 +3,7 @@
 #include <cerrno>
 #include <cstring>
 #include <algorithm>
-#include <ext/hash_map>
+#include <unordered_map>
 
 #include <brickred/base_logger.h>
 #include <brickred/dynamic_buffer.h>
@@ -118,11 +118,11 @@ public:
     typedef TcpService::SendCompleteCallback SendCompleteCallback;
     typedef IOService::TimerId TimerId;
     typedef IOService::TimerCallback TimerCallback;
-    typedef __gnu_cxx::hash_map<SocketId, TcpSocket *> TcpSocketMap;
-    typedef __gnu_cxx::hash_map<SocketId, TcpConnection *> TcpConnectionMap;
-    typedef __gnu_cxx::hash_map<SocketId, Context *> ContextMap;
-    typedef __gnu_cxx::hash_map<SocketId, TimerId> SocketId_TimerId_Map;
-    typedef __gnu_cxx::hash_map<TimerId, SocketId> TimerId_SocketId_Map;
+    typedef std::unordered_map<SocketId, TcpSocket *> TcpSocketMap;
+    typedef std::unordered_map<SocketId, TcpConnection *> TcpConnectionMap;
+    typedef std::unordered_map<SocketId, Context *> ContextMap;
+    typedef std::unordered_map<SocketId, TimerId> SocketId_TimerId_Map;
+    typedef std::unordered_map<TimerId, SocketId> TimerId_SocketId_Map;
 
     explicit Impl(TcpService *thiz, IOService &io_service);
     ~Impl();
