@@ -1,7 +1,7 @@
 #ifndef BRICKRED_IO_SERVICE_H
 #define BRICKRED_IO_SERVICE_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <brickred/class_util.h>
 #include <brickred/function.h>

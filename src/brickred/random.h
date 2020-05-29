@@ -1,8 +1,8 @@
 #ifndef BRICKRED_RANDOM_H
 #define BRICKRED_RANDOM_H
 
-#include <stdint.h>
 #include <cstddef>
+#include <cstdint>
 
 #include <brickred/class_util.h>
 #include <brickred/codec/mt19937.h>

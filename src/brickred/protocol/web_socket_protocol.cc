@@ -1,6 +1,6 @@
 #include <brickred/protocol/web_socket_protocol.h>
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
 #include <map>
 #include <vector>

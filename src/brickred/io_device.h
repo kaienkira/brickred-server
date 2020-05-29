@@ -1,8 +1,8 @@
 #ifndef BRICKRED_IO_DEVICE_H
 #define BRICKRED_IO_DEVICE_H
 
-#include <stdint.h>
 #include <cstddef>
+#include <cstdint>
 
 #include <brickred/class_util.h>
 #include <brickred/function.h>

@@ -1,7 +1,7 @@
 #ifndef BRICKRED_TIMER_HEAP_H
 #define BRICKRED_TIMER_HEAP_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <brickred/class_util.h>
 #include <brickred/function.h>

@@ -1,8 +1,8 @@
 #ifndef BRICKRED_TIMESTAMP_H
 #define BRICKRED_TIMESTAMP_H
 
-#include <stdint.h>
 #include <cstddef>
+#include <cstdint>
 #include <ctime>
 
 namespace brickred {

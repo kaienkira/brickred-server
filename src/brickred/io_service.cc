@@ -1,6 +1,5 @@
 #include <brickred/io_service.h>
 
-#include <stdint.h>
 #include <unistd.h>
 
 #ifdef BRICKRED_BUILD_DONT_HAVE_EPOLL_CREATE1

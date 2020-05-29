@@ -1,8 +1,8 @@
 #ifndef BRICKRED_TCP_SERVICE_H
 #define BRICKRED_TCP_SERVICE_H
 
-#include <stdint.h>
 #include <cstddef>
+#include <cstdint>
 
 #include <brickred/class_util.h>
 #include <brickred/function.h>
