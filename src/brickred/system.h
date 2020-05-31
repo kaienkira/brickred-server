@@ -6,7 +6,7 @@ namespace brickred::system {
 bool daemon(bool change_dir = false, bool close_stdio = false);
 bool createPidFile(const char *file);
 
-typedef void (*SignalHandler)(int);
+using SignalHandler = void (*)(int);
 SignalHandler signal(int signum, SignalHandler sighandler);
 
 } // namespace brickred::system

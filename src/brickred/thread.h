@@ -9,7 +9,7 @@ namespace brickred {
 
 class Thread {
 public:
-    typedef Function<void ()> ThreadFunc;
+    using ThreadFunc = Function<void ()>;
 
     Thread();
     ~Thread();

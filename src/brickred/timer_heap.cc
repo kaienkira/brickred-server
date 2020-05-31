@@ -32,8 +32,8 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 class Timer {
 public:
-    typedef TimerHeap::TimerId TimerId;
-    typedef TimerHeap::TimerCallback TimerCallback;
+    using TimerId = TimerHeap::TimerId;
+    using TimerCallback = TimerHeap::TimerCallback;
 
     explicit Timer(TimerId id, const Timestamp &timestamp, int64_t timeout,
                    const TimerCallback &timer_cb, int call_times);
@@ -72,10 +72,10 @@ Timer::Timer(TimerId id, const Timestamp &timestamp, int64_t timeout,
 ///////////////////////////////////////////////////////////////////////////////
 class TimerHeap::Impl {
 public:
-    typedef TimerHeap::TimerId TimerId;
-    typedef TimerHeap::TimerCallback TimerCallback;
-    typedef std::unordered_map<TimerId, Timer *> TimerMap;
-    typedef std::vector<Timer *> TimerVector;
+    using TimerId = TimerHeap::TimerId;
+    using TimerCallback = TimerHeap::TimerCallback;
+    using TimerMap = std::unordered_map<TimerId, Timer *>;
+    using TimerVector = std::vector<Timer *>;
 
     Impl();
     ~Impl();

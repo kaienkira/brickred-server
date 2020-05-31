@@ -11,7 +11,7 @@ class IOService;
 
 class SignalQueue {
 public:
-    typedef Function<void (int)> RecvSignalCallback;
+    using RecvSignalCallback = Function<void (int)>;
 
     SignalQueue(IOService &io_service);
     ~SignalQueue();

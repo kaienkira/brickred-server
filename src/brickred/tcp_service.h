@@ -25,17 +25,17 @@ public:
         BRICKRED_NONCOPYABLE(Context)
     };
 
-    typedef int64_t SocketId;
-    typedef Function<void (TcpService *, SocketId, SocketId)>
-            NewConnectionCallback;
-    typedef Function<void (TcpService *, SocketId, DynamicBuffer *)>
-            RecvMessageCallback;
-    typedef Function<void (TcpService *, SocketId)>
-            PeerCloseCallback;
-    typedef Function<void (TcpService *, SocketId, int)>
-            ErrorCallback;
-    typedef Function<void (TcpService *, SocketId)>
-            SendCompleteCallback;
+    using SocketId = int64_t;
+    using NewConnectionCallback =
+          Function<void (TcpService *, SocketId, SocketId)>;
+    using RecvMessageCallback =
+          Function<void (TcpService *, SocketId, DynamicBuffer *)>;
+    using PeerCloseCallback =
+          Function<void (TcpService *, SocketId)>;
+    using ErrorCallback =
+          Function<void (TcpService *, SocketId, int)>;
+    using SendCompleteCallback =
+          Function<void (TcpService *, SocketId)>;
 
     explicit TcpService(IOService &io_service);
     ~TcpService();

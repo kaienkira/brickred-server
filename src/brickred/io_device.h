@@ -13,10 +13,10 @@ class IOService;
 
 class IODevice {
 public:
-    typedef int DescriptorId;
-    typedef Function<void (IODevice *)> ReadCallback;
-    typedef Function<void (IODevice *)> WriteCallback;
-    typedef Function<void (IODevice *)> ErrorCallback;
+    using DescriptorId = int;
+    using ReadCallback = Function<void (IODevice *)>;
+    using WriteCallback = Function<void (IODevice *)>;
+    using ErrorCallback = Function<void (IODevice *)>;
 
     IODevice();
     virtual ~IODevice();

@@ -28,8 +28,8 @@ public:
         };
     };
 
-    typedef std::map<std::string, std::string,
-                     string_util::CaseInsensitiveLess> HeaderMap;
+    using HeaderMap = std::map<std::string, std::string,
+                               string_util::CaseInsensitiveLess>;
 
     HttpMessage();
     virtual ~HttpMessage() = 0;

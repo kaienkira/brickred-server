@@ -8,7 +8,7 @@ namespace brickred {
 
 class SignalQueue::Impl {
 public:
-    typedef SignalQueue::RecvSignalCallback RecvSignalCallback;
+    using RecvSignalCallback = SignalQueue::RecvSignalCallback;
 
     Impl(IOService &io_service);
     ~Impl();

@@ -13,8 +13,8 @@ class Timestamp;
 
 class TimerHeap {
 public:
-    typedef int64_t TimerId;
-    typedef Function<void (TimerId)> TimerCallback;
+    using TimerId = int64_t;
+    using TimerCallback = Function<void (TimerId)>;
 
     TimerHeap();
     ~TimerHeap();

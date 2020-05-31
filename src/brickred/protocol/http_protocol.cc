@@ -18,10 +18,10 @@ namespace brickred::protocol {
 
 class HttpProtocol::Impl {
 public:
-    typedef HttpProtocol::Status Status;
-    typedef HttpProtocol::RetCode RetCode;
-    typedef HttpProtocol::OutputCallback OutputCallback;
-    typedef int (HttpProtocol::Impl::*StatusHandler)(DynamicBuffer *);
+    using Status = HttpProtocol::Status;
+    using RetCode = HttpProtocol::RetCode;
+    using OutputCallback = HttpProtocol::OutputCallback;
+    using StatusHandler = int (HttpProtocol::Impl::*)(DynamicBuffer *);
 
     Impl();
     ~Impl();

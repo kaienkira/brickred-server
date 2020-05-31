@@ -46,7 +46,7 @@ public:
         };
     };
 
-    typedef TcpService::SendCompleteCallback SendCompleteCallback;
+    using SendCompleteCallback = TcpService::SendCompleteCallback;
 
     explicit TcpConnection(TcpSocket *socket,
                            size_t read_buffer_init_size,
@@ -109,20 +109,20 @@ void TcpConnection::setError(int error_code)
 ///////////////////////////////////////////////////////////////////////////////
 class TcpService::Impl {
 public:
-    typedef TcpService::Context Context;
-    typedef TcpService::SocketId SocketId;
-    typedef TcpService::NewConnectionCallback NewConnectionCallback;
-    typedef TcpService::RecvMessageCallback RecvMessageCallback;
-    typedef TcpService::PeerCloseCallback PeerCloseCallback;
-    typedef TcpService::ErrorCallback ErrorCallback;
-    typedef TcpService::SendCompleteCallback SendCompleteCallback;
-    typedef IOService::TimerId TimerId;
-    typedef IOService::TimerCallback TimerCallback;
-    typedef std::unordered_map<SocketId, TcpSocket *> TcpSocketMap;
-    typedef std::unordered_map<SocketId, TcpConnection *> TcpConnectionMap;
-    typedef std::unordered_map<SocketId, Context *> ContextMap;
-    typedef std::unordered_map<SocketId, TimerId> SocketId_TimerId_Map;
-    typedef std::unordered_map<TimerId, SocketId> TimerId_SocketId_Map;
+    using Context = TcpService::Context;
+    using SocketId = TcpService::SocketId;
+    using NewConnectionCallback = TcpService::NewConnectionCallback;
+    using RecvMessageCallback = TcpService::RecvMessageCallback;
+    using PeerCloseCallback = TcpService::PeerCloseCallback;
+    using ErrorCallback = TcpService::ErrorCallback;
+    using SendCompleteCallback = TcpService::SendCompleteCallback;
+    using TimerId = IOService::TimerId;
+    using TimerCallback = IOService::TimerCallback;
+    using TcpSocketMap = std::unordered_map<SocketId, TcpSocket *>;
+    using TcpConnectionMap = std::unordered_map<SocketId, TcpConnection *>;
+    using ContextMap = std::unordered_map<SocketId, Context *>;
+    using SocketId_TimerId_Map = std::unordered_map<SocketId, TimerId>;
+    using TimerId_SocketId_Map = std::unordered_map<TimerId, SocketId>;
 
     explicit Impl(TcpService *thiz, IOService &io_service);
     ~Impl();

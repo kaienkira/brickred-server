@@ -10,11 +10,11 @@ namespace brickred {
 
 class SocketAddress::Impl {
 public:
-    typedef SocketAddress::Protocol Protocol;
-    typedef union native_address_tag {
+    using Protocol = SocketAddress::Protocol;
+    using NativeAddress = union native_address_tag {
         struct sockaddr_in ipv4_addr_;
         struct sockaddr_in6 ipv6_addr_;
-    } NativeAddress;
+    };
 
     Impl();
     Impl(const std::string &ip, uint16_t port);

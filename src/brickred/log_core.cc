@@ -13,10 +13,10 @@ namespace {
 
 class Logger {
 public:
-    typedef LogCore::LogFormatter LogFormatter;
-    typedef std::vector<LogSink *> LogSinkVector;
-    typedef std::vector<int> LogLevelVector;
-    typedef std::vector<LogFormatter> LogFormatterVector;
+    using LogFormatter = LogCore::LogFormatter;
+    using LogSinkVector = std::vector<LogSink *>;
+    using LogLevelVector = std::vector<int>;
+    using LogFormatterVector = std::vector<LogFormatter>;
 
     explicit Logger(LogFormatter formatter, int level_filter,
                     int max_log_size);
@@ -138,8 +138,8 @@ void Logger::plainLog(int level, const char *format, va_list args)
 ///////////////////////////////////////////////////////////////////////////////
 class LogCore::Impl {
 public:
-    typedef LogCore::LogFormatter LogFormatter;
-    typedef std::vector<Logger *> LoggerVector;
+    using LogFormatter = LogCore::LogFormatter;
+    using LoggerVector = std::vector<Logger *>;
 
     Impl();
     ~Impl();

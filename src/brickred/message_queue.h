@@ -15,7 +15,7 @@ namespace brickred {
 template <class T>
 class MessageQueue {
 public:
-    typedef Function<void (MessageQueue *)> RecvMessageCallback;
+    using RecvMessageCallback = Function<void (MessageQueue *)>;
 
     explicit MessageQueue(IOService &io_service, size_t max_size = 0) :
         io_service_(&io_service), queue_(max_size)

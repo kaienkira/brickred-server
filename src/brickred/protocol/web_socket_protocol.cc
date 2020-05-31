@@ -20,12 +20,12 @@ namespace brickred::protocol {
 
 class WebSocketProtocol::Impl {
 public:
-    typedef WebSocketProtocol::Status Status;
-    typedef WebSocketProtocol::RetCode RetCode;
-    typedef WebSocketProtocol::OutputCallback OutputCallback;
-    typedef std::map<std::string, std::string,
-                     string_util::CaseInsensitiveLess> HeaderMap;
-    typedef int (WebSocketProtocol::Impl::*StatusHandler)(DynamicBuffer *);
+    using Status = WebSocketProtocol::Status;
+    using RetCode = WebSocketProtocol::RetCode;
+    using OutputCallback = WebSocketProtocol::OutputCallback;
+    using HeaderMap = std::map<std::string, std::string,
+                               string_util::CaseInsensitiveLess>;
+    using StatusHandler = int (WebSocketProtocol::Impl::*)(DynamicBuffer *);
 
     Impl();
     ~Impl();

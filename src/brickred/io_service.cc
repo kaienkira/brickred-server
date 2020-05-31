@@ -24,10 +24,10 @@ namespace brickred {
 
 class IOService::Impl {
 public:
-    typedef IOService::TimerId TimerId;
-    typedef IOService::TimerCallback TimerCallback;
-    typedef std::vector<struct epoll_event> EventVector;
-    typedef std::unordered_set<intptr_t> IODeviceSet;
+    using TimerId = IOService::TimerId;
+    using TimerCallback = IOService::TimerCallback;
+    using EventVector = std::vector<struct epoll_event>;
+    using IODeviceSet = std::unordered_set<intptr_t>; 
 
     Impl();
     ~Impl();

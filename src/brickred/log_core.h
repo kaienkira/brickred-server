@@ -13,11 +13,10 @@ class LogSink;
 
 class LogCore {
 public:
-    typedef size_t (*LogFormatter)(
+    using LogFormatter = size_t (*)(
         char *buffer, size_t buffer_size, int level,
         const char *filename, int line, const char *function,
-        const char *format, va_list args
-    );
+        const char *format, va_list args);
 
     // call by LogCore constructor, default max logger count is 1
     // if you need more loggers,

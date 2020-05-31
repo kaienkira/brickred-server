@@ -45,7 +45,7 @@ public:
         };
     };
 
-    typedef Function<void (const char *, size_t)> OutputCallback;
+    using OutputCallback = Function<void (const char *, size_t)>;
 
     WebSocketProtocol();
     ~WebSocketProtocol();
