@@ -11,15 +11,15 @@ namespace brickred {
 class SelfPipe : public IODevice {
 public:
     SelfPipe();
-    virtual ~SelfPipe();
+    ~SelfPipe() override;
 
     bool open();
     void close();
 
-    virtual int read(char *buffer, size_t size);
-    virtual int write(const char *buffer, size_t size);
-    virtual bool setNonblock();
-    virtual bool setCloseOnExec();
+    int read(char *buffer, size_t size) override;
+    int write(const char *buffer, size_t size) override;
+    bool setNonblock() override;
+    bool setCloseOnExec() override;
 
 private:
     BRICKRED_NONCOPYABLE(SelfPipe)

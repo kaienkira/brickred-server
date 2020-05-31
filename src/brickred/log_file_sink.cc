@@ -25,13 +25,13 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 LogFileSink::Impl::Impl(const std::string &file_path) :
-    file_path_(file_path), fp_(NULL)
+    file_path_(file_path), fp_(nullptr)
 {
 }
 
 LogFileSink::Impl::~Impl()
 {
-    if (fp_ != NULL) {
+    if (fp_ != nullptr) {
         ::fclose(fp_);
     }
 }
@@ -52,13 +52,13 @@ bool LogFileSink::Impl::openFile()
     actual_file_path_ = actual_file_path;
 
     FILE *fp = ::fopen(actual_file_path_.c_str(), "a");
-    if (NULL == fp) {
+    if (nullptr == fp) {
         return false;
     }
-    if (fp_ != NULL) {
+    if (fp_ != nullptr) {
         ::fclose(fp_);
     }
-    ::setbuf(fp, NULL);
+    ::setbuf(fp, nullptr);
     fp_ = fp;
 
     return true;

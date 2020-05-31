@@ -39,7 +39,7 @@ LogAsyncSink::Impl::Impl(LogSink *adapted_sink, size_t queue_size) :
 
 LogAsyncSink::Impl::~Impl()
 {
-    queue_.push(NULL);
+    queue_.push(nullptr);
     log_thread_.join();
 
     delete adapted_sink_;
@@ -64,10 +64,10 @@ void LogAsyncSink::Impl::log(const char *buffer, size_t size)
 void LogAsyncSink::Impl::logThreadFunc()
 {
     for (;;) {
-        DynamicBuffer *queue_buffer_raw = NULL;
+        DynamicBuffer *queue_buffer_raw = nullptr;
         queue_.pop(queue_buffer_raw);
 
-        if (NULL == queue_buffer_raw) {
+        if (nullptr == queue_buffer_raw) {
             break;
         }
         UniquePtr<DynamicBuffer> queue_buffer(queue_buffer_raw);

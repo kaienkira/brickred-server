@@ -12,7 +12,7 @@ namespace brickred {
 class TcpSocket : public IODevice {
 public:
     TcpSocket();
-    virtual ~TcpSocket();
+    ~TcpSocket() override;
 
     bool open(SocketAddress::Protocol::type protocol);
     void close();

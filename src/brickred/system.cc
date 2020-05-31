@@ -4,8 +4,7 @@
 #include <csignal>
 #include <cstdio>
 
-namespace brickred {
-namespace system {
+namespace brickred::system {
 
 bool daemon(bool change_dir, bool close_stdio)
 {
@@ -27,13 +26,13 @@ bool daemon(bool change_dir, bool close_stdio)
     }
 
     if (close_stdio) {
-        if (::freopen("/dev/null", "r", stdin) == NULL) {
+        if (::freopen("/dev/null", "r", stdin) == nullptr) {
             return false;
         }
-        if (::freopen("/dev/null", "w", stdout) == NULL) {
+        if (::freopen("/dev/null", "w", stdout) == nullptr) {
             return false;
         }
-        if (::freopen("/dev/null", "w", stderr) == NULL) {
+        if (::freopen("/dev/null", "w", stderr) == nullptr) {
             return false;
         }
     }
@@ -44,7 +43,7 @@ bool daemon(bool change_dir, bool close_stdio)
 bool createPidFile(const char *file)
 {
     FILE *fp = ::fopen(file, "w");
-    if (NULL == fp) {
+    if (nullptr == fp) {
         return false;
     }
 
@@ -76,5 +75,4 @@ SignalHandler signal(int signum, SignalHandler sighandler)
     }
 }
 
-} // namespace system
-} // namespace brickred
+} // namespace brickred::system

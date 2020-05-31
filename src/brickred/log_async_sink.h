@@ -12,9 +12,9 @@ namespace brickred {
 class LogAsyncSink : public LogSink {
 public:
     LogAsyncSink(LogSink *adapted_sink, size_t queue_size = 100);
-    virtual ~LogAsyncSink();
+    ~LogAsyncSink() override;
 
-    virtual void log(const char *buffer, size_t size);
+    void log(const char *buffer, size_t size) override;
 
 private:
     BRICKRED_NONCOPYABLE(LogAsyncSink)

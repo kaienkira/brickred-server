@@ -56,7 +56,7 @@ void UdpSocket::close()
 
 bool UdpSocket::connect(const SocketAddress &addr)
 {
-    if (addr.getNativeAddress() == NULL) {
+    if (addr.getNativeAddress() == nullptr) {
         errno = EAFNOSUPPORT;
         return false;
     }
@@ -71,7 +71,7 @@ bool UdpSocket::connect(const SocketAddress &addr)
 
 bool UdpSocket::bind(const SocketAddress &addr)
 {
-    if (addr.getNativeAddress() == NULL) {
+    if (addr.getNativeAddress() == nullptr) {
         errno = EAFNOSUPPORT;
         return false;
     }

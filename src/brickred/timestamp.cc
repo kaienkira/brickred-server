@@ -76,8 +76,8 @@ int64_t Timestamp::distanceSecond(const Timestamp &other) const
 
 int64_t Timestamp::distanceMillisecond(const Timestamp &other) const
 {
-    const Timestamp *bigger = NULL;
-    const Timestamp *smaller = NULL;
+    const Timestamp *bigger = nullptr;
+    const Timestamp *smaller = nullptr;
 
     if (*this < other) {
         bigger = &other;

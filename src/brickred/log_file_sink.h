@@ -13,9 +13,9 @@ namespace brickred {
 class LogFileSink : public LogSink {
 public:
     LogFileSink(const std::string &file_path);
-    virtual ~LogFileSink();
+    ~LogFileSink() override;
 
-    virtual void log(const char *buffer, size_t size);
+    void log(const char *buffer, size_t size) override;
     bool openFile();
 
 private:

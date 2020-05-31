@@ -12,7 +12,7 @@ namespace brickred {
 class UdpSocket : public IODevice {
 public:
     UdpSocket();
-    virtual ~UdpSocket();
+    ~UdpSocket() override;
 
     bool open(SocketAddress::Protocol::type protocol);
     void close();

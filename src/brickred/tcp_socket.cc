@@ -59,7 +59,7 @@ void TcpSocket::close()
 
 bool TcpSocket::connect(const SocketAddress &addr)
 {
-    if (addr.getNativeAddress() == NULL) {
+    if (addr.getNativeAddress() == nullptr) {
         errno = EAFNOSUPPORT;
         return false;
     }
@@ -74,7 +74,7 @@ bool TcpSocket::connect(const SocketAddress &addr)
 
 bool TcpSocket::bind(const SocketAddress &addr)
 {
-    if (addr.getNativeAddress() == NULL) {
+    if (addr.getNativeAddress() == nullptr) {
         errno = EAFNOSUPPORT;
         return false;
     }
@@ -98,7 +98,7 @@ bool TcpSocket::listen(int backlog)
 
 bool TcpSocket::accept(TcpSocket *peer)
 {
-    int sock_fd = ::accept(fd_, NULL, NULL);
+    int sock_fd = ::accept(fd_, nullptr, nullptr);
     if (-1 == sock_fd) {
         return false;
     }

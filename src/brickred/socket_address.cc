@@ -109,7 +109,7 @@ const void *SocketAddress::Impl::getNativeAddress() const
     } else if (Protocol::IP_V6 == protocol_) {
         return &native_addr_.ipv6_addr_;
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -153,7 +153,7 @@ void SocketAddress::Impl::translateNativeAddressToAddress() const
         struct sockaddr_in *sock_addr4 = &native_addr_.ipv4_addr_;
         char ip[32];
         if (::inet_ntop(AF_INET, &sock_addr4->sin_addr,
-                        ip, sizeof(ip)) == NULL) {
+                        ip, sizeof(ip)) == nullptr) {
             return;
         }
         ip_ = ip;
@@ -163,7 +163,7 @@ void SocketAddress::Impl::translateNativeAddressToAddress() const
         struct sockaddr_in6 *sock_addr6 = &native_addr_.ipv6_addr_;
         char ip[128];
         if (::inet_ntop(AF_INET6, &sock_addr6->sin6_addr,
-                        ip, sizeof(ip)) == NULL) {
+                        ip, sizeof(ip)) == nullptr) {
             return;
         }
         ip_ = ip;
@@ -280,18 +280,18 @@ bool SocketAddress::setNativeAddress(const void *native_addr)
 bool SocketAddress::getAddressByDomain(const std::string &domain,
     std::vector<SocketAddress> *addr_list)
 {
-    struct addrinfo *res = NULL;
+    struct addrinfo *res = nullptr;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    int ret = ::getaddrinfo(domain.c_str(), NULL, &hints, &res);
+    int ret = ::getaddrinfo(domain.c_str(), nullptr, &hints, &res);
     if (ret != 0) {
         return false;
     }
 
-    for (const struct addrinfo *p = res; p != NULL; p = p->ai_next) {
+    for (const struct addrinfo *p = res; p != nullptr; p = p->ai_next) {
         SocketAddress addr;
         addr.setNativeAddress(p->ai_addr);
         addr_list->push_back(addr);
@@ -322,7 +322,7 @@ void SocketAddress::ipV4BinToText(uint32_t binary, std::string *text)
     addr.s_addr = htonl(binary);
 
     char ip[32];
-    if (::inet_ntop(AF_INET, &addr, ip, sizeof(ip)) == NULL) {
+    if (::inet_ntop(AF_INET, &addr, ip, sizeof(ip)) == nullptr) {
         return;
     }
 
@@ -360,7 +360,7 @@ void SocketAddress::ipV6BinToText(const uint8_t binary[16], std::string *text)
     }
 
     char ip[128];
-    if (::inet_ntop(AF_INET, &addr, ip, sizeof(ip)) == NULL) {
+    if (::inet_ntop(AF_INET, &addr, ip, sizeof(ip)) == nullptr) {
         return;
     }
 

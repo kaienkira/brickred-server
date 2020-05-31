@@ -16,8 +16,7 @@
 #include <brickred/protocol/http_request.h>
 #include <brickred/protocol/http_response.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class WebSocketProtocol::Impl {
 public:
@@ -78,18 +77,18 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 WebSocketProtocol::Impl::StatusHandler
 WebSocketProtocol::Impl::s_status_handler_[] = {
-    NULL,
+    nullptr,
     &WebSocketProtocol::Impl::readHandshakeRequest,
     &WebSocketProtocol::Impl::readHandshakeResponse,
     &WebSocketProtocol::Impl::readFrame,
-    NULL,
-    NULL,
-    NULL
+    nullptr,
+    nullptr,
+    nullptr
 };
 
 WebSocketProtocol::Impl::Impl() :
     status_(Status::DETACHED),
-    random_generator_(NULL),
+    random_generator_(nullptr),
     is_client_(false), close_frame_sent_(false), last_op_code_(-1),
     ret_code_(RetCode::ERROR)
 {
@@ -179,7 +178,7 @@ WebSocketProtocol::RetCode::type WebSocketProtocol::Impl::recvMessage(
 {
     for (;;) {
         StatusHandler func = s_status_handler_[status_];
-        if (NULL == func) {
+        if (nullptr == func) {
             return RetCode::ERROR;
         }
 
@@ -406,7 +405,7 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
 
     // get mask key
     bool mask = b[1] & 0x80;
-    const uint8_t *mask_key = NULL;
+    const uint8_t *mask_key = nullptr;
     if (mask) {
         // A server MUST NOT mask any frames that it sends to the client
         if (is_client_) {
@@ -543,7 +542,7 @@ void WebSocketProtocol::Impl::sendMessage(const char *buffer, size_t size)
     }
 
     // mask key
-    const uint8_t *mask_key = NULL;
+    const uint8_t *mask_key = nullptr;
     if (is_client_) {
         message.reserveWritableBytes(4);
         for (size_t i = 0; i < 4; ++i) {
@@ -557,7 +556,7 @@ void WebSocketProtocol::Impl::sendMessage(const char *buffer, size_t size)
     message.reserveWritableBytes(size);
     ::memcpy(message.writeBegin(), buffer, size);
     // do masking
-    if (mask_key != NULL) {
+    if (mask_key != nullptr) {
         for (size_t i = 0; i < size; ++i) {
             message.writeBegin()[i] ^= mask_key[i & 0x03];
         }
@@ -701,5 +700,4 @@ void WebSocketProtocol::sendPingFrame()
     pimpl_->sendPingFrame();
 }
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol

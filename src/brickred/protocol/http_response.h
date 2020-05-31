@@ -5,13 +5,12 @@
 
 #include <brickred/protocol/http_message.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class HttpResponse : public HttpMessage {
 public:
     HttpResponse();
-    virtual ~HttpResponse();
+    ~HttpResponse() override;
     void swap(HttpResponse &other);
 
     int getStatusCode() const { return status_code_; }
@@ -25,7 +24,6 @@ private:
     std::string reason_phrase_;
 };
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol
 
 #endif

@@ -4,8 +4,7 @@
 
 #include <brickred/timestamp.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 static const std::string s_cstr_empty_string;
 static const std::string s_cstr_http_1_1("HTTP/1.1");
@@ -136,5 +135,4 @@ const std::string &HttpMessage::VersionEnumToStr(Version::type version_enum)
     }
 }
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol

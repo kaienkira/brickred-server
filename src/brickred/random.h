@@ -14,7 +14,7 @@ public:
     Random();
     Random(uint32_t s);
     Random(uint32_t key[], size_t key_length);
-    virtual ~Random();
+    ~Random() override;
 
 private:
     BRICKRED_NONCOPYABLE(Random)

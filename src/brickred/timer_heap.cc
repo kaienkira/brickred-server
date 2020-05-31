@@ -10,7 +10,7 @@
 
 namespace brickred {
 
-namespace timer_heap_impl {
+namespace {
 
 class TimerIdAllocator {
 public:
@@ -67,7 +67,7 @@ Timer::Timer(TimerId id, const Timestamp &timestamp, int64_t timeout,
 {
 }
 
-} using namespace timer_heap_impl;
+} // namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 class TimerHeap::Impl {
@@ -104,7 +104,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 TimerHeap::Impl::Impl()
 {
-    timer_min_heap_.push_back(NULL);
+    timer_min_heap_.push_back(nullptr);
 }
 
 TimerHeap::Impl::~Impl()
@@ -118,7 +118,7 @@ TimerHeap::Impl::~Impl()
 int64_t TimerHeap::Impl::getNextTimeoutMillisecond(const Timestamp &now) const
 {
     Timer *timer = minHeapTop();
-    if (NULL == timer) {
+    if (nullptr == timer) {
         return -1;
     }
 
@@ -179,7 +179,7 @@ void TimerHeap::Impl::checkTimeout(const Timestamp &now)
 {
     for (;;) {
         Timer *timer = minHeapTop();
-        if (NULL == timer) {
+        if (nullptr == timer) {
             return;
         }
 
@@ -303,7 +303,7 @@ void TimerHeap::Impl::minHeapShiftDown(int cur_index)
 Timer *TimerHeap::Impl::minHeapTop() const
 {
     if (timer_min_heap_.size() <= 1) {
-        return NULL;
+        return nullptr;
     }
     return timer_min_heap_[1];
 }

@@ -7,7 +7,7 @@
 
 namespace brickred {
 
-IODevice::IODevice() : io_service_(NULL), id_(0), fd_(-1)
+IODevice::IODevice() : io_service_(nullptr), id_(0), fd_(-1)
 {
 }
 
@@ -29,7 +29,7 @@ bool IODevice::dupDescriptor(DescriptorId fd)
 
 bool IODevice::attachIOService(IOService &io_service)
 {
-    if (io_service_ != NULL) {
+    if (io_service_ != nullptr) {
         detachIOService();
     }
 
@@ -43,17 +43,17 @@ bool IODevice::attachIOService(IOService &io_service)
 
 void IODevice::detachIOService()
 {
-    if (NULL == io_service_) {
+    if (nullptr == io_service_) {
         return;
     }
     io_service_->removeIODevice(this);
-    io_service_ = NULL;
+    io_service_ = nullptr;
 }
 
 void IODevice::setReadCallback(const ReadCallback &read_cb)
 {
     read_cb_ = read_cb;
-    if (io_service_ != NULL) {
+    if (io_service_ != nullptr) {
         io_service_->updateIODevice(this);
     }
 }
@@ -61,7 +61,7 @@ void IODevice::setReadCallback(const ReadCallback &read_cb)
 void IODevice::setWriteCallback(const WriteCallback &write_cb)
 {
     write_cb_ = write_cb;
-    if (io_service_ != NULL) {
+    if (io_service_ != nullptr) {
         io_service_->updateIODevice(this);
     }
 }

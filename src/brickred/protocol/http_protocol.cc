@@ -14,8 +14,7 @@
 #include <brickred/protocol/http_request.h>
 #include <brickred/protocol/http_response.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class HttpProtocol::Impl {
 public:
@@ -57,12 +56,13 @@ HttpProtocol::Impl::StatusHandler HttpProtocol::Impl::s_status_handler_[] = {
     &HttpProtocol::Impl::readStartLine,
     &HttpProtocol::Impl::readHeader,
     &HttpProtocol::Impl::readBody,
-    NULL,
-    NULL
+    nullptr,
+    nullptr
 };
 
 HttpProtocol::Impl::Impl() :
-    status_(Status::READING_START_LINE), message_(NULL), chunk_buffer_(NULL)
+    status_(Status::READING_START_LINE),
+    message_(nullptr), chunk_buffer_(nullptr)
 {
 }
 
@@ -73,14 +73,14 @@ HttpProtocol::Impl::~Impl()
 
 void HttpProtocol::Impl::reset()
 {
-    if (message_ != NULL) {
+    if (message_ != nullptr) {
         delete message_;
-        message_ = NULL;
+        message_ = nullptr;
     }
 
-    if (chunk_buffer_ != NULL) {
+    if (chunk_buffer_ != nullptr) {
         delete chunk_buffer_;
-        chunk_buffer_ = NULL;
+        chunk_buffer_ = nullptr;
     }
 
     status_ = Status::READING_START_LINE;
@@ -96,7 +96,7 @@ HttpProtocol::Impl::RetCode::type HttpProtocol::Impl::recvMessage(
 {
     for (;;) {
         StatusHandler func = s_status_handler_[status_];
-        if (NULL == func) {
+        if (nullptr == func) {
             return RetCode::ERROR;
         }
 
@@ -123,7 +123,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
     // get a http line
     const char *crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n");
-    if (NULL == crlf) {
+    if (nullptr == crlf) {
         return 0;
     }
 
@@ -206,7 +206,7 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     const char *double_crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n\r\n");
-    if (NULL == double_crlf) {
+    if (nullptr == double_crlf) {
         return 0;
     }
 
@@ -219,7 +219,7 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     for (size_t i = 0; i < headers.size(); ++i) {
         const char *colon = string_util::find(
             headers[i].c_str(), headers[i].size(), ":");
-        if (NULL == colon) {
+        if (nullptr == colon) {
             return -1;
         }
 
@@ -252,7 +252,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 
     // header transfer-encoding == "chunked"
     if (message_->headerContain("Transfer-Encoding", "chunked")) {
-        if (NULL == chunk_buffer_) {
+        if (nullptr == chunk_buffer_) {
             chunk_buffer_ = new DynamicBuffer();
         }
 
@@ -262,7 +262,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 
             const char *crlf =
                 string_util::find(buffer_start, buffer_size, "\r\n");
-            if (NULL == crlf) {
+            if (nullptr == crlf) {
                 // wait for more data
                 return 0;
             }
@@ -319,7 +319,7 @@ bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
     if (status_ != Status::FINISHED) {
         return false;
     }
-    if (NULL == message_) {
+    if (nullptr == message_) {
         return false;
     }
     if (message_->getMessageType() != HttpMessage::MessageType::REQUEST) {
@@ -337,7 +337,7 @@ bool HttpProtocol::Impl::retrieveResponse(HttpResponse *response)
     if (status_ != Status::FINISHED) {
         return false;
     }
-    if (NULL == message_) {
+    if (nullptr == message_) {
         return false;
     }
     if (message_->getMessageType() != HttpMessage::MessageType::RESPONSE) {
@@ -460,5 +460,4 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
     buffer->write(count);
 }
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol

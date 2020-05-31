@@ -13,8 +13,7 @@ class DynamicBuffer;
 
 } // namespace brickred
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class HttpMessage;
 class HttpRequest;
@@ -65,7 +64,6 @@ private:
     UniquePtr<Impl> pimpl_;
 };
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol
 
 #endif

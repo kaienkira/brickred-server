@@ -8,8 +8,7 @@
 
 #include <brickred/string_util.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class HttpMessage {
 public:
@@ -68,7 +67,6 @@ protected:
     std::string body_;
 };
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol
 
 #endif

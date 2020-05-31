@@ -57,7 +57,7 @@ void Thread::Impl::start(const ThreadFunc &thread_func)
 
     thread_func_ = thread_func;
 
-    if (::pthread_create(&thread_handle_, NULL, &threadProxy, this) != 0) {
+    if (::pthread_create(&thread_handle_, nullptr, &threadProxy, this) != 0) {
         throw SystemErrorException("create thread failed in pthread_create");
     }
 
@@ -95,7 +95,7 @@ void Thread::Impl::join()
     }
 
     if (do_join) {
-        ::pthread_join(thread_handle_, NULL);
+        ::pthread_join(thread_handle_, nullptr);
         LockGuard lock(data_mutex_);
         joined_ = true;
         done_cond_.notifyAll();

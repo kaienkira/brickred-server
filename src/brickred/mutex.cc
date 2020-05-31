@@ -22,7 +22,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 Mutex::Impl::Impl()
 {
-    if (::pthread_mutex_init(&mutex_, NULL) != 0) {
+    if (::pthread_mutex_init(&mutex_, nullptr) != 0) {
         throw SystemErrorException(
             "Mutex constructor failed in pthread_mutex_init"
         );

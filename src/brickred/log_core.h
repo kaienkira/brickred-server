@@ -30,11 +30,11 @@ public:
     void setMaxLogSize(int size = 4096);
 
     // logger_id must be in [0, max_logger_count)
-    bool registerLogger(int logger_id, LogFormatter formatter = NULL,
+    bool registerLogger(int logger_id, LogFormatter formatter = nullptr,
                         int level_filter = -1);
     void removeLogger(int logger_id);
     bool addSink(int logger_id, LogSink *sink,
-                 LogFormatter formatter = NULL, int level_filter = -1);
+                 LogFormatter formatter = nullptr, int level_filter = -1);
 
     // log with formatter
     void log(int logger_id, int level,

@@ -27,7 +27,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 ConditionVariable::Impl::Impl()
 {
-    if (::pthread_cond_init(&cond_, NULL) != 0) {
+    if (::pthread_cond_init(&cond_, nullptr) != 0) {
         throw SystemErrorException(
             "ConditionVariable constructor failed in pthread_cond_init"
         );

@@ -2,8 +2,7 @@
 
 #include <algorithm>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 HttpResponse::HttpResponse() :
     status_code_(0)
@@ -32,5 +31,4 @@ void HttpResponse::setReasonPhrase(const std::string &reason_phrase)
     reason_phrase_ = reason_phrase;
 }
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol

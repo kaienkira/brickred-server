@@ -2,8 +2,7 @@
 
 #include <algorithm>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 static const std::string s_cstr_get("GET");
 static const std::string s_cstr_post("POST");
@@ -60,5 +59,4 @@ const std::string &HttpRequest::MethodEnumToStr(Method::type method_enum)
     }
 }
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol

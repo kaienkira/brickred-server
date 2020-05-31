@@ -5,8 +5,7 @@
 
 #include <brickred/protocol/http_message.h>
 
-namespace brickred {
-namespace protocol {
+namespace brickred::protocol {
 
 class HttpRequest : public HttpMessage {
 public:
@@ -19,7 +18,7 @@ public:
     };
 
     HttpRequest();
-    virtual ~HttpRequest();
+    ~HttpRequest() override;
     void swap(HttpRequest &other);
 
     Method::type getMethod() const { return method_; }
@@ -36,7 +35,6 @@ private:
     std::string request_uri_;
 };
 
-} // namespace protocol
-} // namespace brickred
+} // namespace brickred::protocol
 
 #endif

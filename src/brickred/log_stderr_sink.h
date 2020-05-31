@@ -11,9 +11,9 @@ namespace brickred {
 class LogStderrSink : public LogSink {
 public:
     LogStderrSink();
-    virtual ~LogStderrSink();
+    ~LogStderrSink() override;
 
-    virtual void log(const char *buffer, size_t size);
+    void log(const char *buffer, size_t size) override;
 
 private:
     BRICKRED_NONCOPYABLE(LogStderrSink)

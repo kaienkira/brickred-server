@@ -14,7 +14,7 @@
 
 namespace brickred {
 
-namespace tcp_service_impl {
+namespace {
 
 class SocketIdAllocator {
 public:
@@ -104,7 +104,7 @@ void TcpConnection::setError(int error_code)
     error_code_ = error_code;
 }
 
-} using namespace tcp_service_impl;
+} // namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 class TcpService::Impl {
@@ -693,7 +693,7 @@ TcpService::Impl::SocketId TcpService::Impl::asyncConnect(
         if (-1 == socket_id) {
             return - 1;
         }
-        if (complete != NULL) {
+        if (complete != nullptr) {
             *complete = true;
         }
 
@@ -705,7 +705,7 @@ TcpService::Impl::SocketId TcpService::Impl::asyncConnect(
         if (-1 == socket_id) {
             return - 1;
         }
-        if (complete != NULL) {
+        if (complete != nullptr) {
             *complete = false;
         }
 
@@ -926,7 +926,7 @@ TcpService::Impl::Context *TcpService::Impl::getContext(
         return iter->second;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 bool TcpService::Impl::setContext(SocketId socket_id, Context *context)
