@@ -27,7 +27,7 @@ public:
     using TimerId = IOService::TimerId;
     using TimerCallback = IOService::TimerCallback;
     using EventVector = std::vector<struct epoll_event>;
-    using IODeviceSet = std::unordered_set<intptr_t>; 
+    using IODeviceSet = std::unordered_set<intptr_t>;
 
     Impl();
     ~Impl();
