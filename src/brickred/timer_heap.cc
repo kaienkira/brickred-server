@@ -259,7 +259,7 @@ void TimerHeap::Impl::minHeapShiftUp(int cur_index)
         if (0 == parent_index) {
             break;
         }
-        if (timer_min_heap_[parent_index]->getTimestamp() <
+        if (timer_min_heap_[parent_index]->getTimestamp() <=
             timer_min_heap_[cur_index]->getTimestamp()) {
             break;
         }
@@ -287,7 +287,7 @@ void TimerHeap::Impl::minHeapShiftDown(int cur_index)
             ++child_index;
         }
 
-        if (timer_min_heap_[cur_index]->getTimestamp() <
+        if (timer_min_heap_[cur_index]->getTimestamp() <=
             timer_min_heap_[child_index]->getTimestamp()) {
             break;
         }
