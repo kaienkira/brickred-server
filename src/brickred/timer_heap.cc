@@ -259,16 +259,16 @@ void TimerHeap::Impl::minHeapShiftUp(int cur_index)
         if (0 == parent_index) {
             break;
         }
-        if (timer_min_heap_[parent_index]->getTimestamp() <=
-            timer_min_heap_[cur_index]->getTimestamp()) {
+
+        if (timer_min_heap_[cur_index]->getTimestamp() <
+            timer_min_heap_[parent_index]->getTimestamp()) {
+            timer_min_heap_[parent_index]->setHeapPos(cur_index);
+            timer_min_heap_[cur_index]->setHeapPos(parent_index);
+            std::swap(timer_min_heap_[parent_index], timer_min_heap_[cur_index]);
+            cur_index = parent_index;
+        } else {
             break;
         }
-
-        timer_min_heap_[parent_index]->setHeapPos(cur_index);
-        timer_min_heap_[cur_index]->setHeapPos(parent_index);
-        std::swap(timer_min_heap_[parent_index], timer_min_heap_[cur_index]);
-
-        cur_index = parent_index;
     }
 }
 
@@ -287,16 +287,15 @@ void TimerHeap::Impl::minHeapShiftDown(int cur_index)
             ++child_index;
         }
 
-        if (timer_min_heap_[cur_index]->getTimestamp() <=
-            timer_min_heap_[child_index]->getTimestamp()) {
+        if (timer_min_heap_[child_index]->getTimestamp() <
+            timer_min_heap_[cur_index]->getTimestamp()) {
+            timer_min_heap_[cur_index]->setHeapPos(child_index);
+            timer_min_heap_[child_index]->setHeapPos(cur_index);
+            std::swap(timer_min_heap_[cur_index], timer_min_heap_[child_index]);
+            cur_index = child_index;
+        } else {
             break;
         }
-
-        timer_min_heap_[cur_index]->setHeapPos(child_index);
-        timer_min_heap_[child_index]->setHeapPos(cur_index);
-        std::swap(timer_min_heap_[cur_index], timer_min_heap_[child_index]);
-
-        cur_index = child_index;
     }
 }
 
