@@ -88,7 +88,6 @@ public:
     void checkTimeout(const Timestamp &now);
 
 public:
-    void minHeapReserve();
     void minHeapInsert(Timer *timer);
     void minHeapErase(Timer *timer);
     void minHeapShiftUp(int cur_index);
@@ -144,9 +143,6 @@ TimerHeap::Impl::TimerId TimerHeap::Impl::addTimer(const Timestamp &now,
         BASE_ERROR("timer(%lu) already in timer map", timer_id);
         return -1;
     }
-
-    // reserve min heap
-    minHeapReserve();
 
     // insert into timer map
     timers_.insert(std::make_pair(timer_id, timer.get()));
@@ -209,11 +205,6 @@ void TimerHeap::Impl::checkTimeout(const Timestamp &now)
         // do callback
         timer_cb(timer_id);
     }
-}
-
-void TimerHeap::Impl::minHeapReserve()
-{
-    timer_min_heap_.reserve(timer_min_heap_.size() + 1);
 }
 
 void TimerHeap::Impl::minHeapInsert(Timer *timer)
