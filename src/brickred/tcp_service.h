@@ -27,15 +27,15 @@ public:
 
     using SocketId = int64_t;
     using NewConnectionCallback =
-          Function<void (TcpService *, SocketId, SocketId)>;
+        Function<void (TcpService *, SocketId, SocketId)>;
     using RecvMessageCallback =
-          Function<void (TcpService *, SocketId, DynamicBuffer *)>;
+        Function<void (TcpService *, SocketId, DynamicBuffer *)>;
     using PeerCloseCallback =
-          Function<void (TcpService *, SocketId)>;
+        Function<void (TcpService *, SocketId)>;
     using ErrorCallback =
-          Function<void (TcpService *, SocketId, int)>;
+        Function<void (TcpService *, SocketId, int)>;
     using SendCompleteCallback =
-          Function<void (TcpService *, SocketId)>;
+        Function<void (TcpService *, SocketId)>;
 
     explicit TcpService(IOService &io_service);
     ~TcpService();
