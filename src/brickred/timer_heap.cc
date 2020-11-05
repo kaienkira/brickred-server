@@ -1,6 +1,5 @@
 #include <brickred/timer_heap.h>
 
-#include <cstddef>
 #include <algorithm>
 #include <unordered_map>
 #include <vector>
