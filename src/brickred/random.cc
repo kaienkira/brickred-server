@@ -13,16 +13,6 @@ Random::Random()
          now.getMilliSecond() * 24 * 60 * 60);
 }
 
-Random::Random(uint32_t s) :
-    Mt19937(s)
-{
-}
-
-Random::Random(uint32_t key[], size_t key_length) :
-    Mt19937(key, key_length)
-{
-}
-
 Random::~Random()
 {
 }
