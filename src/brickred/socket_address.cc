@@ -282,7 +282,7 @@ bool SocketAddress::getAddressByDomain(const std::string &domain,
 {
     struct addrinfo *res = nullptr;
     struct addrinfo hints;
-    memset(&hints, 0, sizeof(hints));
+    ::memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
