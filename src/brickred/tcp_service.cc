@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include <brickred/base_logger.h>
 #include <brickred/dynamic_buffer.h>
+#include <brickred/internal_logger.h>
 #include <brickred/io_device.h>
 #include <brickred/io_service.h>
 #include <brickred/socket_address.h>
@@ -258,7 +258,9 @@ TcpService::Impl::SocketId TcpService::Impl::buildListenSocket(
     socket->attachIOService(*io_service_);
 
     if (sockets_.find(socket_id) != sockets_.end()) {
-        BASE_ERROR("socket(%lx) already in socket map", socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in socket map",
+            socket_id);
         return -1;
     }
 
@@ -291,11 +293,15 @@ TcpService::Impl::SocketId TcpService::Impl::buildConnectedSocket(
     connection->setStatus(TcpConnection::Status::CONNECTED);
 
     if (sockets_.find(socket_id) != sockets_.end()) {
-        BASE_ERROR("socket(%lx) already in socket map", socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in socket map",
+            socket_id);
         return -1;
     }
     if (connections_.find(socket_id) != connections_.end()) {
-        BASE_ERROR("socket(%lx) already in connection map", socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in connection map",
+            socket_id);
         return -1;
     }
 
@@ -331,11 +337,15 @@ TcpService::Impl::SocketId TcpService::Impl::buildAsyncConnectSocket(
     connection->setStatus(TcpConnection::Status::CONNECTING);
 
     if (sockets_.find(socket_id) != sockets_.end()) {
-        BASE_ERROR("socket(%lx) already in socket map", socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in socket map",
+            socket_id);
         return -1;
     }
     if (connections_.find(socket_id) != connections_.end()) {
-        BASE_ERROR("socket(%lx) already in connection map", socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in connection map",
+            socket_id);
         return -1;
     }
 
@@ -395,8 +405,9 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
                        ENFILE == errno) {
                 // run out of fd
                 if (accept_pause_time_when_exceed_open_file_limit_ > 0) {
-                    BASE_ERROR("socket(%lx) accept failed: %s",
-                               listen_socket->getId(), ::strerror(errno));
+                    BRICKRED_INTERNAL_LOG_ERROR(
+                        "socket(%lx) accept failed: %s",
+                        listen_socket->getId(), ::strerror(errno));
                     // disable listen for a while to prevent cpu busy wait
                     listen_socket->setReadCallback(NullFunction());
                     addSocketTimer(
@@ -408,8 +419,9 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
                 }
                 return;
             } else {
-                BASE_ERROR("socket(%lx) accept failed: %s",
-                           listen_socket->getId(), ::strerror(errno));
+                BRICKRED_INTERNAL_LOG_ERROR(
+                    "socket(%lx) accept failed: %s",
+                    listen_socket->getId(), ::strerror(errno));
                 return;
             }
         }
@@ -455,8 +467,9 @@ void TcpService::Impl::onAsyncConnectSocketWrite(IODevice *io_device)
 
     TcpConnectionMap::iterator iter = connections_.find(socket->getId());
     if (connections_.end() == iter) {
-        BASE_ERROR("socket(%lx) not found in connection map",
-                   socket->getId());
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) not found in connection map",
+            socket->getId());
         return;
     }
     TcpConnection *connection = iter->second;
@@ -515,8 +528,9 @@ void TcpService::Impl::onSocketRead(IODevice *io_device)
 
     TcpConnectionMap::iterator iter = connections_.find(socket_id);
     if (connections_.end() == iter) {
-        BASE_ERROR("socket(%lx) not found in connection map",
-                   socket_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) not found in connection map",
+            socket_id);
         return;
     }
     TcpConnection *connection = iter->second;
@@ -584,8 +598,9 @@ void TcpService::Impl::onSocketWrite(IODevice *io_device)
 
     TcpConnectionMap::iterator iter = connections_.find(socket->getId());
     if (connections_.end() == iter) {
-        BASE_ERROR("socket(%lx) not found in connection map",
-                   socket->getId());
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) not found in connection map",
+            socket->getId());
         return;
     }
     TcpConnection *connection = iter->second;
@@ -621,8 +636,9 @@ void TcpService::Impl::onSocketError(IODevice *io_device)
 
     TcpConnectionMap::iterator iter = connections_.find(socket->getId());
     if (connections_.end() == iter) {
-        BASE_ERROR("socket(%lx) not found in connection map",
-                   socket->getId());
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) not found in connection map",
+            socket->getId());
         return;
     }
     TcpConnection *connection = iter->second;

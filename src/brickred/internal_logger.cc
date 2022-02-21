@@ -1,14 +1,14 @@
-#include <brickred/base_logger.h>
+#include <brickred/internal_logger.h>
 
 #include <cstdio>
 
 namespace brickred {
 
-BRICKRED_PRECREATED_SINGLETON_IMPL(BaseLogger)
+BRICKRED_PRECREATED_SINGLETON_IMPL(InternalLogger)
 
 static void defaultLogFunc(int level, const char *format, va_list args) {
-    if (level < BaseLogger::LogLevel::MIN ||
-        level >= BaseLogger::LogLevel::MAX) {
+    if (level < InternalLogger::LogLevel::MIN ||
+        level >= InternalLogger::LogLevel::MAX) {
         return;
     }
 
@@ -23,27 +23,29 @@ static void defaultLogFunc(int level, const char *format, va_list args) {
     ::fprintf(stderr, "\n");
 }
 
-BaseLogger::BaseLogger() : log_func_(defaultLogFunc)
+InternalLogger::InternalLogger() : log_func_(defaultLogFunc)
 {
 }
 
-BaseLogger::~BaseLogger()
+InternalLogger::~InternalLogger()
 {
 }
 
-void BaseLogger::setLogFunc(LogFunc log_func)
+void InternalLogger::setLogFunc(LogFunc log_func)
 {
     log_func_ = log_func;
 }
 
-void BaseLogger::log(int level, const char *format, ...)
+void InternalLogger::log(int level, const char *format, ...)
 {
-#ifdef BRICKRED_BUILD_ENABLE_BASE_LOG
+    if (nullptr == log_func_) {
+        return;
+    }
+
     va_list args;
     va_start(args, format);
     log_func_(level, format, args);
     va_end(args);
-#endif
 }
 
 } // namespace brickred

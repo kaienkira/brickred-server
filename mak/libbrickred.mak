@@ -2,14 +2,14 @@ include config.mak
 
 TARGET = build/libbrickred
 SRCS = \
-src/brickred/base_logger.cc \
 src/brickred/command_line_option.cc \
 src/brickred/condition_variable.cc \
 src/brickred/dynamic_buffer.cc \
+src/brickred/internal_logger.cc \
 src/brickred/io_device.cc \
 src/brickred/io_service.cc \
-src/brickred/log_core.cc \
 src/brickred/log_async_sink.cc \
+src/brickred/log_core.cc \
 src/brickred/log_file_sink.cc \
 src/brickred/log_stderr_sink.cc \
 src/brickred/mutex.cc \

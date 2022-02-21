@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include <brickred/base_logger.h>
+#include <brickred/internal_logger.h>
 #include <brickred/timestamp.h>
 
 namespace brickred {
@@ -67,8 +67,9 @@ bool LogFileSink::Impl::openFile()
 void LogFileSink::Impl::log(const char *buffer, size_t size)
 {
     if (openFile() == false) {
-        BASE_ERROR("open file %s failed: %s",
-                   actual_file_path_.c_str(), ::strerror(errno));
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "open file %s failed: %s",
+            actual_file_path_.c_str(), ::strerror(errno));
         return;
     }
 

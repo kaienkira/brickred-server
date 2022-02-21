@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <brickred/base_logger.h>
+#include <brickred/internal_logger.h>
 #include <brickred/timestamp.h>
 
 namespace brickred {
@@ -139,7 +139,9 @@ TimerHeap::Impl::TimerId TimerHeap::Impl::addTimer(const Timestamp &now,
                                      call_times));
 
     if (timers_.find(timer_id) != timers_.end()) {
-        BASE_ERROR("timer(%lu) already in timer map", timer_id);
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "timer(%lu) already in timer map",
+            timer_id);
         return -1;
     }
 

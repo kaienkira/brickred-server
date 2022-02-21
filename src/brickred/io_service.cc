@@ -12,8 +12,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include <brickred/base_logger.h>
 #include <brickred/exception.h>
+#include <brickred/internal_logger.h>
 #include <brickred/io_device.h>
 #include <brickred/timer_heap.h>
 #include <brickred/timestamp.h>
@@ -99,8 +99,9 @@ bool IOService::Impl::addIODevice(IODevice *io_device)
 
     if (::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD,
                     io_device->getDescriptor(), &event) != 0) {
-        BASE_ERROR("epoll_ctl add %d failed: %s",
-                   io_device->getDescriptor(), ::strerror(errno));
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "epoll_ctl add %d failed: %s",
+            io_device->getDescriptor(), ::strerror(errno));
         return false;
     }
 
@@ -114,8 +115,9 @@ bool IOService::Impl::removeIODevice(IODevice *io_device)
 
     if (::epoll_ctl(epoll_fd_, EPOLL_CTL_DEL,
                     io_device->getDescriptor(), &event) != 0) {
-        BASE_ERROR("epoll_ctl del %d failed: %s",
-                   io_device->getDescriptor(), ::strerror(errno));
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "epoll_ctl del %d failed: %s",
+            io_device->getDescriptor(), ::strerror(errno));
         return false;
     }
 
@@ -140,8 +142,9 @@ bool IOService::Impl::updateIODevice(IODevice *io_device)
 
     if (::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD,
                     io_device->getDescriptor(), &event) != 0) {
-        BASE_ERROR("epoll_ctl mod %d failed: %s",
-                   io_device->getDescriptor(), ::strerror(errno));
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "epoll_ctl mod %d failed: %s",
+            io_device->getDescriptor(), ::strerror(errno));
         return false;
     }
 
@@ -170,7 +173,9 @@ void IOService::Impl::loop()
             if (EINTR == errno) {
                 continue;
             } else {
-                BASE_ERROR("epoll_wait failed: %s", ::strerror(errno));
+                BRICKRED_INTERNAL_LOG_ERROR(
+                    "epoll_wait failed: %s",
+                    ::strerror(errno));
                 break;
             }
         }
