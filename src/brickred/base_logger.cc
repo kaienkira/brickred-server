@@ -14,7 +14,6 @@ static void defaultLogFunc(int level, const char *format, va_list args) {
 
     static const char *log_level_string[] = {
         "DEBUG",
-        "INFO",
         "WARNING",
         "ERROR",
     };
