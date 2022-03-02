@@ -4,11 +4,11 @@
 CC_ ?= gcc
 CXX_ ?= g++
 LINKER_ ?= g++
-AR_ ?= ar crv
+AR_ ?= ar cr
 RM_ ?= rm -f
 SED_ ?= sed
 
-CFLAGS ?= -Wall -c -std=c99 -D_POSIX_C_SOURCE=2 $(C_FLAG)
+CFLAGS ?= -Wall -c -std=c11 $(C_FLAG)
 CPPFLAGS ?= -Wall -c -std=c++17 $(CPP_FLAG)
 ELFLAGS ?= $(EL_FLAG)
 DLFLAGS ?= -shared -fPIC
@@ -47,19 +47,11 @@ endef
 #-*- MAIN -*-
 #==============================================================================
 ifeq ($(LINK_TYPE), exec)
-    ifeq ($(OS), Windows_NT)
-        FINAL_TARGET = $(TARGET).exe
-    else
-        FINAL_TARGET = $(TARGET)
-    endif
+	FINAL_TARGET = $(TARGET)
 endif
 
 ifeq ($(LINK_TYPE), dynamic)
-    ifeq ($(OS), Windows_NT)
-        FINAL_TARGET = $(TARGET).dll
-    else
-        FINAL_TARGET = $(TARGET).so
-    endif
+	FINAL_TARGET = $(TARGET).so
     CFLAGS += -fPIC
     CPPFLAGS += -fPIC
 endif
