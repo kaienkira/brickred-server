@@ -66,8 +66,8 @@ debug: CFLAGS += -g
 debug: CPPFLAGS += -g
 debug: $(FINAL_TARGET)
 
-release: CFLAGS += -O2 -fno-strict-aliasing
-release: CPPFLAGS += -O2
+release: CFLAGS += -g -O2 -fno-strict-aliasing
+release: CPPFLAGS += -g -O2
 release: $(FINAL_TARGET)
 
 profile: CFLAGS += -g -pg
