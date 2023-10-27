@@ -8,12 +8,12 @@
 #include <brickred/function.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
+namespace brickred { class DynamicBuffer; }
+namespace brickred { class IOService; }
+namespace brickred { class SocketAddress; }
+namespace brickred { class TcpSocket; }
 
-class DynamicBuffer;
-class IOService;
-class SocketAddress;
-class TcpSocket;
+namespace brickred {
 
 class TcpService {
 public:

@@ -7,9 +7,9 @@
 #include <brickred/class_util.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
+namespace brickred { class LogSink; }
 
-class LogSink;
+namespace brickred {
 
 class LogCore {
 public:

@@ -7,17 +7,12 @@
 #include <brickred/function.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
-
-class DynamicBuffer;
-
-} // namespace brickred
+namespace brickred { class DynamicBuffer; }
+namespace brickred::protocol { class HttpMessage; }
+namespace brickred::protocol { class HttpRequest; }
+namespace brickred::protocol { class HttpResponse; }
 
 namespace brickred::protocol {
-
-class HttpMessage;
-class HttpRequest;
-class HttpResponse;
 
 class HttpProtocol {
 public:

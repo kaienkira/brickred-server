@@ -8,13 +8,9 @@
 #include <brickred/function.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
-
-class DynamicBuffer;
-class Random;
-class SocketAddress;
-
-} // namespace brickred
+namespace brickred { class DynamicBuffer; }
+namespace brickred { class Random; }
+namespace brickred { class SocketAddress; }
 
 namespace brickred::protocol {
 

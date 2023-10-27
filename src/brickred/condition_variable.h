@@ -4,9 +4,9 @@
 #include <brickred/class_util.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
+namespace brickred { class Mutex; }
 
-class Mutex;
+namespace brickred {
 
 class ConditionVariable {
 public:

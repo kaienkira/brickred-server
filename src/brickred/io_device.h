@@ -7,9 +7,9 @@
 #include <brickred/class_util.h>
 #include <brickred/function.h>
 
-namespace brickred {
+namespace brickred { class IOService; }
 
-class IOService;
+namespace brickred {
 
 class IODevice {
 public:

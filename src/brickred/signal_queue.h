@@ -5,9 +5,9 @@
 #include <brickred/function.h>
 #include <brickred/unique_ptr.h>
 
-namespace brickred {
+namespace brickred { class IOService; }
 
-class IOService;
+namespace brickred {
 
 class SignalQueue {
 public:
