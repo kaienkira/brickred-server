@@ -1,7 +1,7 @@
 #include <brickred/condition_variable.h>
 
 #include <pthread.h>
-#include <sys/times.h>
+#include <time.h>
 #include <cerrno>
 
 #include <brickred/exception.h>

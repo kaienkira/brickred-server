@@ -1,7 +1,6 @@
 #ifndef BRICKRED_TIMESTAMP_H
 #define BRICKRED_TIMESTAMP_H
 
-#include <cstddef>
 #include <cstdint>
 #include <ctime>
 

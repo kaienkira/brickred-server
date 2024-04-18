@@ -1,6 +1,6 @@
 #include <brickred/protocol/http_request.h>
 
-#include <algorithm>
+#include <utility>
 
 namespace brickred::protocol {
 

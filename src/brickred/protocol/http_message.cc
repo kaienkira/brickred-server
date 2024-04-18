@@ -1,6 +1,6 @@
 #include <brickred/protocol/http_message.h>
 
-#include <algorithm>
+#include <utility>
 
 #include <brickred/timestamp.h>
 

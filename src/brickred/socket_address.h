@@ -1,6 +1,7 @@
 #ifndef BRICKRED_SOCKET_ADDRESS_H
 #define BRICKRED_SOCKET_ADDRESS_H
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>
