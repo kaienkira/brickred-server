@@ -103,7 +103,7 @@ size_t Timestamp::format(char *buffer, size_t size,
 {
     struct tm tm;
     ::localtime_r(&second, &tm);
-    return strftime(buffer, size, format, &tm);
+    return ::strftime(buffer, size, format, &tm);
 }
 
 } // namespace brickred
