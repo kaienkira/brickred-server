@@ -8,7 +8,7 @@
 namespace brickred {
 
 template <typename T, typename CompareFunc = std::less<T>>
-class RankSet {
+class RankSet final {
 private:
     struct RBTreeNode {
         bool is_red;
@@ -800,7 +800,7 @@ private:
     }
 
 public:
-    class Iterator {
+    class Iterator final {
     public:
         Iterator() : node_(nullptr)
         {

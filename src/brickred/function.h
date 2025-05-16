@@ -11,7 +11,7 @@ class Function;
 class NullFunction {};
 
 template <typename R, typename... P>
-class Function<R (P...)> {
+class Function<R (P...)> final {
 public:
     Function() :
         func_(0), obj_(0) {}
@@ -58,7 +58,7 @@ template <typename R, typename... P>
 void operator!=(const Function<R (P...)> &, const Function<R (P...)> &);
 
 template <typename R, typename... P>
-class FreeFunctionFactory {
+class FreeFunctionFactory final {
 private:
     template <R (*func)(P...)>
     static R wrapper(const void *, P... p)
@@ -81,7 +81,7 @@ inline FreeFunctionFactory<R, P...> _getFunctionFactory(R (*)(P...))
 }
 
 template <typename R, class T, typename... P>
-class MemberFunctionFactory {
+class MemberFunctionFactory final {
 private:
     template <R (T::*func)(P...)>
     static R wrapper(const void *o, P... p)
@@ -106,7 +106,7 @@ inline MemberFunctionFactory<R, T, P...> _getFunctionFactory(R (T::*)(P...))
 }
 
 template <typename R, class T, typename... P>
-class ConstMemberFunctionFactory {
+class ConstMemberFunctionFactory final {
 private:
     template <R (T::*func)(P...) const>
     static R wrapper(const void *o, P... p)

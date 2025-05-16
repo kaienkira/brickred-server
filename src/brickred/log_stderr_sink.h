@@ -8,7 +8,7 @@
 
 namespace brickred {
 
-class LogStderrSink : public LogSink {
+class LogStderrSink final : public LogSink {
 public:
     LogStderrSink();
     ~LogStderrSink() override;

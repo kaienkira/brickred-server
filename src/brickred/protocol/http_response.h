@@ -7,7 +7,7 @@
 
 namespace brickred::protocol {
 
-class HttpResponse : public HttpMessage {
+class HttpResponse final : public HttpMessage {
 public:
     HttpResponse();
     ~HttpResponse() override;

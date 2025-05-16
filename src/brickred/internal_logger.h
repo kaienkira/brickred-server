@@ -7,7 +7,7 @@
 
 namespace brickred {
 
-class InternalLogger {
+class InternalLogger final {
 public:
     struct LogLevel {
         enum type {

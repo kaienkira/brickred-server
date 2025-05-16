@@ -11,7 +11,7 @@
 namespace brickred {
 
 template <class T>
-class ConcurrentQueue {
+class ConcurrentQueue final {
 public:
     ConcurrentQueue(size_t max_size = 0) :
         max_size_(max_size), is_bounded_(max_size != 0)

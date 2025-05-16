@@ -6,7 +6,7 @@
 
 namespace brickred {
 
-class Random : public codec::Mt19937 {
+class Random final : public codec::Mt19937 {
 public:
     using codec::Mt19937::Mt19937;
     Random();

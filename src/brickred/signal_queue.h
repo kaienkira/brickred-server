@@ -9,7 +9,7 @@ namespace brickred { class IOService; }
 
 namespace brickred {
 
-class SignalQueue {
+class SignalQueue final {
 public:
     using RecvSignalCallback = Function<void (int)>;
 

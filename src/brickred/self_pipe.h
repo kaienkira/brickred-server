@@ -8,7 +8,7 @@
 
 namespace brickred {
 
-class SelfPipe : public IODevice {
+class SelfPipe final : public IODevice {
 public:
     SelfPipe();
     ~SelfPipe() override;

@@ -13,7 +13,7 @@
 namespace brickred {
 
 template <class T>
-class MessageQueue {
+class MessageQueue final {
 public:
     using RecvMessageCallback = Function<void (MessageQueue *)>;
 

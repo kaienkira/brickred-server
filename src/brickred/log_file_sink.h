@@ -10,7 +10,7 @@
 
 namespace brickred {
 
-class LogFileSink : public LogSink {
+class LogFileSink final : public LogSink {
 public:
     LogFileSink(const std::string &file_path);
     ~LogFileSink() override;

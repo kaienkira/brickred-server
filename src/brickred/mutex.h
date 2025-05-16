@@ -6,7 +6,7 @@
 
 namespace brickred {
 
-class Mutex {
+class Mutex final {
 public:
     Mutex();
     ~Mutex();
@@ -22,7 +22,7 @@ private:
     UniquePtr<Impl> pimpl_;
 };
 
-class LockGuard {
+class LockGuard final {
 public:
     explicit LockGuard(Mutex &m) : mutex_(m) { mutex_.lock(); }
     ~LockGuard() { mutex_.unlock(); }

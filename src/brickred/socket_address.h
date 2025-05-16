@@ -10,7 +10,7 @@
 
 namespace brickred {
 
-class SocketAddress {
+class SocketAddress final {
 public:
     struct Protocol {
         enum type {

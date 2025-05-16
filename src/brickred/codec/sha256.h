@@ -9,7 +9,7 @@
 
 namespace brickred::codec {
 
-class Sha256 {
+class Sha256 final {
 public:
     Sha256();
     ~Sha256();

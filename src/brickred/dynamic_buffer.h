@@ -7,7 +7,7 @@
 
 namespace brickred {
 
-class DynamicBuffer {
+class DynamicBuffer final {
 public:
     DynamicBuffer(size_t init_size = 1024,
                   size_t expand_size = 1024);

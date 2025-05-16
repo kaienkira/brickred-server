@@ -9,7 +9,7 @@
 
 namespace brickred::codec {
 
-class Sha1 {
+class Sha1 final {
 public:
     Sha1();
     ~Sha1();

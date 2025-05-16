@@ -11,7 +11,7 @@ namespace brickred { class IODevice; }
 
 namespace brickred {
 
-class IOService {
+class IOService final {
 public:
     using TimerId = int64_t;
     using TimerCallback = Function<void (TimerId)>;

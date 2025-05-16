@@ -9,7 +9,7 @@
 
 namespace brickred::codec {
 
-class Md5 {
+class Md5 final {
 public:
     Md5();
     ~Md5();

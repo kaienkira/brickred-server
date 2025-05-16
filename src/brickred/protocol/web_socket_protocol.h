@@ -14,7 +14,7 @@ namespace brickred { class SocketAddress; }
 
 namespace brickred::protocol {
 
-class WebSocketProtocol {
+class WebSocketProtocol final {
 public:
     struct Status {
         enum type {

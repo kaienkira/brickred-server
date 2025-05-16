@@ -7,7 +7,7 @@
 
 namespace brickred {
 
-class CommandLineOption {
+class CommandLineOption final {
 public:
     struct ParameterType {
         enum type {

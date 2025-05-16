@@ -9,7 +9,7 @@
 namespace brickred {
 
 template <class T>
-class ObjectPool {
+class ObjectPool final {
 public:
     ObjectPool() {}
     ~ObjectPool()

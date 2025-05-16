@@ -11,7 +11,7 @@ namespace brickred { class LogSink; }
 
 namespace brickred {
 
-class LogCore {
+class LogCore final {
 public:
     using LogFormatter = size_t (*)(
         char *buffer, size_t buffer_size, int level,

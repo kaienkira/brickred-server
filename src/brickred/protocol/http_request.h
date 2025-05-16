@@ -7,7 +7,7 @@
 
 namespace brickred::protocol {
 
-class HttpRequest : public HttpMessage {
+class HttpRequest final : public HttpMessage {
 public:
     struct Method {
         enum type {

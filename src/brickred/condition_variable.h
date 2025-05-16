@@ -8,7 +8,7 @@ namespace brickred { class Mutex; }
 
 namespace brickred {
 
-class ConditionVariable {
+class ConditionVariable final {
 public:
     ConditionVariable();
     ~ConditionVariable();

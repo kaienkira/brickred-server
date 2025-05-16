@@ -9,7 +9,7 @@
 
 namespace brickred {
 
-class LogAsyncSink : public LogSink {
+class LogAsyncSink final : public LogSink {
 public:
     LogAsyncSink(LogSink *adapted_sink, size_t queue_size = 100);
     ~LogAsyncSink() override;
