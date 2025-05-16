@@ -7,6 +7,14 @@
     _T &operator=(const _T &) = delete; \
     _T &operator=(_T &&) = delete;      \
 
+#define BRICKRED_STATIC(_T)             \
+    _T() = delete;                      \
+    ~_T() = delete;                     \
+    _T(const _T &) = delete;            \
+    _T(_T &&) = delete;                 \
+    _T &operator=(const _T &) = delete; \
+    _T &operator=(_T &&) = delete;      \
+
 #define BRICKRED_SINGLETON(_T)          \
 public:                                 \
     static _T *getInstance()            \
