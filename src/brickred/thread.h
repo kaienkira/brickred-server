@@ -7,7 +7,7 @@
 
 namespace brickred {
 
-class Thread {
+class Thread final {
 public:
     using ThreadFunc = Function<void ()>;
 
@@ -34,7 +34,7 @@ void yield();
 
 } // namespace this_thread
 
-class ThreadGuard {
+class ThreadGuard final {
 public:
     explicit ThreadGuard(Thread &t) : thread_(t) {}
 

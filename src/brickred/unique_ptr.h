@@ -8,7 +8,7 @@
 namespace brickred {
 
 template <class T>
-class UniquePtr {
+class UniquePtr final {
 public:
     explicit UniquePtr(T *p = nullptr) : px_(p) {}
     ~UniquePtr() { delete px_; }
@@ -49,7 +49,7 @@ private:
 };
 
 template <class T>
-class UniquePtr<T[]> {
+class UniquePtr<T[]> final {
 public:
     explicit UniquePtr(T *p = nullptr) : px_(p) {}
     ~UniquePtr() { delete[] px_; }

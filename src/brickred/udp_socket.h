@@ -9,7 +9,7 @@
 
 namespace brickred {
 
-class UdpSocket : public IODevice {
+class UdpSocket final : public IODevice {
 public:
     UdpSocket();
     ~UdpSocket() override;

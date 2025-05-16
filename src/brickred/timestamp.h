@@ -6,7 +6,7 @@
 
 namespace brickred {
 
-class Timestamp {
+class Timestamp final {
 public:
     Timestamp();
     ~Timestamp();

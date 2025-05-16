@@ -15,12 +15,13 @@ namespace brickred { class TcpSocket; }
 
 namespace brickred {
 
-class TcpService {
+class TcpService final {
 public:
     class Context {
     public:
         Context() {}
         virtual ~Context() = 0;
+
     private:
         BRICKRED_NONCOPYABLE(Context)
     };

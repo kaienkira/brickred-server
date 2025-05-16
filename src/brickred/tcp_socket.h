@@ -9,7 +9,7 @@
 
 namespace brickred {
 
-class TcpSocket : public IODevice {
+class TcpSocket final : public IODevice {
 public:
     TcpSocket();
     ~TcpSocket() override;

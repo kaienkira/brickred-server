@@ -11,7 +11,7 @@ namespace brickred { class Timestamp; }
 
 namespace brickred {
 
-class TimerHeap {
+class TimerHeap final {
 public:
     using TimerId = int64_t;
     using TimerCallback = Function<void (TimerId)>;
