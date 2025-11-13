@@ -1,3 +1,5 @@
+/.cache/
 /config.mak
 /bin/*
 /build/*
+compile_commands.json
