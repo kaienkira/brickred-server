@@ -5,7 +5,6 @@
 #include <cstring>
 #include <string>
 
-#include "test/test_util.h"
 #include <brickred/dynamic_buffer.h>
 #include <brickred/socket_address.h>
 #include <brickred/io_service.h>

@@ -1,7 +1,6 @@
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
-#include <string>
 
 #include <brickred/function.h>
 #include <brickred/io_service.h>

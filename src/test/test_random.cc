@@ -1,4 +1,3 @@
-#include <cstddef>
 #include <iostream>
 
 #include <brickred/random.h>
