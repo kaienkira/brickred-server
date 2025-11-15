@@ -3,7 +3,7 @@ include config.mak
 MAKE = make --no-print-directory
 
 define ECHO
-	@printf "\033[;31m"; printf $1; printf "\033[0m\n"
+	@printf "\033[;31m%s\033[0m\n" $1
 endef
 
 .PHONY: debug release profile clean install

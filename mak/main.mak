@@ -20,7 +20,7 @@ DEPFILES += $(DEPFILE)
 #-*- FUNCTIONS -*-
 #==============================================================================
 define ECHO
-    @printf "\033[;32m"; printf $1; printf "\033[0m\n"
+	@printf "\033[;32m%s\033[0m\n" $1
 endef
 
 define make_c_rule
