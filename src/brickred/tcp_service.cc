@@ -36,14 +36,12 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 class TcpConnection {
 public:
-    struct Status {
-        enum type {
-            NONE,
-            CONNECTING,
-            CONNECTED,
-            PEER_CLOSED,
-            PENDING_ERROR,
-        };
+    enum class Status {
+        NONE,
+        CONNECTING,
+        CONNECTED,
+        PEER_CLOSED,
+        PENDING_ERROR,
     };
 
     using SendCompleteCallback = TcpService::SendCompleteCallback;
@@ -56,12 +54,12 @@ public:
     ~TcpConnection() {}
 
     TcpSocket *getSocket() { return socket_; }
-    Status::type getStatus() const { return status_; }
+    Status getStatus() const { return status_; }
     int getErrorCode() const { return error_code_; }
     DynamicBuffer &getReadBuffer() { return read_buffer_; }
     DynamicBuffer &getWriteBuffer() { return write_buffer_; }
 
-    void setStatus(Status::type status) { status_ = status; }
+    void setStatus(Status status) { status_ = status; }
     void setError(int error_code);
 
     const SendCompleteCallback &getSendCompleteCallback() const {
@@ -77,7 +75,7 @@ private:
     BRICKRED_NONCOPYABLE(TcpConnection)
 
     TcpSocket *socket_;
-    Status::type status_;
+    Status status_;
     int error_code_;
     DynamicBuffer read_buffer_;
     DynamicBuffer write_buffer_;

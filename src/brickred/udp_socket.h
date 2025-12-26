@@ -14,7 +14,7 @@ public:
     UdpSocket();
     ~UdpSocket() override;
 
-    bool open(SocketAddress::Protocol::type protocol);
+    bool open(SocketAddress::Protocol protocol);
     void close();
     bool connect(const SocketAddress &addr);
     bool bind(const SocketAddress &addr);

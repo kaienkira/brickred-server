@@ -18,7 +18,7 @@ TcpSocket::~TcpSocket()
     close();
 }
 
-bool TcpSocket::open(SocketAddress::Protocol::type protocol)
+bool TcpSocket::open(SocketAddress::Protocol protocol)
 {
     if (fd_ != -1) {
         close();

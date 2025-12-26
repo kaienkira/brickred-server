@@ -104,7 +104,7 @@ public:
         }
 
         for (;;) {
-            WebSocketProtocol::RetCode::type ret =
+            WebSocketProtocol::RetCode ret =
                 context->getProtocol().recvMessage(buffer);
             if (WebSocketProtocol::RetCode::WAITING_MORE_DATA == ret) {
                 return;

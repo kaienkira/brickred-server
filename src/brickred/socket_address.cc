@@ -21,7 +21,7 @@ public:
 
     const std::string &getIp() const;
     uint16_t getPort() const;
-    Protocol::type getProtocol() const;
+    Protocol getProtocol() const;
     void setAddress(const std::string &ip, uint16_t port);
 
     const void *getNativeAddress() const;
@@ -38,7 +38,7 @@ private:
     mutable uint16_t port_;
 
     mutable bool has_native_addr_;
-    mutable Protocol::type protocol_;
+    mutable Protocol protocol_;
     mutable NativeAddress native_addr_;
     mutable size_t native_addr_size_;
 };
@@ -79,7 +79,7 @@ uint16_t SocketAddress::Impl::getPort() const
     return port_;
 }
 
-SocketAddress::Impl::Protocol::type SocketAddress::Impl::getProtocol() const
+SocketAddress::Impl::Protocol SocketAddress::Impl::getProtocol() const
 {
     if (!has_native_addr_ && has_addr_) {
         translateAddressToNativeAddress();
@@ -251,7 +251,7 @@ uint16_t SocketAddress::getPort() const
     return pimpl_->getPort();
 }
 
-SocketAddress::Protocol::type SocketAddress::getProtocol() const
+SocketAddress::Protocol SocketAddress::getProtocol() const
 {
     return pimpl_->getProtocol();
 }

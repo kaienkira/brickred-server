@@ -57,7 +57,7 @@ bool HttpMessage::headerContain(const std::string &key,
                string_util::toLower(value)) != std::string::npos;
 }
 
-void HttpMessage::setVersion(Version::type version)
+void HttpMessage::setVersion(Version version)
 {
     version_ = version;
 }
@@ -111,7 +111,7 @@ void HttpMessage::setDate(time_t now)
     setHeader("Date", date_string);
 }
 
-HttpMessage::Version::type HttpMessage::VersionStrToEnum(
+HttpMessage::Version HttpMessage::VersionStrToEnum(
     const std::string &version_str)
 {
     if (version_str == s_cstr_http_1_1) {
@@ -123,7 +123,7 @@ HttpMessage::Version::type HttpMessage::VersionStrToEnum(
     }
 }
 
-const std::string &HttpMessage::VersionEnumToStr(Version::type version_enum)
+const std::string &HttpMessage::VersionEnumToStr(Version version_enum)
 {
 
     if (Version::HTTP_1_1 == version_enum) {

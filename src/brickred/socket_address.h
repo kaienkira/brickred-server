@@ -12,12 +12,10 @@ namespace brickred {
 
 class SocketAddress final {
 public:
-    struct Protocol {
-        enum type {
-            UNKNOWN = 0,
-            IP_V4,
-            IP_V6
-        };
+    enum class Protocol {
+        UNKNOWN = 0,
+        IP_V4,
+        IP_V6
     };
 
     SocketAddress();
@@ -29,7 +27,7 @@ public:
 
     const std::string &getIp() const;
     uint16_t getPort() const;
-    Protocol::type getProtocol() const;
+    Protocol getProtocol() const;
     void setAddress(const std::string &ip, uint16_t port);
 
     const void *getNativeAddress() const;

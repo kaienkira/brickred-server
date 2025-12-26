@@ -81,7 +81,7 @@ public:
         }
 
         for (;;) {
-            HttpProtocol::RetCode::type ret =
+            HttpProtocol::RetCode ret =
                 context->protocol_.recvMessage(buffer);
             if (HttpProtocol::RetCode::WAITING_MORE_DATA == ret) {
                 return;

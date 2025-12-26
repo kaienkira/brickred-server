@@ -9,23 +9,21 @@ namespace brickred {
 
 class CommandLineOption final {
 public:
-    struct ParameterType {
-        enum type {
-            NONE = 0,
-            REQUIRED
-        };
+    enum class ParameterType {
+        NONE = 0,
+        REQUIRED
     };
 
     using ArgumentVector = std::vector<std::string>;
     using ParameterVector = std::vector<std::string>;
-    using OptionParameterTypeMap = std::map<std::string, ParameterType::type>;
+    using OptionParameterTypeMap = std::map<std::string, ParameterType>;
     using OptionParametersMap = std::map<std::string, ParameterVector>;
 
     CommandLineOption();
     ~CommandLineOption();
 
     void addOption(const std::string &opt,
-                   ParameterType::type param_type = ParameterType::NONE);
+                   ParameterType param_type = ParameterType::NONE);
     bool parse(int argc, char *argv[]);
 
     bool hasOption(const std::string &opt) const;

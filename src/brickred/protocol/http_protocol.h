@@ -16,23 +16,19 @@ namespace brickred::protocol {
 
 class HttpProtocol {
 public:
-    struct Status {
-        enum type {
-            READING_START_LINE = 0,
-            READING_HEADER,
-            READING_BODY,
-            FINISHED,
-            PENDING_ERROR,
-            MAX
-        };
+    enum class Status {
+        READING_START_LINE = 0,
+        READING_HEADER,
+        READING_BODY,
+        FINISHED,
+        PENDING_ERROR,
+        MAX
     };
 
-    struct RetCode {
-        enum type {
-            ERROR = -1,
-            WAITING_MORE_DATA = 0,
-            MESSAGE_READY = 1
-        };
+    enum class RetCode {
+        ERROR = -1,
+        WAITING_MORE_DATA = 0,
+        MESSAGE_READY = 1
     };
 
     using OutputCallback = Function<void (const char *, size_t)>;
@@ -41,11 +37,11 @@ public:
     ~HttpProtocol();
     void reset();
 
-    Status::type getStatus() const;
+    Status getStatus() const;
 
     void setOutputCallback(const OutputCallback &output_cb);
 
-    RetCode::type recvMessage(DynamicBuffer *buffer);
+    RetCode recvMessage(DynamicBuffer *buffer);
     bool retrieveRequest(HttpRequest *request);
     bool retrieveResponse(HttpResponse *response);
     void sendMessage(const HttpMessage &message);

@@ -9,16 +9,14 @@ namespace brickred {
 
 class InternalLogger final {
 public:
-    struct LogLevel {
-        enum type {
-            MIN = 0,
+    enum class LogLevel {
+        MIN = 0,
 
-            DEBUG = 0,
-            WARNING,
-            ERROR,
+        DEBUG = 0,
+        WARNING,
+        ERROR,
 
-            MAX
-        };
+        MAX
     };
 
     using LogFunc = void (*)(int level, const char *format, va_list args);
@@ -36,12 +34,12 @@ private:
 
 #define BRICKRED_INTERNAL_LOG_DEBUG(_format, ...) \
     brickred::InternalLogger::getInstance()->log(\
-        brickred::InternalLogger::LogLevel::DEBUG, _format, ##__VA_ARGS__)
+        (int)brickred::InternalLogger::LogLevel::DEBUG, _format, ##__VA_ARGS__)
 #define BRICKRED_INTERNAL_LOG_WARNING(_format, ...) \
     brickred::InternalLogger::getInstance()->log(\
-        brickred::InternalLogger::LogLevel::WARNING, _format, ##__VA_ARGS__)
+        (int)brickred::InternalLogger::LogLevel::WARNING, _format, ##__VA_ARGS__)
 #define BRICKRED_INTERNAL_LOG_ERROR(_format, ...) \
     brickred::InternalLogger::getInstance()->log(\
-        brickred::InternalLogger::LogLevel::ERROR, _format, ##__VA_ARGS__)
+        (int)brickred::InternalLogger::LogLevel::ERROR, _format, ##__VA_ARGS__)
 
 #endif

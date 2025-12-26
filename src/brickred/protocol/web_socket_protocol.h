@@ -16,29 +16,25 @@ namespace brickred::protocol {
 
 class WebSocketProtocol final {
 public:
-    struct Status {
-        enum type {
-            DETACHED,
-            WAITING_HANDSHAKE_REQUEST,
-            WAITING_HANDSHAKE_RESPONSE,
-            CONNECTED,
-            FINISHED,
-            CLOSED,
-            PENDING_ERROR,
-            MAX
-        };
+    enum class Status {
+        DETACHED,
+        WAITING_HANDSHAKE_REQUEST,
+        WAITING_HANDSHAKE_RESPONSE,
+        CONNECTED,
+        FINISHED,
+        CLOSED,
+        PENDING_ERROR,
+        MAX
     };
 
-    struct RetCode {
-        enum type {
-            ERROR = -1,
-            WAITING_MORE_DATA = 0,
-            CONNECTION_ESTABLISHED,
-            MESSAGE_READY,
-            PEER_CLOSED,
-            PING_FRAME,
-            PONG_FRAME,
-        };
+    enum class RetCode {
+        ERROR = -1,
+        WAITING_MORE_DATA = 0,
+        CONNECTION_ESTABLISHED,
+        MESSAGE_READY,
+        PEER_CLOSED,
+        PING_FRAME,
+        PONG_FRAME,
     };
 
     using OutputCallback = Function<void (const char *, size_t)>;
@@ -46,7 +42,7 @@ public:
     WebSocketProtocol();
     ~WebSocketProtocol();
 
-    Status::type getStatus() const;
+    Status getStatus() const;
 
     void setOutputCallback(const OutputCallback &output_cb);
     void setHandshakeHeader(const std::string &key, const std::string &value);
@@ -58,7 +54,7 @@ public:
     // wait a handshake from the client
     bool startAsServer();
 
-    RetCode::type recvMessage(DynamicBuffer *buffer);
+    RetCode recvMessage(DynamicBuffer *buffer);
     bool retrieveMessage(DynamicBuffer *message);
     void sendMessage(const char *buffer, size_t size);
     void sendCloseFrame();

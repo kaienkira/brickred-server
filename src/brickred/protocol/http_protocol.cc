@@ -26,11 +26,11 @@ public:
     ~Impl();
     void reset();
 
-    Status::type getStatus() const { return status_; }
+    Status getStatus() const { return status_; }
 
     void setOutputCallback(const OutputCallback &output_cb);
 
-    RetCode::type recvMessage(DynamicBuffer *buffer);
+    RetCode recvMessage(DynamicBuffer *buffer);
     bool retrieveRequest(HttpRequest *request);
     bool retrieveResponse(HttpResponse *response);
     void sendMessage(const HttpMessage &message);
@@ -41,10 +41,10 @@ public:
     int readBody(DynamicBuffer *buffer);
 
 private:
-    static StatusHandler s_status_handler_[Status::MAX];
+    static StatusHandler s_status_handler_[(int)Status::MAX];
 
 private:
-    Status::type status_;
+    Status status_;
     OutputCallback output_cb_;
     HttpMessage *message_;
     DynamicBuffer *chunk_buffer_;
@@ -90,11 +90,11 @@ void HttpProtocol::Impl::setOutputCallback(const OutputCallback &output_cb)
     output_cb_ = output_cb;
 }
 
-HttpProtocol::Impl::RetCode::type HttpProtocol::Impl::recvMessage(
+HttpProtocol::Impl::RetCode HttpProtocol::Impl::recvMessage(
     DynamicBuffer *buffer)
 {
     for (;;) {
-        StatusHandler func = s_status_handler_[status_];
+        StatusHandler func = s_status_handler_[(int)status_];
         if (nullptr == func) {
             return RetCode::ERROR;
         }
@@ -138,7 +138,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
 
     if (::memcmp(start_line_parts[0].c_str(), "HTTP", 4) == 0) {
         // response version
-        HttpMessage::Version::type version =
+        HttpMessage::Version version =
             HttpMessage::VersionStrToEnum(start_line_parts[0]);
         if (HttpMessage::Version::UNKNOWN == version) {
             return -1;
@@ -164,14 +164,14 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
 
     } else {
         // request method
-        HttpRequest::Method::type method =
+        HttpRequest::Method method =
             HttpRequest::MethodStrToEnum(start_line_parts[0]);
         if (HttpRequest::Method::UNKNOWN == method) {
             return -1;
         }
 
         // request version
-        HttpMessage::Version::type version =
+        HttpMessage::Version version =
             HttpMessage::VersionStrToEnum(start_line_parts[2]);
         if (HttpMessage::Version::UNKNOWN == version) {
             return -1;
@@ -373,7 +373,7 @@ void HttpProtocol::reset()
     pimpl_->reset();
 }
 
-HttpProtocol::Status::type HttpProtocol::getStatus() const
+HttpProtocol::Status HttpProtocol::getStatus() const
 {
     return pimpl_->getStatus();
 }
@@ -383,7 +383,7 @@ void HttpProtocol::setOutputCallback(const OutputCallback &output_cb)
     pimpl_->setOutputCallback(output_cb);
 }
 
-HttpProtocol::RetCode::type HttpProtocol::recvMessage(DynamicBuffer *buffer)
+HttpProtocol::RetCode HttpProtocol::recvMessage(DynamicBuffer *buffer)
 {
     return pimpl_->recvMessage(buffer);
 }

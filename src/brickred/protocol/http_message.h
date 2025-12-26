@@ -12,20 +12,16 @@ namespace brickred::protocol {
 
 class HttpMessage {
 public:
-    struct Version {
-        enum type {
-            UNKNOWN  = 0,
-            HTTP_1_0,
-            HTTP_1_1
-        };
+    enum class Version {
+        UNKNOWN  = 0,
+        HTTP_1_0,
+        HTTP_1_1
     };
 
-    struct MessageType {
-        enum type {
-            UNKNOWN = 0,
-            REQUEST,
-            RESPONSE
-        };
+    enum class MessageType {
+        UNKNOWN = 0,
+        REQUEST,
+        RESPONSE
     };
 
     using HeaderMap = std::map<std::string, std::string,
@@ -35,8 +31,8 @@ public:
     virtual ~HttpMessage() = 0;
     void swap(HttpMessage &other);
 
-    MessageType::type getMessageType() const { return message_type_; }
-    Version::type getVersion() const { return version_; }
+    MessageType getMessageType() const { return message_type_; }
+    Version getVersion() const { return version_; }
     const HeaderMap &getHeaders() const { return headers_; }
     const std::string &getHeader(const std::string &key) const;
     bool hasHeader(const std::string &key) const;
@@ -46,7 +42,7 @@ public:
                        const std::string &value) const;
     const std::string &getBody() const { return body_; }
 
-    void setVersion(Version::type version);
+    void setVersion(Version version);
     void setHeader(const std::string &key, const std::string &value);
     void removeHeader(const std::string &key);
     void setBody(const char *buffer, size_t size);
@@ -57,12 +53,12 @@ public:
     void setConnectionClose();
     void setDate(time_t now = 0);
 
-    static Version::type VersionStrToEnum(const std::string &version_str);
-    static const std::string &VersionEnumToStr(Version::type version_enum);
+    static Version VersionStrToEnum(const std::string &version_str);
+    static const std::string &VersionEnumToStr(Version version_enum);
 
 protected:
-    MessageType::type message_type_;
-    Version::type version_;
+    MessageType message_type_;
+    Version version_;
     HeaderMap headers_;
     std::string body_;
 };

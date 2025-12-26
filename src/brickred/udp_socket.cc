@@ -15,7 +15,7 @@ UdpSocket::~UdpSocket()
     close();
 }
 
-bool UdpSocket::open(SocketAddress::Protocol::type protocol)
+bool UdpSocket::open(SocketAddress::Protocol protocol)
 {
     if (fd_ != -1) {
         close();

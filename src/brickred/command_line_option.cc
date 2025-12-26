@@ -16,7 +16,7 @@ CommandLineOption::~CommandLineOption()
 }
 
 void CommandLineOption::addOption(const std::string &opt,
-    ParameterType::type param_type)
+    ParameterType param_type)
 {
     option_types_.insert(std::make_pair(opt, param_type));
 
@@ -49,7 +49,7 @@ static int processLongOption(
     if (iter == option_types.end()) {
         return -1;
     }
-    CommandLineOption::ParameterType::type opt_type = iter->second;
+    CommandLineOption::ParameterType opt_type = iter->second;
 
     if (CommandLineOption::ParameterType::NONE == opt_type) {
         // none parameter
@@ -93,7 +93,7 @@ static int processShortOption(
         if (iter == option_types.end()) {
             return -1;
         }
-        CommandLineOption::ParameterType::type opt_type = iter->second;
+        CommandLineOption::ParameterType opt_type = iter->second;
 
         if (CommandLineOption::ParameterType::NONE == opt_type) {
             option_params[opt].push_back(s_cstr_empty_string);

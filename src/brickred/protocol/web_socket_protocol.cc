@@ -30,7 +30,7 @@ public:
     Impl();
     ~Impl();
 
-    Status::type getStatus() const { return status_; }
+    Status getStatus() const { return status_; }
 
     void setOutputCallback(const OutputCallback &output_cb);
     void setHandshakeHeader(const std::string &key, const std::string &value);
@@ -40,7 +40,7 @@ public:
                        const char *request_uri);
     bool startAsServer();
 
-    RetCode::type recvMessage(DynamicBuffer *buffer);
+    RetCode recvMessage(DynamicBuffer *buffer);
     bool retrieveMessage(DynamicBuffer *message);
     void sendMessage(const char *buffer, size_t size);
     void sendCloseFrame();
@@ -59,10 +59,10 @@ public:
     void sendPongFrame();
 
 private:
-    static StatusHandler s_status_handler_[Status::MAX];
+    static StatusHandler s_status_handler_[(int)Status::MAX];
 
 private:
-    Status::type status_;
+    Status status_;
     OutputCallback output_cb_;
     Random *random_generator_;
     HttpProtocol http_protocol_;
@@ -71,7 +71,7 @@ private:
     bool is_client_;
     bool close_frame_sent_;
     int last_op_code_;
-    RetCode::type ret_code_;
+    RetCode ret_code_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -173,11 +173,11 @@ bool WebSocketProtocol::Impl::startAsServer()
     return true;
 }
 
-WebSocketProtocol::RetCode::type WebSocketProtocol::Impl::recvMessage(
+WebSocketProtocol::RetCode WebSocketProtocol::Impl::recvMessage(
     DynamicBuffer *buffer)
 {
     for (;;) {
-        StatusHandler func = s_status_handler_[status_];
+        StatusHandler func = s_status_handler_[(int)status_];
         if (nullptr == func) {
             return RetCode::ERROR;
         }
@@ -272,7 +272,7 @@ void WebSocketProtocol::Impl::sendHandshakeSuccessResponse(
 
 int WebSocketProtocol::Impl::readHandshakeRequest(DynamicBuffer *buffer)
 {
-    HttpProtocol::RetCode::type ret = http_protocol_.recvMessage(buffer);
+    HttpProtocol::RetCode ret = http_protocol_.recvMessage(buffer);
     if (HttpProtocol::RetCode::WAITING_MORE_DATA == ret) {
         return 0;
 
@@ -330,7 +330,7 @@ bool WebSocketProtocol::Impl::checkHandshakeResponseValid(
 
 int WebSocketProtocol::Impl::readHandshakeResponse(DynamicBuffer *buffer)
 {
-    HttpProtocol::RetCode::type ret = http_protocol_.recvMessage(buffer);
+    HttpProtocol::RetCode ret = http_protocol_.recvMessage(buffer);
     if (HttpProtocol::RetCode::WAITING_MORE_DATA == ret) {
         return 0;
 
@@ -646,7 +646,7 @@ WebSocketProtocol::~WebSocketProtocol()
 {
 }
 
-WebSocketProtocol::Status::type WebSocketProtocol::getStatus() const
+WebSocketProtocol::Status WebSocketProtocol::getStatus() const
 {
     return pimpl_->getStatus();
 }
@@ -674,7 +674,7 @@ bool WebSocketProtocol::startAsServer()
     return pimpl_->startAsServer();
 }
 
-WebSocketProtocol::RetCode::type WebSocketProtocol::recvMessage(
+WebSocketProtocol::RetCode WebSocketProtocol::recvMessage(
     DynamicBuffer *buffer)
 {
     return pimpl_->recvMessage(buffer);

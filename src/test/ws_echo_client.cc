@@ -63,7 +63,7 @@ public:
                        DynamicBuffer *buffer)
     {
         for (;;) {
-            WebSocketProtocol::RetCode::type ret =
+            WebSocketProtocol::RetCode ret =
                 protocol_.recvMessage(buffer);
             if (WebSocketProtocol::RetCode::CONNECTION_ESTABLISHED == ret) {
                 protocol_.sendMessage(message_.c_str(), message_.size());

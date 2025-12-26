@@ -109,7 +109,7 @@ public:
                        TcpService::SocketId socket_id,
                        DynamicBuffer *buffer)
     {
-        HttpProtocol::RetCode::type ret = protocol_.recvMessage(buffer);
+        HttpProtocol::RetCode ret = protocol_.recvMessage(buffer);
         if (HttpProtocol::RetCode::WAITING_MORE_DATA == ret) {
             return;
 

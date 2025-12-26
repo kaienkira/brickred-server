@@ -9,29 +9,27 @@ namespace brickred::protocol {
 
 class HttpRequest final : public HttpMessage {
 public:
-    struct Method {
-        enum type {
-            UNKNOWN = 0,
-            GET,
-            POST
-        };
+    enum class Method {
+        UNKNOWN = 0,
+        GET,
+        POST
     };
 
     HttpRequest();
     ~HttpRequest() override;
     void swap(HttpRequest &other);
 
-    Method::type getMethod() const { return method_; }
+    Method getMethod() const { return method_; }
     const std::string &getRequestUri() const { return request_uri_; }
 
-    void setMethod(Method::type method);
+    void setMethod(Method method);
     void setRequestUri(const std::string &request_uri);
 
-    static Method::type MethodStrToEnum(const std::string &method_str);
-    static const std::string &MethodEnumToStr(Method::type method_enum);
+    static Method MethodStrToEnum(const std::string &method_str);
+    static const std::string &MethodEnumToStr(Method method_enum);
 
 private:
-    Method::type method_;
+    Method method_;
     std::string request_uri_;
 };
 
