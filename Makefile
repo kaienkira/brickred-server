@@ -54,7 +54,7 @@ ifeq ($(BRICKRED_BUILD_TEST), yes)
 	@$(MAKE) -f mak/test/md5_sum_binary.mak $@
 	@$(call ECHO, "[build port_scan]")
 	@$(MAKE) -f mak/test/port_scan.mak $@
-	@$(call ECHO, "[build udp_echo_client]")
+	@$(call ECHO, "[build sha1_sum]")
 	@$(MAKE) -f mak/test/sha1_sum.mak $@
 	@$(call ECHO, "[build sha1_sum_binary]")
 	@$(MAKE) -f mak/test/sha1_sum_binary.mak $@

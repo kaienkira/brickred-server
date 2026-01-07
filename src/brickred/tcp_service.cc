@@ -728,8 +728,6 @@ TcpService::Impl::SocketId TcpService::Impl::asyncConnect(
     } else {
         return -1;
     }
-
-    return 0;
 }
 
 bool TcpService::Impl::isConnected(SocketId socket_id) const
