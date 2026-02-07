@@ -55,7 +55,7 @@ Logger::~Logger()
 bool Logger::addSink(LogSink *sink, LogFormatter formatter, int level_filter)
 {
     sinks_.reserve(sinks_.size() + 1);
-    sink_level_filters_.reserve(sink_formatters_.size() + 1);
+    sink_formatters_.reserve(sink_formatters_.size() + 1);
     sink_level_filters_.reserve(sink_level_filters_.size() + 1);
 
     sinks_.push_back(sink);

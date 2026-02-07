@@ -359,7 +359,7 @@ void SocketAddress::ipV6BinToText(const uint8_t binary[16], std::string *text)
     }
 
     char ip[128];
-    if (::inet_ntop(AF_INET, &addr, ip, sizeof(ip)) == nullptr) {
+    if (::inet_ntop(AF_INET6, &addr, ip, sizeof(ip)) == nullptr) {
         return;
     }
 

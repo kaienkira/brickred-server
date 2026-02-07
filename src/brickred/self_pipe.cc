@@ -41,7 +41,7 @@ void SelfPipe::close()
     }
     if (fd1_ != -1) {
         ::close(fd1_);
-        fd_ = -1;
+        fd1_ = -1;
     }
 }
 

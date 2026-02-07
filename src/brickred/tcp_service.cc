@@ -907,6 +907,7 @@ bool TcpService::Impl::sendMessageThenClose(SocketId socket_id,
 
 void TcpService::Impl::closeSocket(SocketId socket_id)
 {
+    removeSocketTimer(socket_id);
     {
         TcpConnectionMap::iterator iter = connections_.find(socket_id);
         if (iter != connections_.end()) {

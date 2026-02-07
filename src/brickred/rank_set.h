@@ -846,7 +846,7 @@ public:
             return *this;
         }
 
-        Iterator &operator++(int)
+        Iterator operator++(int)
         {
             Iterator tmp = *this;
             node_ = RankSet::increment(node_);
@@ -859,7 +859,7 @@ public:
             return *this;
         }
 
-        Iterator &operator--(int)
+        Iterator operator--(int)
         {
             Iterator tmp = *this;
             node_ = RankSet::decrement(node_);
@@ -921,7 +921,7 @@ public:
             return *this;
         }
 
-        ConstIterator &operator++(int)
+        ConstIterator operator++(int)
         {
             ConstIterator tmp = *this;
             node_ = RankSet::increment(node_);
@@ -934,7 +934,7 @@ public:
             return *this;
         }
 
-        ConstIterator &operator--(int)
+        ConstIterator operator--(int)
         {
             ConstIterator tmp = *this;
             node_ = RankSet::decrement(node_);
