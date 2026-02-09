@@ -486,8 +486,19 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
 
     // -- fin
     if (0x0 == opcode) {
+        // 0x0 should in follow frag
+        if (last_op_code_ == -1) {
+            return -1;
+        }
         opcode = last_op_code_;
         last_op_code_ = -1;
+    } else {
+        // opcode must in first frag
+        if (is_control == false) {
+            if (last_op_code_ != -1) {
+                return -1;
+            }
+        }
     }
 
     if (0x1 == opcode || 0x2 == opcode) {
