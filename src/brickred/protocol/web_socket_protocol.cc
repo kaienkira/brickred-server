@@ -549,7 +549,7 @@ void WebSocketProtocol::Impl::sendMessage(const char *buffer, size_t size)
     if (size < 126) {
         message.writeBegin()[0] |= size;
         message.write(1);
-    } else if (size < 65535) {
+    } else if (size <= 65535) {
         message.writeBegin()[0] |= 126;
         message.write(1);
         message.writeInt16(size);
@@ -636,9 +636,6 @@ void WebSocketProtocol::Impl::sendPingFrame()
 
 void WebSocketProtocol::Impl::sendPongFrame()
 {
-    // FIN = 1, RSV1~RSV3 = 0, opcode = 0xa, payload_length = 0
-    static const uint8_t client_frame[] = { 0x8a, 0x80, 0x0, 0x0, 0x0, 0x0};
-
     if (status_ != Status::CONNECTED) {
         return;
     }
@@ -648,9 +645,21 @@ void WebSocketProtocol::Impl::sendPongFrame()
 
     if (output_cb_) {
         if (is_client_) {
-            output_cb_((const char *)client_frame, sizeof(client_frame));
+            size_t payload_length = control_message_.readableBytes();
+            // FIN = 1, RSV1~RSV3 = 0, opcode = 0xa
+            uint8_t client_frame[256];
+            client_frame[0] = 0x8a;
+            client_frame[1] = payload_length;
+            client_frame[1] |= 0x80;
+            for (int i = 0; i < 4; ++i) {
+                client_frame[i + 2] = random_generator_->nextInt(256);
+            }
+            ::memcpy(client_frame + 6, control_message_.readBegin(),
+                payload_length);
+            output_cb_((const char *)client_frame, payload_length + 6);
         } else {
             size_t payload_length = control_message_.readableBytes();
+            // FIN = 1, RSV1~RSV3 = 0, opcode = 0xa
             uint8_t server_frame[128];
             server_frame[0] = 0x8a;
             server_frame[1] = payload_length;
