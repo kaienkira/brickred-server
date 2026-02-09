@@ -67,6 +67,7 @@ private:
     Random *random_generator_;
     HttpProtocol http_protocol_;
     HeaderMap handshake_headers_;
+    DynamicBuffer control_message_;
     DynamicBuffer message_;
     bool is_client_;
     bool close_frame_sent_;
@@ -366,12 +367,25 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
     if ((b[0] & 0x70) != 0) {
         return -1;
     }
+    bool fin = b[0] & 0x80;
+    int opcode = b[0] & 0x0f;
+    bool is_control = opcode >= 0x8;
+
+    // control frames MUST NOT be fragmented
+    if (is_control && fin == false) {
+        return -1;
+    }
 
     const uint8_t *p = b + 2;
     size_t left_bytes = buffer->readableBytes() - 2;
 
     // get payload length
     uint64_t payload_length = b[1] & 0x7f;
+    // control frames MUST have a payload length of 125 bytes or less
+    if (is_control && payload_length >= 126) {
+        return -1;
+    }
+
     if (126 == payload_length) {
         // get uint16_t length
         if (buffer->peekInt16(payload_length, p - b) == false) {
@@ -394,7 +408,7 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         }
 
         // the minimal number of bytes MUST be used to encode the length
-        if (payload_length < 0xffff) {
+        if (payload_length <= 0xffff) {
             return -1;
         }
 
@@ -424,21 +438,27 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
     }
 
     // get payload
+    DynamicBuffer *message = nullptr;
+    if (is_control) {
+        message = &control_message_;
+    } else {
+        message = &message_;
+    }
     if (payload_length > 0) {
         // check enough data for payload
         if (left_bytes < payload_length) {
             return 0;
         }
         // copy payload
-        message_.reserveWritableBytes(payload_length);
-        ::memcpy(message_.writeBegin(), p, payload_length);
+        message->reserveWritableBytes(payload_length);
+        ::memcpy(message->writeBegin(), p, payload_length);
         // do masking
         if (mask) {
             for (size_t i = 0; i < payload_length; ++i) {
-                *(message_.writeBegin() + i) ^= mask_key[i & 0x03];
+                *(message->writeBegin() + i) ^= mask_key[i & 0x03];
             }
         }
-        message_.write(payload_length);
+        message->write(payload_length);
         // move forward
         p += payload_length;
         left_bytes -= payload_length;
@@ -447,10 +467,7 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
     buffer->read(p - b);
 
     // process frame
-    bool fin = b[0] & 0x80;
-    int opcode = b[0] & 0x0f;
-
-    // not fin
+    // -- not fin
     if (!fin) {
         if (opcode != 0x0) {
             last_op_code_ = opcode;
@@ -458,7 +475,7 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         return 0;
     }
 
-    // fin
+    // -- fin
     if (0x0 == opcode) {
         opcode = last_op_code_;
         last_op_code_ = -1;
@@ -473,19 +490,20 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         // close frame
         sendCloseFrame();
         status_ = Status::CLOSED;
+        control_message_.clear();
         message_.clear();
         return 1;
 
     } else if (0x9 == opcode) {
         // ping frame
-        message_.clear();
         sendPongFrame();
+        control_message_.clear();
         ret_code_ = RetCode::PING_FRAME;
         return 2;
 
     } else if (0xa == opcode) {
         // pong frame
-        message_.clear();
+        control_message_.clear();
         ret_code_ = RetCode::PONG_FRAME;
         return 2;
 
@@ -620,7 +638,6 @@ void WebSocketProtocol::Impl::sendPongFrame()
 {
     // FIN = 1, RSV1~RSV3 = 0, opcode = 0xa, payload_length = 0
     static const uint8_t client_frame[] = { 0x8a, 0x80, 0x0, 0x0, 0x0, 0x0};
-    static const uint8_t server_frame[] = { 0x8a, 0x0 };
 
     if (status_ != Status::CONNECTED) {
         return;
@@ -633,7 +650,13 @@ void WebSocketProtocol::Impl::sendPongFrame()
         if (is_client_) {
             output_cb_((const char *)client_frame, sizeof(client_frame));
         } else {
-            output_cb_((const char *)server_frame, sizeof(server_frame));
+            size_t payload_length = control_message_.readableBytes();
+            uint8_t server_frame[128];
+            server_frame[0] = 0x8a;
+            server_frame[1] = payload_length;
+            ::memcpy(server_frame + 2, control_message_.readBegin(),
+                payload_length);
+            output_cb_((const char *)server_frame, payload_length + 2);
         }
     }
 }
