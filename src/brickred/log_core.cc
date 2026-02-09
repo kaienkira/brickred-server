@@ -43,6 +43,9 @@ Logger::Logger(LogFormatter formatter, int level_filter,
     formatter_(formatter), level_filter_(level_filter),
     max_log_size_(max_log_size)
 {
+    if (max_log_size_ <= 0) {
+        max_log_size_ = 1;
+    }
 }
 
 Logger::~Logger()
@@ -73,7 +76,7 @@ void Logger::log(int level, const char *filename, int line,
     }
 
     UniquePtr<char []> buffer(new char[max_log_size_]);
-    size_t count = 0;
+    int32_t count = 0;
     bool buffer_ready = false;
 
     for (size_t i = 0; i < sinks_.size(); ++i) {
@@ -94,12 +97,15 @@ void Logger::log(int level, const char *filename, int line,
             if (nullptr == formatter) {
                 count = ::vsnprintf(buffer.get(), max_log_size_,
                                     format, args);
+                if (count < 0) {
+                    count = 0;
+                }
             } else {
                 count = formatter(buffer.get(), max_log_size_,
                                   level, filename, line, function,
                                   format, args);
             }
-            count = std::min(count, (size_t)max_log_size_);
+            count = std::min(count, max_log_size_ - 1);
             buffer_ready = true;
         }
 

@@ -280,11 +280,11 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 // wait for more data
                 return 0;
             }
-            if (::memcmp(crlf + 2 + chunk_size, "\r\n", 2) != 0) {
-                return -1;
-            }
 
             if (chunk_size > 0) {
+                if (::memcmp(crlf + 2 + chunk_size, "\r\n", 2) != 0) {
+                    return -1;
+                }
                 chunk_buffer_->reserveWritableBytes(chunk_size);
                 ::memcpy(chunk_buffer_->writeBegin(), crlf + 2, chunk_size);
                 chunk_buffer_->write(chunk_size);
@@ -454,9 +454,9 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
 
     // body
     buffer->reserveWritableBytes(message.getBody().size());
-    count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(), "%s",
-                       message.getBody().c_str());
-    buffer->write(count);
+    ::memcpy(buffer->writeBegin(), message.getBody().data(),
+        message.getBody().size());
+    buffer->write(message.getBody().size());
 }
 
 } // namespace brickred::protocol
