@@ -656,6 +656,10 @@ void WebSocketProtocol::Impl::sendPongFrame()
             }
             ::memcpy(client_frame + 6, control_message_.readBegin(),
                 payload_length);
+            // do masking
+            for (size_t i = 0; i < payload_length; ++i) {
+                client_frame[6 + i] ^= client_frame[2 + (i & 0x03)];
+            }
             output_cb_((const char *)client_frame, payload_length + 6);
         } else {
             size_t payload_length = control_message_.readableBytes();
