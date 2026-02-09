@@ -120,7 +120,7 @@ void Logger::plainLog(int level, const char *format, va_list args)
     }
 
     UniquePtr<char []> buffer(new char[max_log_size_]);
-    size_t count = 0;
+    int count = 0;
     bool buffer_ready = false;
 
     for (size_t i = 0; i < sinks_.size(); ++i) {
@@ -131,7 +131,10 @@ void Logger::plainLog(int level, const char *format, va_list args)
         // lazy format
         if (!buffer_ready) {
             count = ::vsnprintf(buffer.get(), max_log_size_, format, args);
-            count = std::min(count, (size_t)max_log_size_);
+            if (count < 0) {
+                count = 0;
+            }
+            count = std::min(count, max_log_size_ - 1);
             buffer_ready = true;
         }
 
