@@ -136,7 +136,8 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
         return -1;
     }
 
-    if (::memcmp(start_line_parts[0].c_str(), "HTTP", 4) == 0) {
+    if (start_line_parts[0].size() >= 4 &&
+        ::memcmp(start_line_parts[0].c_str(), "HTTP", 4) == 0) {
         // response version
         HttpMessage::Version version =
             HttpMessage::VersionStrToEnum(start_line_parts[0]);
@@ -146,7 +147,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
 
         // response status code
         int status_code = ::atoi(start_line_parts[1].c_str());
-        if (status_code < 0) {
+        if (status_code <= 0) {
             return -1;
         }
 
@@ -419,7 +420,9 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
             HttpRequest::MethodEnumToStr(request.getMethod()).c_str(),
             request.getRequestUri().c_str(),
             HttpMessage::VersionEnumToStr(request.getVersion()).c_str());
-        buffer->write(count);
+        if (count > 0) {
+            buffer->write(count);
+        }
 
     } else if (message.getMessageType() ==
                HttpMessage::MessageType::RESPONSE) {
@@ -432,8 +435,9 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
             HttpMessage::VersionEnumToStr(response.getVersion()).c_str(),
             response.getStatusCode(),
             response.getReasonPhrase().c_str());
-        buffer->write(count);
-
+        if (count > 0) {
+            buffer->write(count);
+        }
     } else {
         return;
     }
@@ -446,7 +450,9 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
             32 + iter->first.size() + iter->second.size());
         count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(),
             "%s: %s\r\n", iter->first.c_str(), iter->second.c_str());
-        buffer->write(count);
+        if (count > 0) {
+            buffer->write(count);
+        }
     }
     buffer->reserveWritableBytes(2);
     ::snprintf(buffer->writeBegin(), buffer->writableBytes(), "\r\n");
