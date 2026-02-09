@@ -57,13 +57,23 @@ int SelfPipe::write(const char *buffer, size_t size)
 
 bool SelfPipe::setNonblock()
 {
-    int flags = ::fcntl(fd_, F_GETFL, 0);
-    if (::fcntl(fd_, F_SETFL, flags | O_NONBLOCK) != 0) {
-        return false;
+    {
+        int flags = ::fcntl(fd_, F_GETFL, 0);
+        if (flags == -1) {
+            return false;
+        }
+        if (::fcntl(fd_, F_SETFL, flags | O_NONBLOCK) != 0) {
+            return false;
+        }
     }
-    flags = ::fcntl(fd1_, F_GETFL, 0);
-    if (::fcntl(fd1_, F_SETFL, flags | O_NONBLOCK) != 0) {
-        return false;
+    {
+        int flags = ::fcntl(fd1_, F_GETFL, 0);
+        if (flags == -1) {
+            return false;
+        }
+        if (::fcntl(fd1_, F_SETFL, flags | O_NONBLOCK) != 0) {
+            return false;
+        }
     }
 
     return true;
@@ -71,13 +81,23 @@ bool SelfPipe::setNonblock()
 
 bool SelfPipe::setCloseOnExec()
 {
-    int flags = ::fcntl(fd_, F_GETFD, 0);
-    if (::fcntl(fd_, F_SETFD, flags | FD_CLOEXEC) != 0) {
-        return false;
+    {
+        int flags = ::fcntl(fd_, F_GETFD, 0);
+        if (flags == -1) {
+            return false;
+        }
+        if (::fcntl(fd_, F_SETFD, flags | FD_CLOEXEC) != 0) {
+            return false;
+        }
     }
-    flags = ::fcntl(fd1_, F_GETFD, 0);
-    if (::fcntl(fd1_, F_SETFD, flags | FD_CLOEXEC) != 0) {
-        return false;
+    {
+        int flags = ::fcntl(fd1_, F_GETFD, 0);
+        if (flags == -1) {
+            return false;
+        }
+        if (::fcntl(fd1_, F_SETFD, flags | FD_CLOEXEC) != 0) {
+            return false;
+        }
     }
 
     return true;

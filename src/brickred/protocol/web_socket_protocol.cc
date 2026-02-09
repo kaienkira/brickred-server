@@ -542,14 +542,16 @@ void WebSocketProtocol::Impl::sendMessage(const char *buffer, size_t size)
     }
 
     // mask key
+    uint8_t mask_key_buf[4] = {};
     const uint8_t *mask_key = nullptr;
     if (is_client_) {
         message.reserveWritableBytes(4);
         for (size_t i = 0; i < 4; ++i) {
-            message.writeBegin()[i] = random_generator_->nextInt(256);
+            mask_key_buf[i] = random_generator_->nextInt(256);
+            message.writeBegin()[i] = mask_key_buf[i];
         }
-        mask_key = (uint8_t *)message.writeBegin();
         message.write(4);
+        mask_key = (uint8_t *)mask_key_buf;
     }
 
     // payload

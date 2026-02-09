@@ -84,6 +84,9 @@ int IODevice::write(const char *buffer, size_t size)
 bool IODevice::setNonblock()
 {
     int flags = ::fcntl(fd_, F_GETFL, 0);
+    if (flags == -1) {
+        return false;
+    }
     if (::fcntl(fd_, F_SETFL, flags | O_NONBLOCK) != 0) {
         return false;
     }
@@ -94,6 +97,9 @@ bool IODevice::setNonblock()
 bool IODevice::setCloseOnExec()
 {
     int flags = ::fcntl(fd_, F_GETFD, 0);
+    if (flags == -1) {
+        return false;
+    }
     if (::fcntl(fd_, F_SETFD, flags | FD_CLOEXEC) != 0) {
         return false;
     }
