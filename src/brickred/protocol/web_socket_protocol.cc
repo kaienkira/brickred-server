@@ -435,6 +435,11 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         // move forward
         p += 4;
         left_bytes -= 4;
+    } else {
+        // A client MUST mask any frames that it sends to the client
+        if (is_client_ == false) {
+            return -1;
+        }
     }
 
     // get payload
