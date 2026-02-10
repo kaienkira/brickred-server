@@ -337,7 +337,7 @@ TcpService::Impl::SocketId TcpService::Impl::buildAsyncConnectSocket(
     // attach io service
     if (socket->attachIOService(*io_service_) == false) {
         BRICKRED_INTERNAL_LOG_ERROR(
-            "socket(%lx) already in socket map",
+            "socket(%lx) attach io service failed",
             socket_id);
         return -1;
     }
