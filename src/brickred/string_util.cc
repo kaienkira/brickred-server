@@ -91,10 +91,18 @@ std::string trim(const std::string &str, const char *ws)
     return rtrim(ltrim(str, ws), ws);
 }
 
+static char toUpperSafe(unsigned char c) {
+    return ::toupper(c);
+}
+
+static char toLowerSafe(unsigned char c) {
+    return ::tolower(c);
+}
+
 std::string toUpper(const std::string &str)
 {
     std::string upper(str);
-    std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+    std::transform(upper.begin(), upper.end(), upper.begin(), toUpperSafe);
 
     return upper;
 }
@@ -102,7 +110,7 @@ std::string toUpper(const std::string &str)
 std::string toLower(const std::string &str)
 {
     std::string lower(str);
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    std::transform(lower.begin(), lower.end(), lower.begin(), toLowerSafe);
 
     return lower;
 }
