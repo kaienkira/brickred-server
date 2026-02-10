@@ -51,6 +51,10 @@ void ConditionVariable::Impl::wait(Mutex &m)
 
 bool ConditionVariable::Impl::waitFor(Mutex &m, int ms)
 {
+    if (ms <= 0) {
+        return false;
+    }
+
     struct timespec tv;
     ::clock_gettime(CLOCK_REALTIME, &tv);
     tv.tv_sec += ms / 1000;
