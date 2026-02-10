@@ -5,8 +5,7 @@
 #include <cctype>
 #include <algorithm>
 
-namespace brickred {
-namespace string_util {
+namespace brickred::string_util {
 
 void split(const char *str, const char *sep,
            std::vector<std::string> *result, int max_split)
@@ -250,5 +249,4 @@ bool CaseInsensitiveLess::operator()(const std::string &lhs,
     return false;
 }
 
-} // namespace string_util
-} // namespace brickred
+} // namespace brickred::string_util
