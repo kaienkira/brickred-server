@@ -100,10 +100,16 @@ int base64Decode(const char *in, size_t in_size,
 
         for (int i = 0; i < 4; ++i) {
             char c = *in++;
-            if (c < 43 || c > 122 || '=' == c) {
+            if (c == '=') {
                 b[i] = 0;
+            } else if (c < 43 || c > 122) {
+                return -1;
             } else {
-                b[i] = s_decode_table[c - 43];
+                char v = s_decode_table[c - 43];
+                if (v == -1) {
+                    return -1;
+                }
+                b[i] = v;
                 ++b_len;
             }
         }
