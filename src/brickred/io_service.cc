@@ -76,7 +76,7 @@ bool IOService::Impl::addIODevice(IODevice *io_device)
     event.data.ptr = io_device;
 
     if (io_device->getReadCallback()) {
-        event.events |= EPOLLIN | EPOLLPRI;
+        event.events |= EPOLLIN | EPOLLPRI | EPOLLRDHUP;
     }
     if (io_device->getWriteCallback()) {
         event.events |= EPOLLOUT;
@@ -119,7 +119,7 @@ bool IOService::Impl::updateIODevice(IODevice *io_device)
     event.data.ptr = io_device;
 
     if (io_device->getReadCallback()) {
-        event.events |= EPOLLIN | EPOLLPRI;
+        event.events |= EPOLLIN | EPOLLPRI | EPOLLRDHUP;
     }
     if (io_device->getWriteCallback()) {
         event.events |= EPOLLOUT;
@@ -177,11 +177,7 @@ void IOService::Impl::loop()
                 (io_device->getWriteCallback())(io_device);
             }
 
-#ifdef EPOLLRDHUP
             if (event->events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)) {
-#else
-            if (event->events & (EPOLLIN | EPOLLPRI)) {
-#endif
                 if (checkIODeviceExist(io_device) == false) {
                     continue;
                 }
@@ -192,7 +188,9 @@ void IOService::Impl::loop()
                 if (checkIODeviceExist(io_device) == false) {
                     continue;
                 }
-                (io_device->getErrorCallback())(io_device);
+                if (io_device->getErrorCallback()) {
+                    (io_device->getErrorCallback())(io_device);
+                }
             }
         }
 
