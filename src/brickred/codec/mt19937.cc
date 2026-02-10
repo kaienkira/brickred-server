@@ -170,7 +170,22 @@ uint32_t Mt19937::Impl::nextInt()
 
 uint32_t Mt19937::Impl::nextInt(uint32_t max)
 {
-    return (uint32_t)(nextDouble() * max);
+    if (max <= 1) {
+        return 0;
+    }
+
+    //rejection sampling
+    // drop_threhold = 2^32 % max
+    //               = (2^32 - max) % max
+    //               = (-max) % max
+    uint32_t drop_threhold = (-max) % max;
+    for (;;) {
+        uint32_t r = nextInt();
+        if (r < drop_threhold) {
+            continue;
+        }
+        return r % max;
+    }
 }
 
 uint32_t Mt19937::Impl::nextInt(uint32_t min, uint32_t max)
@@ -178,7 +193,12 @@ uint32_t Mt19937::Impl::nextInt(uint32_t min, uint32_t max)
     if (min >= max) {
         return min;
     }
-    return min + nextInt(max - min + 1);
+    uint32_t offset = max - min;
+    if (offset == UINT32_MAX) {
+        return nextInt();
+    } else {
+        return min + nextInt(offset + 1);
+    }
 }
 
 double Mt19937::Impl::nextDouble()
