@@ -174,7 +174,7 @@ uint32_t Mt19937::Impl::nextInt(uint32_t max)
         return 0;
     }
 
-    //rejection sampling
+    // rejection sampling
     // drop_threhold = 2^32 % max
     //               = (2^32 - max) % max
     //               = (-max) % max
