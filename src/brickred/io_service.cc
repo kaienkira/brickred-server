@@ -29,7 +29,7 @@ public:
     ~Impl();
 
     bool addIODevice(IODevice *io_device);
-    bool removeIODevice(IODevice *io_device);
+    void removeIODevice(IODevice *io_device);
     bool updateIODevice(IODevice *io_device);
     void loop();
     void quit();
@@ -93,7 +93,7 @@ bool IOService::Impl::addIODevice(IODevice *io_device)
     return true;
 }
 
-bool IOService::Impl::removeIODevice(IODevice *io_device)
+void IOService::Impl::removeIODevice(IODevice *io_device)
 {
     struct epoll_event event;
     ::memset(&event, 0, sizeof(event));
@@ -103,12 +103,11 @@ bool IOService::Impl::removeIODevice(IODevice *io_device)
         BRICKRED_INTERNAL_LOG_ERROR(
             "epoll_ctl del %d failed: %s",
             io_device->getDescriptor(), ::strerror(errno));
-        return false;
     }
 
+    // always add to removed devices
+    // for epoll_ctl may failed when fd is close
     removed_io_devices_.insert((intptr_t)io_device);
-
-    return true;
 }
 
 bool IOService::Impl::updateIODevice(IODevice *io_device)
@@ -243,9 +242,9 @@ bool IOService::addIODevice(IODevice *io_device)
     return pimpl_->addIODevice(io_device);
 }
 
-bool IOService::removeIODevice(IODevice *io_device)
+void IOService::removeIODevice(IODevice *io_device)
 {
-    return pimpl_->removeIODevice(io_device);
+    pimpl_->removeIODevice(io_device);
 }
 
 bool IOService::updateIODevice(IODevice *io_device)

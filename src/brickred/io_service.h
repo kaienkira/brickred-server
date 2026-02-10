@@ -29,7 +29,7 @@ public:
 private:
     friend class IODevice;
     bool addIODevice(IODevice *io_device);
-    bool removeIODevice(IODevice *io_device);
+    void removeIODevice(IODevice *io_device);
     bool updateIODevice(IODevice *io_device);
 
 private:
