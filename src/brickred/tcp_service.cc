@@ -1001,36 +1001,57 @@ void TcpService::Impl::setPeerCloseCallback(
 
 void TcpService::Impl::setRecvBufferInitSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_read_buffer_init_size_ = size;
 }
 
 void TcpService::Impl::setRecvBufferExpandSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_read_buffer_expand_size_ = size;
 }
 
 void TcpService::Impl::setRecvBufferMaxSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_read_buffer_max_size_ = size;
 }
 
 void TcpService::Impl::setSendBufferInitSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_write_buffer_init_size_ = size;
 }
 
 void TcpService::Impl::setSendBufferExpandSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_write_buffer_expand_size_ = size;
 }
 
 void TcpService::Impl::setSendBufferMaxSize(size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     conn_write_buffer_max_size_ = size;
 }
 
 void TcpService::Impl::setAcceptPauseTimeWhenExceedOpenFileLimit(int ms)
 {
+    if (ms < 0) {
+        return;
+    }
     accept_pause_time_when_exceed_open_file_limit_ = ms;
 }
 

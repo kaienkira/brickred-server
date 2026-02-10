@@ -35,6 +35,10 @@ public:
     bool retrieveResponse(HttpResponse *response);
     void sendMessage(const HttpMessage &message);
 
+    void setStartLineMaxSize(size_t size);
+    void setHeaderMaxSize(size_t size);
+    void setBodyMaxSize(size_t size);
+
 public:
     int readStartLine(DynamicBuffer *buffer);
     int readHeader(DynamicBuffer *buffer);
@@ -48,6 +52,9 @@ private:
     OutputCallback output_cb_;
     HttpMessage *message_;
     DynamicBuffer *chunk_buffer_;
+    size_t start_line_max_size_;
+    size_t header_max_size_;
+    size_t body_max_size_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -62,7 +69,11 @@ HttpProtocol::Impl::StatusHandler HttpProtocol::Impl::s_status_handler_[] = {
 
 HttpProtocol::Impl::Impl() :
     status_(Status::READING_START_LINE),
-    message_(nullptr), chunk_buffer_(nullptr)
+    message_(nullptr),
+    chunk_buffer_(nullptr),
+    start_line_max_size_(0),
+    header_max_size_(0),
+    body_max_size_(0)
 {
 }
 
@@ -124,10 +135,18 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
     const char *crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n");
     if (nullptr == crlf) {
+        // exceed max size
+        if (buffer->readableBytes() > start_line_max_size_) {
+            return -1;
+        }
         return 0;
     }
 
     size_t line_length = crlf - buffer->readBegin();
+    // exceed max size
+    if (line_length > start_line_max_size_ - 2) {
+        return -1;
+    }
 
     // split line to three parts
     std::vector<std::string> start_line_parts;
@@ -208,10 +227,17 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     const char *double_crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n\r\n");
     if (nullptr == double_crlf) {
+        if (buffer->readableBytes() > header_max_size_) {
+            return -1;
+        }
         return 0;
     }
 
     size_t header_length = double_crlf - buffer->readBegin();
+    // exceed max size
+    if (header_length > header_max_size_ - 4) {
+        return -1;
+    }
 
     // split headers with \r\n
     std::vector<std::string> headers;
@@ -240,25 +266,41 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
 int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 {
-    // header content-length exists
-    int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
-    if (content_length > 0) {
-        if (buffer->readableBytes() < (size_t)content_length) {
-            // wait for more data
-            return 0;
+    if (message_->hasHeader("Content-Length")) {
+        // header content-length exists
+        int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
+        if (content_length > 0) {
+            // exceed max size
+            if (content_length > (int)body_max_size_) {
+                return -1;
+            }
+            if (buffer->readableBytes() < (size_t)content_length) {
+                // wait for more data
+                return 0;
+            }
+
+            message_->setBody(buffer->readBegin(), content_length);
+
+            buffer->read(content_length);
+            this->status_ = Status::FINISHED;
+            return 1;
+        } else if (content_length == 0) {
+            this->status_ = Status::FINISHED;
+            return 1;
+        } else {
+            return -1;
         }
 
-        message_->setBody(buffer->readBegin(), content_length);
-
-        buffer->read(content_length);
-        this->status_ = Status::FINISHED;
-        return 1;
-    }
-
-    // header transfer-encoding == "chunked"
-    if (message_->headerContain("Transfer-Encoding", "chunked")) {
+    } else if (message_->headerContain("Transfer-Encoding", "chunked")) {
+        // header transfer-encoding == "chunked"
         if (nullptr == chunk_buffer_) {
             chunk_buffer_ = new DynamicBuffer();
+        }
+
+        // exceed max size
+        if (chunk_buffer_->readableBytes() + buffer->readableBytes() >
+                body_max_size_) {
+            return -1;
         }
 
         for (;;) {
@@ -312,11 +354,9 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 return 1;
             }
         }
-
+    } else {
+        return -1;
     }
-
-    this->status_ = Status::FINISHED;
-    return 1;
 }
 
 bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
@@ -364,10 +404,39 @@ void HttpProtocol::Impl::sendMessage(const HttpMessage &message)
     }
 }
 
+void HttpProtocol::Impl::setStartLineMaxSize(size_t size)
+{
+    // single crlf
+    if (size < 2) {
+        return;
+    }
+    start_line_max_size_ = size;
+}
+
+void HttpProtocol::Impl::setHeaderMaxSize(size_t size)
+{
+    // double crlf
+    if (size < 4) {
+        return;
+    }
+    header_max_size_ = size;
+}
+
+void HttpProtocol::Impl::setBodyMaxSize(size_t size)
+{
+    if (size == 0) {
+        return;
+    }
+    body_max_size_ = size;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 HttpProtocol::HttpProtocol() :
     pimpl_(new Impl())
 {
+    setStartLineMaxSize();
+    setHeaderMaxSize();
+    setBodyMaxSize();
 }
 
 HttpProtocol::~HttpProtocol()
@@ -407,6 +476,21 @@ bool HttpProtocol::retrieveResponse(HttpResponse *response)
 void HttpProtocol::sendMessage(const HttpMessage &message)
 {
     pimpl_->sendMessage(message);
+}
+
+void HttpProtocol::setStartLineMaxSize(size_t size)
+{
+    pimpl_->setStartLineMaxSize(size);
+}
+
+void HttpProtocol::setHeaderMaxSize(size_t size)
+{
+    pimpl_->setHeaderMaxSize(size);
+}
+
+void HttpProtocol::setBodyMaxSize(size_t size)
+{
+    pimpl_->setBodyMaxSize(size);
 }
 
 void HttpProtocol::writeMessage(const HttpMessage &message,
