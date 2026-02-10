@@ -411,6 +411,10 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         if (payload_length <= 0xffff) {
             return -1;
         }
+        // payload length MSB must be 0
+        if ((payload_length >> 63) != 0) {
+            return -1;
+        }
 
         // move forward
         p += 8;
