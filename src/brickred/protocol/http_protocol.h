@@ -20,6 +20,7 @@ public:
         READING_START_LINE = 0,
         READING_HEADER,
         READING_BODY,
+        READING_TRAILER_HEADER,
         FINISHED,
         PENDING_ERROR,
         MAX

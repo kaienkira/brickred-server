@@ -55,6 +55,7 @@ HttpProtocol::Impl::StatusHandler HttpProtocol::Impl::s_status_handler_[] = {
     &HttpProtocol::Impl::readStartLine,
     &HttpProtocol::Impl::readHeader,
     &HttpProtocol::Impl::readBody,
+    &HttpProtocol::Impl::readHeader,
     nullptr,
     nullptr
 };
@@ -229,7 +230,11 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     }
 
     buffer->read(header_length + 4);
-    this->status_ = Status::READING_BODY;
+    if (this->status_ == Status::READING_TRAILER_HEADER) {
+        this->status_ = Status::FINISHED;
+    } else {
+        this->status_ = Status::READING_BODY;
+    }
     return 1;
 }
 
@@ -303,7 +308,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 message_->removeHeader("Transfer-Encoding");
 
                 // read tailer header
-                this->status_ = Status::READING_HEADER;
+                this->status_ = Status::READING_TRAILER_HEADER;
                 return 1;
             }
         }
