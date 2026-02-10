@@ -994,7 +994,7 @@ public:
             return *this;
         }
 
-        ReverseIterator &operator++(int)
+        ReverseIterator operator++(int)
         {
             ReverseIterator tmp = *this;
             node_ = RankSet::decrement(node_);
@@ -1007,7 +1007,7 @@ public:
             return *this;
         }
 
-        ReverseIterator &operator--(int)
+        ReverseIterator operator--(int)
         {
             ReverseIterator tmp = *this;
             node_ = RankSet::increment(node_);
@@ -1069,7 +1069,7 @@ public:
             return *this;
         }
 
-        ConstReverseIterator &operator++(int)
+        ConstReverseIterator operator++(int)
         {
             ConstReverseIterator tmp = *this;
             node_ = RankSet::decrement(node_);
@@ -1082,7 +1082,7 @@ public:
             return *this;
         }
 
-        ConstReverseIterator &operator--(int)
+        ConstReverseIterator operator--(int)
         {
             ConstReverseIterator tmp = *this;
             node_ = RankSet::increment(node_);

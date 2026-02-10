@@ -74,21 +74,23 @@ void DynamicBuffer::reserveWritableBytes(size_t size)
     }
 
     size_t free_bytes = discardableBytes() + writableBytes();
-    size_t new_size = buffer_.size();
-
-    if (free_bytes >= size && free_bytes - size < expand_size_) {
-        new_size += expand_size_;
-    } else {
-        new_size += expand_size_ * ((size - free_bytes) / expand_size_ + 1);
-    }
-
     size_t readable_bytes = readableBytes();
-    std::vector<char> new_buffer(new_size);
-    ::memcpy(&new_buffer[0], readBegin(), readable_bytes);
 
-    buffer_.swap(new_buffer);
-    read_index_ = 0;
-    write_index_ = readable_bytes;
+    if (free_bytes >= size) {
+        // do compat
+        ::memmove(&buffer_[0], readBegin(), readable_bytes);
+        read_index_ = 0;
+        write_index_ = readable_bytes;
+    } else {
+        // do expand
+        size_t new_size = buffer_.size();
+        new_size += expand_size_ * ((size - free_bytes) / expand_size_ + 1);
+        std::vector<char> new_buffer(new_size);
+        ::memcpy(&new_buffer[0], readBegin(), readable_bytes);
+        buffer_.swap(new_buffer);
+        read_index_ = 0;
+        write_index_ = readable_bytes;
+    }
 }
 
 void DynamicBuffer::clear()
