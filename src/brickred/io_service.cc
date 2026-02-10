@@ -2,10 +2,6 @@
 
 #include <unistd.h>
 
-#ifdef BRICKRED_BUILD_DONT_HAVE_EPOLL_CREATE1
-#include <fcntl.h>
-#endif
-
 #include <sys/epoll.h>
 #include <cerrno>
 #include <cstring>
@@ -57,22 +53,11 @@ private:
 IOService::Impl::Impl() :
     quit_(false), epoll_fd_(-1), events_(32)
 {
-#ifndef BRICKRED_BUILD_DONT_HAVE_EPOLL_CREATE1
     epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
     if (-1 == epoll_fd_) {
         throw SystemErrorException(
             "create io service failed in epoll_create1");
     }
-#else
-    epoll_fd_ = epoll_create(32000);
-    if (-1 == epoll_fd_) {
-        throw SystemErrorException("create io service failed in epoll_create");
-    }
-    int flags = ::fcntl(epoll_fd_, F_GETFD, 0);
-    if (::fcntl(epoll_fd_, F_SETFD, flags | FD_CLOEXEC) != 0) {
-        throw SystemErrorException("create io service failed in fcntl");
-    }
-#endif
 }
 
 IOService::Impl::~Impl()

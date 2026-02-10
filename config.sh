@@ -49,20 +49,6 @@ then
     exit 1
 fi
 
-# check epoll_create1
-echo '
-#include <sys/epoll.h>
-
-int main()
-{
-    int fd = epoll_create1(EPOLL_CLOEXEC);
-}
-' | g++ -x c++ -o /dev/null - >/dev/null 2>&1
-if [ $? -ne 0 ]
-then
-    brickred_compile_flag=$brickred_compile_flag' -DBRICKRED_BUILD_DONT_HAVE_EPOLL_CREATE1'
-fi
-
 # output
 echo "BRICKRED_INSTALL_PREFIX = $brickred_install_prefix" >config.mak
 echo "BRICKRED_COMPILE_FLAG = $brickred_compile_flag" >>config.mak
