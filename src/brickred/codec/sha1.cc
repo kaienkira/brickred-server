@@ -1,5 +1,6 @@
 #include <brickred/codec/sha1.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
@@ -39,10 +40,10 @@ static void sha1ProcessBlock(uint32_t *hash, const uint8_t *work_block)
 
     // init arary w
     for (int i = 0; i < 16; ++i) {
-        w[i] = (work_block[i * 4] << 24) |
-               (work_block[i * 4 + 1] << 16) |
-               (work_block[i * 4 + 2] << 8) |
-               (work_block[i * 4 + 3]);
+        w[i] = ((uint32_t)work_block[i * 4] << 24) |
+               ((uint32_t)work_block[i * 4 + 1] << 16) |
+               ((uint32_t)work_block[i * 4 + 2] << 8) |
+               ((uint32_t)work_block[i * 4 + 3]);
     }
     for (int i = 16; i < 80; ++i) {
         w[i] = ROTL32(w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16], 1);

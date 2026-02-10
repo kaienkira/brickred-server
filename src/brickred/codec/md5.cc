@@ -65,10 +65,10 @@ static void md5ProcessBlock(uint32_t *hash, const uint8_t *work_block)
 
     // init arary w
     for (int i = 0; i < 16; ++i) {
-        w[i] = (work_block[i * 4 + 3] << 24) |
-               (work_block[i * 4 + 2] << 16) |
-               (work_block[i * 4 + 1] << 8) |
-               (work_block[i * 4]);
+        w[i] = ((uint32_t)work_block[i * 4 + 3] << 24) |
+               ((uint32_t)work_block[i * 4 + 2] << 16) |
+               ((uint32_t)work_block[i * 4 + 1] << 8) |
+               ((uint32_t)work_block[i * 4]);
     }
 
     FF(a, b, c, d, w[0],   7, 0xd76aa478);

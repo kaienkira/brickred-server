@@ -1,5 +1,6 @@
 #include <brickred/codec/sha256.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
@@ -70,10 +71,10 @@ static void sha256ProcessBlock(uint32_t *hash, const uint8_t *work_block)
 
     // init arary w
     for (int i = 0; i < 16; ++i) {
-        w[i] = (work_block[i * 4] << 24) |
-               (work_block[i * 4 + 1] << 16) |
-               (work_block[i * 4 + 2] << 8) |
-               (work_block[i * 4 + 3]);
+        w[i] = ((uint32_t)work_block[i * 4] << 24) |
+               ((uint32_t)work_block[i * 4 + 1] << 16) |
+               ((uint32_t)work_block[i * 4 + 2] << 8) |
+               ((uint32_t)work_block[i * 4 + 3]);
     }
     for (int i = 16; i < 64; ++i) {
         w[i] = SIG1(w[i - 2]) + w[i - 7] + SIG0(w[i - 15]) + w[i - 16];
