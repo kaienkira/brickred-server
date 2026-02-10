@@ -253,7 +253,12 @@ TcpService::Impl::SocketId TcpService::Impl::buildListenSocket(
         &TcpService::Impl::onSocketError, this));
 
     // attach io service
-    socket->attachIOService(*io_service_);
+    if (socket->attachIOService(*io_service_) == false) {
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) attach io service failed",
+            socket_id);
+        return -1;
+    }
 
     if (sockets_.find(socket_id) != sockets_.end()) {
         BRICKRED_INTERNAL_LOG_ERROR(
@@ -281,7 +286,12 @@ TcpService::Impl::SocketId TcpService::Impl::buildConnectedSocket(
         &TcpService::Impl::onSocketError, this));
 
     // attach io service
-    socket->attachIOService(*io_service_);
+    if (socket->attachIOService(*io_service_) == false) {
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) attach io service failed",
+            socket_id);
+        return -1;
+    }
 
     UniquePtr<TcpConnection> connection(new TcpConnection(socket.get(),
                                         conn_read_buffer_init_size_,
@@ -325,7 +335,12 @@ TcpService::Impl::SocketId TcpService::Impl::buildAsyncConnectSocket(
         &TcpService::Impl::onSocketError, this));
 
     // attach io service
-    socket->attachIOService(*io_service_);
+    if (socket->attachIOService(*io_service_) == false) {
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "socket(%lx) already in socket map",
+            socket_id);
+        return -1;
+    }
 
     UniquePtr<TcpConnection> connection(new TcpConnection(socket.get(),
                                         conn_read_buffer_init_size_,
@@ -512,7 +527,6 @@ void TcpService::Impl::onAsyncConnectTimeout(TimerId timer_id)
     TcpSocket *socket = iter2->second;
     TcpConnection *connection = iter3->second;
 
-    socket->close();
     connection->setError(ETIMEDOUT);
     if (error_cb_) {
         error_cb_(thiz_, socket->getId(), connection->getErrorCode());
