@@ -150,9 +150,11 @@ void IOService::Impl::loop()
     while (!quit_) {
         now.setNow();
 
-        int timer_timeout = timer_heap_.getNextTimeoutMillisecond(now);
-        int event_count = ::epoll_wait(epoll_fd_, &events_[0],
-            events_.size(), std::min(timer_timeout, MAX_EPOLL_TIMEOUT_MSEC));
+        int64_t timer_timeout = timer_heap_.getNextTimeoutMillisecond(now);
+        int epoll_timeout = (int)std::min(
+            timer_timeout, (int64_t)MAX_EPOLL_TIMEOUT_MSEC);
+        int event_count = ::epoll_wait(epoll_fd_,
+            &events_[0], events_.size(), epoll_timeout);
         if (-1 == event_count) {
             if (EINTR == errno) {
                 continue;
