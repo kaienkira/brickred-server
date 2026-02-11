@@ -21,15 +21,13 @@ public:
 
 public:
     static void *threadProxy(void *arg);
-    void run();
 
 private:
     pthread_t thread_handle_;
     ThreadFunc thread_func_;
     Mutex data_mutex_;
-    ConditionVariable done_cond_;
+    ConditionVariable join_cond_;
     bool started_;
-    bool done_;
     bool join_started_;
     bool joined_;
 };
@@ -37,7 +35,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 Thread::Impl::Impl() :
     thread_handle_(0),
-    started_(false), done_(false), join_started_(false), joined_(false)
+    started_(false), join_started_(false), joined_(false)
 {
 }
 
@@ -84,16 +82,12 @@ void Thread::Impl::join()
             throw SystemErrorException("thread try to join itself");
         }
 
-        while (!done_) {
-            done_cond_.wait(data_mutex_);
-        }
         do_join = !join_started_;
-
         if (do_join) {
             join_started_ = true;
         } else {
-            while (!joined_) {
-                done_cond_.wait(data_mutex_);
+            while (joined_ == false) {
+                join_cond_.wait(data_mutex_);
             }
         }
     }
@@ -102,7 +96,7 @@ void Thread::Impl::join()
         ::pthread_join(thread_handle_, nullptr);
         LockGuard lock(data_mutex_);
         joined_ = true;
-        done_cond_.notifyAll();
+        join_cond_.notifyAll();
     }
 }
 
@@ -116,20 +110,12 @@ void Thread::Impl::detach()
     }
 }
 
-void Thread::Impl::run()
-{
-    thread_func_();
-}
-
 void *Thread::Impl::threadProxy(void *arg)
 {
     Impl *impl = static_cast<Impl *>(arg);
 
-    impl->run();
-
-    LockGuard lock(impl->data_mutex_);
-    impl->done_ = true;
-    impl->done_cond_.notifyAll();
+    ThreadFunc func = impl->thread_func_;
+    func();
 
     return 0;
 }
