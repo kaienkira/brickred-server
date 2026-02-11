@@ -46,7 +46,9 @@ public:
     void sendCloseFrame();
     void sendPingFrame();
 
-public:
+    void setMessageMaxSize(size_t size);
+
+private:
     bool checkHandshakeRequestValid(const HttpRequest &request) const;
     void sendHandshakeErrorResponse();
     void sendHandshakeSuccessResponse(const HttpRequest &request);
@@ -73,6 +75,7 @@ private:
     bool close_frame_sent_;
     int last_op_code_;
     RetCode ret_code_;
+    size_t message_size_max_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,7 +94,8 @@ WebSocketProtocol::Impl::Impl() :
     status_(Status::DETACHED),
     random_generator_(nullptr),
     is_client_(false), close_frame_sent_(false), last_op_code_(-1),
-    ret_code_(RetCode::ERROR)
+    ret_code_(RetCode::ERROR),
+    message_size_max_(0)
 {
 }
 
@@ -421,6 +425,11 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
         left_bytes -= 8;
     }
 
+    // exceed max size
+    if (is_control == false && payload_length > message_size_max_) {
+        return -1;
+    }
+
     // get mask key
     bool mask = b[1] & 0x80;
     const uint8_t *mask_key = nullptr;
@@ -703,10 +712,19 @@ void WebSocketProtocol::Impl::sendPongFrame()
     }
 }
 
+void WebSocketProtocol::Impl::setMessageMaxSize(size_t size)
+{
+    if (size == 0) {
+        return;
+    }
+    message_size_max_ = size;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 WebSocketProtocol::WebSocketProtocol() :
     pimpl_(new Impl())
 {
+    setMessageMaxSize();
 }
 
 WebSocketProtocol::~WebSocketProtocol()
@@ -765,6 +783,11 @@ void WebSocketProtocol::sendCloseFrame()
 void WebSocketProtocol::sendPingFrame()
 {
     pimpl_->sendPingFrame();
+}
+
+void WebSocketProtocol::setMessageMaxSize(size_t size)
+{
+    pimpl_->setMessageMaxSize(size);
 }
 
 } // namespace brickred::protocol

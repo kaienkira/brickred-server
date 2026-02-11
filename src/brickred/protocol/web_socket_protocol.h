@@ -60,6 +60,8 @@ public:
     void sendCloseFrame();
     void sendPingFrame();
 
+    void setMessageMaxSize(size_t size = 1024 * 1024);
+
 private:
     BRICKRED_NONCOPYABLE(WebSocketProtocol)
 
