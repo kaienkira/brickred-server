@@ -42,12 +42,19 @@ bool daemon(bool change_dir, bool close_stdio)
 
 bool createPidFile(const char *file)
 {
-    FILE *fp = ::fopen(file, "w");
-    if (nullptr == fp) {
+    if (file == nullptr) {
         return false;
     }
 
-    ::fprintf(fp, "%d\n", ::getpid());
+    FILE *fp = ::fopen(file, "w");
+    if (fp == nullptr) {
+        return false;
+    }
+
+    if (::fprintf(fp, "%d\n", ::getpid()) < 0) {
+        ::fclose(fp);
+        return false;
+    }
     ::fclose(fp);
 
     return true;
