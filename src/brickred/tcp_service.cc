@@ -1,6 +1,7 @@
 #include <brickred/tcp_service.h>
 
 #include <cerrno>
+#include <cstdint>
 #include <cstring>
 #include <algorithm>
 #include <unordered_map>
@@ -23,8 +24,10 @@ public:
 
     int64_t getId(int fd = 0)
     {
-        if (++value_ < 0) {
-            value_ = 0;
+        if (value_ == INT32_MAX) {
+            value_ = 1;
+        } else {
+            ++value_;
         }
         return ((uint64_t)(value_) << 32) + (uint64_t)fd;
     }

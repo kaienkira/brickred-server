@@ -18,8 +18,10 @@ public:
 
     int64_t getId()
     {
-        if (++value_ < 0) {
-            value_ = 0;
+        if (value_ == INT64_MAX) {
+            value_ = 1;
+        } else {
+            ++value_;
         }
         return value_;
     }
