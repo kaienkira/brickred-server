@@ -24,7 +24,6 @@ public:
 
 private:
     pthread_t thread_handle_;
-    ThreadFunc thread_func_;
     Mutex data_mutex_;
     ConditionVariable join_cond_;
     bool started_;
@@ -54,9 +53,9 @@ void Thread::Impl::start(const ThreadFunc &thread_func)
         throw SystemErrorException("thread has already started");
     }
 
-    thread_func_ = thread_func;
-
-    if (::pthread_create(&thread_handle_, nullptr, &threadProxy, this) != 0) {
+    ThreadFunc *thread_func_copy = new ThreadFunc(thread_func);
+    if (::pthread_create(&thread_handle_, nullptr, &threadProxy, thread_func_copy) != 0) {
+        delete thread_func_copy;
         throw SystemErrorException("create thread failed in pthread_create");
     }
 
@@ -112,10 +111,8 @@ void Thread::Impl::detach()
 
 void *Thread::Impl::threadProxy(void *arg)
 {
-    Impl *impl = static_cast<Impl *>(arg);
-
-    ThreadFunc func = impl->thread_func_;
-    func();
+    UniquePtr<ThreadFunc> thread_func(static_cast<ThreadFunc *>(arg));
+    (*thread_func)();
 
     return 0;
 }
