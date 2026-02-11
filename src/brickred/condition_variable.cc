@@ -51,7 +51,7 @@ void ConditionVariable::Impl::wait(Mutex &m)
 
 bool ConditionVariable::Impl::waitFor(Mutex &m, int ms)
 {
-    if (ms <= 0) {
+    if (ms < 0) {
         return false;
     }
 
