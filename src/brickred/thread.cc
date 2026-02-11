@@ -76,6 +76,9 @@ void Thread::Impl::join()
 
     {
         LockGuard lock(data_mutex_);
+        if (started_ == false) {
+            throw SystemErrorException("thread was never started");
+        }
         if (::pthread_equal(thread_handle_, pthread_self())) {
             throw SystemErrorException("thread try to join itself");
         }

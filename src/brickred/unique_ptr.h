@@ -26,7 +26,9 @@ public:
 
     void reset(T *p = nullptr)
     {
-        UniquePtr<T>(p).swap(*this);
+        if (p != px_) {
+            UniquePtr<T>(p).swap(*this);
+        }
     }
 
     T *release()
@@ -66,7 +68,9 @@ public:
 
     void reset(T *p = nullptr)
     {
-        UniquePtr<T[]>(p).swap(*this);
+        if (p != px_) {
+            UniquePtr<T[]>(p).swap(*this);
+        }
     }
 
     T *release()

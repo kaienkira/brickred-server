@@ -271,7 +271,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
         int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
         if (content_length > 0) {
             // exceed max size
-            if (content_length > (int)body_max_size_) {
+            if ((size_t)content_length > body_max_size_) {
                 return -1;
             }
             if (buffer->readableBytes() < (size_t)content_length) {
