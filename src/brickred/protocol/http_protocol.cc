@@ -319,6 +319,9 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             if (::sscanf(chunk_head_line.c_str(), "%x", &chunk_size) != 1) {
                 return -1;
             }
+            if (chunk_size > body_max_size_) {
+                return -1;
+            }
 
             size_t total_chunk_size = (0 == chunk_size)
                     ? chunk_head_line.size() + 2

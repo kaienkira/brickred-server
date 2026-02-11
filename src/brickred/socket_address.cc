@@ -292,7 +292,9 @@ bool SocketAddress::getAddressByDomain(const std::string &domain,
 
     for (const struct addrinfo *p = res; p != nullptr; p = p->ai_next) {
         SocketAddress addr;
-        addr.setNativeAddress(p->ai_addr);
+        if (addr.setNativeAddress(p->ai_addr) == false) {
+            continue;
+        }
         addr_list->push_back(addr);
     }
 

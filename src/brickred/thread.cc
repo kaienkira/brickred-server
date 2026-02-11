@@ -1,6 +1,7 @@
 #include <brickred/thread.h>
 
 #include <pthread.h>
+#include <sched.h>
 
 #include <brickred/condition_variable.h>
 #include <brickred/exception.h>
@@ -177,7 +178,7 @@ void sleepFor(int ms)
 
 void yield()
 {
-    sleepFor(0);
+    ::sched_yield();
 }
 
 } // namespace this_thread
