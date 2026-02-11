@@ -967,7 +967,11 @@ bool TcpService::Impl::setContext(SocketId socket_id, Context *context)
 
     ContextMap::iterator iter = contexts_.find(socket_id);
     if (iter != contexts_.end()) {
-        delete iter->second;
+        // check context is same
+        Context *old_context = iter->second;
+        if (old_context == context) {
+            return true;
+        }
         contexts_.erase(iter);
     }
     contexts_.insert(std::make_pair(socket_id, context));
