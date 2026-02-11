@@ -1,5 +1,6 @@
 #include <brickred/string_util.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <cctype>
@@ -222,7 +223,7 @@ size_t Hash::operator()(const std::string &str) const
 
     for (size_t i = 0; i < str.size(); ++i) {
         // hash = hash * 33 + str[i]
-        h = (h << 5) + h + str[i];
+        h = (h << 5) + h + (uint8_t)str[i];
     }
 
     return h;
