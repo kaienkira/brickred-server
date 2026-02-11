@@ -32,8 +32,7 @@ public:
     bool registerLogger(int logger_id, LogFormatter formatter = nullptr,
                         int level_filter = -1);
     void removeLogger(int logger_id);
-    bool addSink(int logger_id, LogSink *sink,
-                 LogFormatter formatter = nullptr, int level_filter = -1);
+    bool addSink(int logger_id, LogSink *sink, int level_filter = -1);
 
     // log with formatter
     void log(int logger_id, int level,

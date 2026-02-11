@@ -16,13 +16,12 @@ public:
     using LogFormatter = LogCore::LogFormatter;
     using LogSinkVector = std::vector<LogSink *>;
     using LogLevelVector = std::vector<int>;
-    using LogFormatterVector = std::vector<LogFormatter>;
 
     explicit Logger(LogFormatter formatter, int level_filter,
                     int max_log_size);
     ~Logger();
 
-    bool addSink(LogSink *sink, LogFormatter formatter, int level_filter);
+    bool addSink(LogSink *sink, int level_filter);
     void log(int level, const char *filename, int line,
              const char *function, const char *format, va_list args);
     void plainLog(int level, const char *format, va_list args);
@@ -33,7 +32,6 @@ private:
     int level_filter_;
     int max_log_size_;
     LogSinkVector sinks_;
-    LogFormatterVector sink_formatters_;
     LogLevelVector sink_level_filters_;
 };
 
@@ -55,14 +53,12 @@ Logger::~Logger()
     }
 }
 
-bool Logger::addSink(LogSink *sink, LogFormatter formatter, int level_filter)
+bool Logger::addSink(LogSink *sink, int level_filter)
 {
     sinks_.reserve(sinks_.size() + 1);
-    sink_formatters_.reserve(sink_formatters_.size() + 1);
     sink_level_filters_.reserve(sink_level_filters_.size() + 1);
 
     sinks_.push_back(sink);
-    sink_formatters_.push_back(formatter);
     sink_level_filters_.push_back(level_filter);
 
     return true;
@@ -86,24 +82,16 @@ void Logger::log(int level, const char *filename, int line,
 
         // lazy format
         if (!buffer_ready) {
-            LogFormatter formatter = nullptr;
-
-            if (sink_formatters_[i] != nullptr) {
-                formatter = sink_formatters_[i];
-            } else if (formatter_ != nullptr) {
-                formatter = formatter_;
-            }
-
-            if (nullptr == formatter) {
+            if (nullptr == formatter_) {
                 count = ::vsnprintf(buffer.get(), max_log_size_,
-                                    format, args);
+                    format, args);
                 if (count < 0) {
                     count = 0;
                 }
             } else {
-                count = formatter(buffer.get(), max_log_size_,
-                                  level, filename, line, function,
-                                  format, args);
+                count = formatter_(buffer.get(), max_log_size_,
+                    level, filename, line, function,
+                    format, args);
             }
             count = std::min(count, max_log_size_ - 1);
             buffer_ready = true;
@@ -159,8 +147,7 @@ public:
     bool registerLogger(int logger_id, LogFormatter formatter,
                         int level_filter);
     void removeLogger(int logger_id);
-    bool addSink(int logger_id, LogSink *sink,
-                 LogFormatter formatter, int level_filter);
+    bool addSink(int logger_id, LogSink *sink, int level_filter);
 
     void log(int logger_id, int level,
              const char *filename, int line, const char *function,
@@ -241,8 +228,7 @@ void LogCore::Impl::removeLogger(int logger_id)
     loggers_[logger_id] = nullptr;
 }
 
-bool LogCore::Impl::addSink(int logger_id, LogSink *sink,
-                            LogFormatter formatter, int level_filter)
+bool LogCore::Impl::addSink(int logger_id, LogSink *sink, int level_filter)
 {
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return false;
@@ -251,7 +237,7 @@ bool LogCore::Impl::addSink(int logger_id, LogSink *sink,
         return false;
     }
 
-    return loggers_[logger_id]->addSink(sink, formatter, level_filter);
+    return loggers_[logger_id]->addSink(sink, level_filter);
 }
 
 void LogCore::Impl::log(int logger_id, int level, const char *filename,
@@ -326,10 +312,9 @@ void LogCore::removeLogger(int logger_id)
     pimpl_->removeLogger(logger_id);
 }
 
-bool LogCore::addSink(int logger_id, LogSink *sink,
-                      LogFormatter formatter, int level_filter)
+bool LogCore::addSink(int logger_id, LogSink *sink, int level_filter)
 {
-    return pimpl_->addSink(logger_id, sink, formatter, level_filter);
+    return pimpl_->addSink(logger_id, sink, level_filter);
 }
 
 void LogCore::log(int logger_id, int level,
