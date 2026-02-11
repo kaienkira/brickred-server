@@ -972,6 +972,7 @@ bool TcpService::Impl::setContext(SocketId socket_id, Context *context)
         if (old_context == context) {
             return true;
         }
+        delete iter->second;
         contexts_.erase(iter);
     }
     contexts_.insert(std::make_pair(socket_id, context));
