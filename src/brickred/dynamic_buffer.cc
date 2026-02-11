@@ -12,6 +12,9 @@ DynamicBuffer::DynamicBuffer(size_t init_size, size_t expand_size) :
     if (expand_size_ == 0) {
         expand_size_ = 1;
     }
+    if (buffer_.empty()) {
+        buffer_.resize(expand_size_);
+    }
 }
 
 DynamicBuffer::~DynamicBuffer()
