@@ -426,7 +426,8 @@ int WebSocketProtocol::Impl::readFrame(DynamicBuffer *buffer)
     }
 
     // exceed max size
-    if (is_control == false && payload_length > message_size_max_) {
+    if (is_control == false &&
+        message_.readableBytes() + payload_length > message_size_max_) {
         return -1;
     }
 
