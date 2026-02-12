@@ -83,7 +83,7 @@ void DynamicBuffer::reserveWritableBytes(size_t size)
     size_t readable_bytes = readableBytes();
 
     if (free_bytes >= size) {
-        // do compat
+        // do compact
         ::memmove(&buffer_[0], readBegin(), readable_bytes);
         read_index_ = 0;
         write_index_ = readable_bytes;
