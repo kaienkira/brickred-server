@@ -3,8 +3,9 @@
 
 namespace brickred::system {
 
-bool daemon(bool change_dir = false, bool close_stdio = false);
+bool daemon(bool change_dir = false);
 bool createPidFile(const char *file);
+bool closeStdio();
 
 using SignalHandler = void (*)(int);
 SignalHandler signal(int signum, SignalHandler sighandler);

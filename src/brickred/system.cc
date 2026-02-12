@@ -7,7 +7,7 @@
 
 namespace brickred::system {
 
-bool daemon(bool change_dir, bool close_stdio)
+bool daemon(bool change_dir)
 {
     pid_t pid = ::fork();
     if (-1 == pid) {
@@ -23,27 +23,6 @@ bool daemon(bool change_dir, bool close_stdio)
     if (change_dir) {
         if (::chdir("/") != 0) {
             return false;
-        }
-    }
-
-    if (close_stdio) {
-        int null_fd = ::open("/dev/null", O_RDWR);
-        if (null_fd == -1) {
-            return false;
-        }
-        if (::dup2(null_fd, STDIN_FILENO) == -1) {
-            return false;
-        }
-        if (::dup2(null_fd, STDOUT_FILENO) == -1) {
-            return false;
-        }
-        if (::dup2(null_fd, STDERR_FILENO) == -1) {
-            return false;
-        }
-        if (null_fd > STDERR_FILENO) {
-            if (::close(null_fd) == -1) {
-                return false;
-            }
         }
     }
 
@@ -67,6 +46,30 @@ bool createPidFile(const char *file)
     }
     if (::fclose(fp) < 0) {
         return false;
+    }
+
+    return true;
+}
+
+bool closeStdio()
+{
+    int null_fd = ::open("/dev/null", O_RDWR);
+    if (null_fd == -1) {
+        return false;
+    }
+    if (::dup2(null_fd, STDIN_FILENO) == -1) {
+        return false;
+    }
+    if (::dup2(null_fd, STDOUT_FILENO) == -1) {
+        return false;
+    }
+    if (::dup2(null_fd, STDERR_FILENO) == -1) {
+        return false;
+    }
+    if (null_fd > STDERR_FILENO) {
+        if (::close(null_fd) == -1) {
+            return false;
+        }
     }
 
     return true;
