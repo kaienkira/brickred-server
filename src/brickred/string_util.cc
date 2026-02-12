@@ -13,6 +13,7 @@ void split(const char *str, const char *sep,
 {
     size_t sep_len = ::strlen(sep);
     if (0 == sep_len) {
+        result->push_back(std::string(str));
         return;
     }
 
