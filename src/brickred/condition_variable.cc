@@ -56,7 +56,9 @@ bool ConditionVariable::Impl::waitFor(Mutex &m, int ms)
     }
 
     struct timespec tv;
-    ::clock_gettime(CLOCK_REALTIME, &tv);
+    if (::clock_gettime(CLOCK_REALTIME, &tv) == -1) {
+        return false;
+    }
     tv.tv_sec += ms / 1000;
     tv.tv_nsec += ms % 1000 * 1000000;
     // tv_nsec may overflow 1,000,000,000
