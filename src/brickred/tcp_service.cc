@@ -722,7 +722,7 @@ TcpService::Impl::SocketId TcpService::Impl::asyncConnect(
         // connection is completed immediately
         SocketId socket_id = buildConnectedSocket(socket);
         if (-1 == socket_id) {
-            return - 1;
+            return -1;
         }
         if (complete != nullptr) {
             *complete = true;
@@ -734,7 +734,7 @@ TcpService::Impl::SocketId TcpService::Impl::asyncConnect(
         // connection cannot be completed immediately
         SocketId socket_id = buildAsyncConnectSocket(socket, timeout_ms);
         if (-1 == socket_id) {
-            return - 1;
+            return -1;
         }
         if (complete != nullptr) {
             *complete = false;
