@@ -21,6 +21,18 @@ void CommandLineOption::addOption(const std::string &opt,
     option_params_.insert(std::make_pair(opt, params));
 }
 
+static const std::string &getEmptyParameter()
+{
+    static const std::string s_empty_string;
+    return s_empty_string;
+}
+
+static const CommandLineOption::ParameterVector &getEmptyParameters()
+{
+    static const CommandLineOption::ParameterVector s_empty_params;
+    return s_empty_params;
+}
+
 static bool isOption(const std::string &arg)
 {
     return arg.size() > 1 && arg[0] == '-';
@@ -53,7 +65,7 @@ static int processLongOption(
         if (long_opt_parts.size() > 1) {
             return -1;
         }
-        option_params[opt].push_back(s_cstr_empty_string);
+        option_params[opt].push_back(getEmptyParameter());
         return 1;
 
     } else if (CommandLineOption::ParameterType::REQUIRED == opt_type) {
@@ -93,7 +105,7 @@ static int processShortOption(
         CommandLineOption::ParameterType opt_type = iter->second;
 
         if (CommandLineOption::ParameterType::NONE == opt_type) {
-            option_params[opt].push_back(s_cstr_empty_string);
+            option_params[opt].push_back(getEmptyParameter());
 
         } else if (CommandLineOption::ParameterType::REQUIRED == opt_type) {
             // left part in option is parameter
@@ -184,16 +196,14 @@ bool CommandLineOption::hasOption(const std::string &opt) const
 const std::string &CommandLineOption::getParameter(
     const std::string &opt) const
 {
-    static const std::string s_empty_string;
-
     OptionParametersMap::const_iterator iter = option_params_.find(opt);
     if (iter == option_params_.end()) {
-        return s_empty_string;
+        return getEmptyParameter();
     }
 
     const ParameterVector &params = iter->second;
     if (params.empty()) {
-        return s_empty_string;
+        return getEmptyParameter();
     }
 
     return params.back();
@@ -202,11 +212,10 @@ const std::string &CommandLineOption::getParameter(
 const CommandLineOption::ParameterVector &CommandLineOption::getParameters(
     const std::string &opt) const
 {
-    static const CommandLineOption::ParameterVector s_empty_params;
 
     OptionParametersMap::const_iterator iter = option_params_.find(opt);
     if (iter == option_params_.end()) {
-        return s_empty_params;
+        return getEmptyParameters();
     }
 
     return iter->second;
