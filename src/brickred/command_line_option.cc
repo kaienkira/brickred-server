@@ -4,9 +4,6 @@
 
 namespace brickred {
 
-static const std::string s_cstr_empty_string;
-static const CommandLineOption::ParameterVector s_empty_params;
-
 CommandLineOption::CommandLineOption()
 {
 }
@@ -105,7 +102,7 @@ static int processShortOption(
                 return 1;
             }
 
-            // use next paramter
+            // use next parameter
             if (next_param.empty()) {
                 return -1;
             }
@@ -123,7 +120,7 @@ bool CommandLineOption::parse(int argc, char *argv[])
         std::string arg(argv[i]);
         std::string next_param;
 
-        if (i + 1 < argc && isOption(argv[i + 1]) == false) {
+        if (i + 1 < argc) {
             next_param = argv[i + 1];
         }
 
@@ -187,14 +184,16 @@ bool CommandLineOption::hasOption(const std::string &opt) const
 const std::string &CommandLineOption::getParameter(
     const std::string &opt) const
 {
+    static const std::string s_empty_string;
+
     OptionParametersMap::const_iterator iter = option_params_.find(opt);
     if (iter == option_params_.end()) {
-        return s_cstr_empty_string;
+        return s_empty_string;
     }
 
     const ParameterVector &params = iter->second;
     if (params.empty()) {
-        return s_cstr_empty_string;
+        return s_empty_string;
     }
 
     return params.back();
@@ -203,6 +202,8 @@ const std::string &CommandLineOption::getParameter(
 const CommandLineOption::ParameterVector &CommandLineOption::getParameters(
     const std::string &opt) const
 {
+    static const CommandLineOption::ParameterVector s_empty_params;
+
     OptionParametersMap::const_iterator iter = option_params_.find(opt);
     if (iter == option_params_.end()) {
         return s_empty_params;
