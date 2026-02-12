@@ -64,13 +64,13 @@ bool ConditionVariable::Impl::waitFor(Mutex &m, int ms)
     tv.tv_nsec = tv.tv_nsec % 1000000000;
 
     int ret = ::pthread_cond_timedwait(&cond_,
-        (pthread_mutex_t *)m.nativeHandle(), &tv);
+        static_cast<pthread_mutex_t *>(m.nativeHandle()), &tv);
     if (ETIMEDOUT == ret) {
         return false;
 
     } else if (ret != 0) {
         throw SystemErrorException(
-            "ConditionVariable wait failed in pthread_cond_timedwait"
+            "ConditionVariable waitFor failed in pthread_cond_timedwait"
         );
     }
 
