@@ -1,5 +1,6 @@
 #include <brickred/system.h>
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <csignal>
 #include <cstdio>
@@ -26,7 +27,7 @@ bool daemon(bool change_dir, bool close_stdio)
     }
 
     if (close_stdio) {
-        int null_fd = ::open("/dev/null");
+        int null_fd = ::open("/dev/null", O_RDWR);
         if (null_fd == -1) {
             return false;
         }
