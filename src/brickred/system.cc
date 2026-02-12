@@ -26,14 +26,23 @@ bool daemon(bool change_dir, bool close_stdio)
     }
 
     if (close_stdio) {
-        if (::freopen("/dev/null", "r", stdin) == nullptr) {
+        int null_fd = ::open("/dev/null");
+        if (null_fd == -1) {
             return false;
         }
-        if (::freopen("/dev/null", "w", stdout) == nullptr) {
+        if (::dup2(null_fd, STDIN_FILENO) == -1) {
             return false;
         }
-        if (::freopen("/dev/null", "w", stderr) == nullptr) {
+        if (::dup2(null_fd, STDOUT_FILENO) == -1) {
             return false;
+        }
+        if (::dup2(null_fd, STDERR_FILENO) == -1) {
+            return false;
+        }
+        if (null_fd > STDERR_FILENO) {
+            if (::close(null_fd) == -1) {
+                return false;
+            }
         }
     }
 
@@ -55,7 +64,9 @@ bool createPidFile(const char *file)
         ::fclose(fp);
         return false;
     }
-    ::fclose(fp);
+    if (::fclose(fp) < 0) {
+        return false;
+    }
 
     return true;
 }
@@ -72,12 +83,9 @@ SignalHandler signal(int signum, SignalHandler sighandler)
     sa_new.sa_flags |= SA_INTERRUPT;
 #endif
 
-    if (sigaction(signum, &sa_new, &sa_old) != 0)
-    {
+    if (sigaction(signum, &sa_new, &sa_old) != 0) {
         return SIG_ERR;
-    }
-    else
-    {
+    } else {
         return sa_old.sa_handler;
     }
 }
