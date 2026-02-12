@@ -212,7 +212,6 @@ const std::string &CommandLineOption::getParameter(
 const CommandLineOption::ParameterVector &CommandLineOption::getParameters(
     const std::string &opt) const
 {
-
     OptionParametersMap::const_iterator iter = option_params_.find(opt);
     if (iter == option_params_.end()) {
         return getEmptyParameters();
