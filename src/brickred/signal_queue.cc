@@ -67,7 +67,7 @@ void SignalQueue::Impl::pipeReadCallback(IODevice *io_device)
 {
     int signum = 0;
 
-    while (pipe_.read((char *)&signum, sizeof(int)) > 0) {
+    while (pipe_.read((char *)&signum, sizeof(signum)) > 0) {
         if (recv_signal_cb_) {
             recv_signal_cb_(signum);
         }
