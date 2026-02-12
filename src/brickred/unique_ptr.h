@@ -98,6 +98,12 @@ inline void swap(UniquePtr<T> &a, UniquePtr<T> &b)
     a.swap(b);
 }
 
+template <class T>
+inline void swap(UniquePtr<T[]> &a, UniquePtr<T[]> &b)
+{
+    a.swap(b);
+}
+
 } // namespace brickred
 
 #endif
