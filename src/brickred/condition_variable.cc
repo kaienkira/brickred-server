@@ -42,7 +42,7 @@ ConditionVariable::Impl::~Impl()
 void ConditionVariable::Impl::wait(Mutex &m)
 {
     if (::pthread_cond_wait(&cond_,
-            (pthread_mutex_t *)m.nativeHandle()) != 0) {
+            static_cast<pthread_mutex_t *>(m.nativeHandle())) != 0) {
         throw SystemErrorException(
             "ConditionVariable wait failed in pthread_cond_wait"
         );
