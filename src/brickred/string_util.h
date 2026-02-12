@@ -30,7 +30,7 @@ std::string toString(unsigned long ul);
 std::string toString(unsigned long long ull);
 
 const char *find(const char *str, size_t str_len, const char *keyword);
-bool stricmp(const std::string &lhs, const std::string &rhs);
+bool caseInsensitiveEqual(const std::string &lhs, const std::string &rhs);
 
 struct Hash {
     size_t operator()(const std::string &str) const;

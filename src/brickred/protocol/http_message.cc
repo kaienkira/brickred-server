@@ -47,7 +47,7 @@ bool HttpMessage::hasHeader(const std::string &key) const
 bool HttpMessage::headerEqual(const std::string &key,
                               const std::string &value) const
 {
-    return string_util::stricmp(getHeader(key), value);
+    return string_util::caseInsensitiveEqual(getHeader(key), value);
 }
 
 bool HttpMessage::headerContain(const std::string &key,

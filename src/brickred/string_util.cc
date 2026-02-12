@@ -41,6 +41,7 @@ void split(const char *str, size_t str_len, const char *sep,
 {
     size_t sep_len = ::strlen(sep);
     if (0 == sep_len) {
+        result->push_back(std::string(str, str_len));
         return;
     }
 
@@ -122,7 +123,10 @@ std::string replace(const std::string &str,
 {
     std::string ret(str);
 
-    if (0 == max_replace) {
+    if (search.empty()) {
+        return ret;
+    }
+    if (max_replace == 0) {
         return ret;
     }
 
@@ -202,14 +206,15 @@ const char *find(const char *str, size_t str_len, const char *keyword)
     }
 }
 
-bool stricmp(const std::string &lhs, const std::string &rhs)
+bool caseInsensitiveEqual(const std::string &lhs, const std::string &rhs)
 {
     if (lhs.size() != rhs.size()) {
         return false;
     }
 
     for (size_t i = 0; i < lhs.size(); ++i) {
-        if (::tolower(lhs[i]) != ::tolower(rhs[i])) {
+        if (::tolower((unsigned char)lhs[i]) !=
+                ::tolower((unsigned char)rhs[i])) {
             return false;
         }
     }
@@ -235,8 +240,8 @@ bool CaseInsensitiveLess::operator()(const std::string &lhs,
     size_t comp_size = std::min(lhs.size(), rhs.size());
 
     for (size_t i = 0; i < comp_size; ++i) {
-        int c1 = ::tolower(lhs[i]);
-        int c2 = ::tolower(rhs[i]);
+        int c1 = ::tolower((unsigned char)lhs[i]);
+        int c2 = ::tolower((unsigned char)rhs[i]);
 
         if (c1 != c2) {
             return c1 < c2;
