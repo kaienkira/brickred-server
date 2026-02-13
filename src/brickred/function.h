@@ -21,7 +21,7 @@ public:
         func_(rhs.func_), obj_(rhs.obj_) {}
 
     Function &operator=(NullFunction)
-        { func_ = 0; obj_ = 0; return *this; }
+        { func_ = nullptr; obj_ = nullptr; return *this; }
     Function &operator=(const Function &rhs)
         { func_ = rhs.func_; obj_ = rhs.obj_; return *this; }
 
@@ -32,7 +32,7 @@ public:
 
     explicit operator bool() const
     {
-        return func_ != 0;
+        return func_ != nullptr;
     }
 
 private:
@@ -70,7 +70,7 @@ public:
     template <R (*func)(P...)>
     inline static Function<R (P...)> bind()
     {
-        return Function<R (P...)>(&FreeFunctionFactory::template wrapper<func>, 0);
+        return Function<R (P...)>(&FreeFunctionFactory::template wrapper<func>, nullptr);
     }
 };
 
