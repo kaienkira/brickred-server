@@ -14,9 +14,9 @@ template <typename R, typename... P>
 class Function<R (P...)> final {
 public:
     Function() :
-        func_(0), obj_(0) {}
+        func_(nullptr), obj_(nullptr) {}
     Function(NullFunction) :
-        func_(0), obj_(0) {}
+        func_(nullptr), obj_(nullptr) {}
     Function(const Function &rhs) :
         func_(rhs.func_), obj_(rhs.obj_) {}
 
@@ -53,9 +53,9 @@ private:
 };
 
 template <typename R, typename... P>
-void operator==(const Function<R (P...)> &, const Function<R (P...)> &);
+void operator==(const Function<R (P...)> &, const Function<R (P...)> &) = delete;
 template <typename R, typename... P>
-void operator!=(const Function<R (P...)> &, const Function<R (P...)> &);
+void operator!=(const Function<R (P...)> &, const Function<R (P...)> &) = delete;
 
 template <typename R, typename... P>
 class FreeFunctionFactory final {
