@@ -1,7 +1,6 @@
 #include <brickred/codec/base64.h>
 
 #include <cstdint>
-#include <algorithm>
 #include <vector>
 
 namespace brickred::codec {
@@ -124,7 +123,7 @@ int base64Decode(const char *in, size_t in_size,
                 return -1;
             } else {
                 int8_t v = s_decode_table[c - 43];
-                if (v == -1) {
+                if (v < 0) {
                     return -1;
                 }
                 b[i] = v;
