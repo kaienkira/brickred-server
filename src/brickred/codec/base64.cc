@@ -6,7 +6,7 @@
 
 namespace brickred::codec {
 
-static const int8_t s_encode_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+static const char s_encode_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                      "abcdefghijklmnopqrstuvwxyz"
                                      "0123456789+/";
 static const int8_t s_decode_table[] = {
