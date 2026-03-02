@@ -1,14 +1,15 @@
 #include <brickred/codec/base64.h>
 
+#include <cstdint>
 #include <algorithm>
 #include <vector>
 
 namespace brickred::codec {
 
-static const char s_encode_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+static const int8_t s_encode_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                      "abcdefghijklmnopqrstuvwxyz"
                                      "0123456789+/";
-static const char s_decode_table[] = {
+static const int8_t s_decode_table[] = {
     62, -1, -1, -1, 63, 52, 53, 54, 55, 56,
     57, 58, 59, 60, 61, -1, -1, -1, -2, -1,
     -1, -1,  0,  1,  2,  3,  4,  5,  6,  7,
@@ -22,7 +23,7 @@ static const char s_decode_table[] = {
 int base64Encode(const char *in, size_t in_size,
                  char *out, size_t out_size)
 {
-    unsigned char b[3];
+    uint8_t b[3];
     const char *out_start = out;
     const char *out_end = out + out_size;
 
@@ -87,7 +88,7 @@ std::string base64Encode(const char *buffer, size_t size)
 int base64Decode(const char *in, size_t in_size,
                  char *out, size_t out_size)
 {
-    unsigned char b[4];
+    uint8_t b[4];
     const char *out_start = out;
     const char *out_end = out + out_size;
 
@@ -102,10 +103,23 @@ int base64Decode(const char *in, size_t in_size,
             char c = *in++;
             if (c == '=') {
                 b[i] = 0;
+                // after '=' can only be '='
+                for (int j = i + 1; j < 4; ++j) {
+                    char c2 = *in++;
+                    if (c2 != '=') {
+                        return -1;
+                    }
+                    b[j] = 0;
+                }
+                // '=' must at last
+                if (in_size != 4) {
+                    return -1;
+                }
+                break;
             } else if (c < 43 || c > 122) {
                 return -1;
             } else {
-                char v = s_decode_table[c - 43];
+                int8_t v = s_decode_table[c - 43];
                 if (v == -1) {
                     return -1;
                 }
