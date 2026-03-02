@@ -76,11 +76,11 @@ std::string base64Encode(const std::string &str)
 std::string base64Encode(const char *buffer, size_t size)
 {
     std::vector<char> output(std::max((size_t)5, size * 2));
-    int count = base64Encode(buffer, size, &output[0], output.size());
+    int count = base64Encode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
     } else {
-        return std::string(&output[0], count);
+        return std::string(output.data(), count);
     }
 }
 
@@ -144,12 +144,16 @@ std::string base64Decode(const std::string &str)
 
 std::string base64Decode(const char *buffer, size_t size)
 {
+    if (size == 0) {
+        return std::string();
+    }
+
     std::vector<char> output(size);
-    int count = base64Decode(buffer, size, &output[0], output.size());
+    int count = base64Decode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
     } else {
-        return std::string(&output[0], count);
+        return std::string(output.data(), count);
     }
 }
 

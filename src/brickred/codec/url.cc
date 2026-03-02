@@ -116,11 +116,11 @@ std::string urlEncode(const std::string &str)
 std::string urlEncode(const char *buffer, size_t size)
 {
     std::vector<char> output(std::max((size_t)1, size * 3));
-    int count = urlEncode(buffer, size, &output[0], output.size());
+    int count = urlEncode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
     } else {
-        return std::string(&output[0], count);
+        return std::string(output.data(), count);
     }
 }
 
@@ -166,12 +166,16 @@ std::string urlDecode(const std::string &str)
 
 std::string urlDecode(const char *buffer, size_t size)
 {
+    if (size == 0) {
+        return std::string();
+    }
+
     std::vector<char> output(size);
-    int count = urlDecode(buffer, size, &output[0], output.size());
+    int count = urlDecode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
     } else {
-        return std::string(&output[0], count);
+        return std::string(output.data(), count);
     }
 }
 
