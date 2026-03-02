@@ -1,6 +1,5 @@
 #include <brickred/log_file_sink.h>
 
-#include <cerrno>
 #include <cstdio>
 #include <cstring>
 
