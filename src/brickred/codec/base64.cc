@@ -95,7 +95,7 @@ int base64Decode(const char *in, size_t in_size,
     const char *out_start = out;
     const char *out_end = out + out_size;
 
-    for (; in_size > 0;) {
+    while (in_size > 0) {
         if (in_size < 4) {
             return -1;
         }
