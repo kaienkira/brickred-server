@@ -26,7 +26,7 @@ int base64Encode(const char *in, size_t in_size,
     const char *out_start = out;
     const char *out_end = out + out_size;
 
-    for (; in_size > 0;) {
+    while (in_size > 0) {
         int b_len = 0;
 
         if (in_size >= 3) {
@@ -165,7 +165,7 @@ std::string base64Decode(const char *buffer, size_t size)
         return std::string();
     }
 
-    std::vector<char> output(size);
+    std::vector<char> output((size / 4) * 3);
     int count = base64Decode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
