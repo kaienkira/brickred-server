@@ -76,7 +76,11 @@ std::string base64Encode(const std::string &str)
 
 std::string base64Encode(const char *buffer, size_t size)
 {
-    std::vector<char> output(std::max((size_t)5, size * 2));
+    if (size == 0) {
+        return std::string();
+    }
+
+    std::vector<char> output(((size + 2) / 3) * 4);
     int count = base64Encode(buffer, size, output.data(), output.size());
     if (count <= 0) {
         return std::string();
