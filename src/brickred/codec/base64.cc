@@ -179,6 +179,9 @@ std::string base64Decode(const char *buffer, size_t size)
     if (size == 0) {
         return std::string();
     }
+    if (size % 4 != 0) {
+        return std::string();
+    }
 
     std::vector<char> output((size / 4) * 3);
     int count = base64Decode(buffer, size, output.data(), output.size());
