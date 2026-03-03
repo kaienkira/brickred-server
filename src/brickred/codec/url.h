@@ -12,7 +12,7 @@ int urlEncode(const char *in, size_t in_size,
 std::string urlEncode(const std::string &str);
 std::string urlEncode(const char *buffer, size_t size);
 
-// RFC 3986 (like php rawurlencode())
+// RFC 3986 (like php rawurldecode())
 int urlDecode(const char *in, size_t in_size,
               char *out, size_t out_size);
 std::string urlDecode(const std::string &str);

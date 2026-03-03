@@ -1,6 +1,5 @@
 #include <brickred/codec/url.h>
 
-#include <algorithm>
 #include <vector>
 
 namespace brickred::codec {
@@ -135,7 +134,7 @@ int urlDecode(const char *in, size_t in_size,
     const char *out_end = out + out_size;
     const char *in_end = in + in_size;
 
-    for (; in < in_end;) {
+    while (in < in_end) {
         if ('%' == *in) {
             if (in_end - in < 3 || out_end - out < 1) {
                 return -1;
@@ -149,14 +148,11 @@ int urlDecode(const char *in, size_t in_size,
             }
             *out++ = (char)(high * 0x10 + low);
 
-        } else if (isUnreservedChar(*in)) {
+        } else {
             if (out_end - out < 1) {
                 return -1;
             }
             *out++ = *in++;
-
-        } else {
-            return -1;
         }
     }
 

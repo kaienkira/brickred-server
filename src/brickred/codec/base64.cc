@@ -135,6 +135,21 @@ int base64Decode(const char *in, size_t in_size,
             return -1;
         }
 
+        // canonical padding checks
+        if (b_len == 2) {
+            // if xx==
+            // lower 4 bits of b[1] must be zero
+            if ((b[1] & 0x0f) != 0) {
+                return -1;
+            }
+        } else if (b_len == 3) {
+            // if xxx=
+            // lower 2 bits of b[2] must be zero
+            if ((b[2] & 0x03) != 0) {
+                return -1;
+            }
+        }
+
         // overflow
         if (out_end - out < b_len - 1) {
             return -1;
