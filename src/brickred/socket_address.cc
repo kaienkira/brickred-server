@@ -181,6 +181,20 @@ void SocketAddress::Impl::translateAddressToNativeAddress() const
     protocol_ = Protocol::UNKNOWN;
     native_addr_size_ = 0;
 
+    if (ip_.find(":") != ip_.npos) {
+        // try ipv6 convert
+        struct sockaddr_in6 *sock_addr6 = &native_addr_.ipv6_addr_;
+        if (::inet_pton(AF_INET6, ip_.c_str(), &sock_addr6->sin6_addr) != 1) {
+            return;
+        }
+        sock_addr6->sin6_family = AF_INET6;
+        sock_addr6->sin6_port = htons(port_);
+        protocol_ = Protocol::IP_V6;
+        native_addr_size_ = sizeof(struct sockaddr_in6);
+        has_native_addr_ = true;
+        return;
+    }
+
     if (ip_.find(".") != ip_.npos) {
         // try ipv4 convert
         struct sockaddr_in *sock_addr4 = &native_addr_.ipv4_addr_;
@@ -191,23 +205,9 @@ void SocketAddress::Impl::translateAddressToNativeAddress() const
         sock_addr4->sin_port = htons(port_);
         protocol_ = Protocol::IP_V4;
         native_addr_size_ = sizeof(struct sockaddr_in);
-
-    } else if (ip_.find(":") != ip_.npos) {
-        // try ipv6 convert
-        struct sockaddr_in6 *sock_addr6 = &native_addr_.ipv6_addr_;
-        if (::inet_pton(AF_INET6, ip_.c_str(), &sock_addr6->sin6_addr) != 1) {
-            return;
-        }
-        sock_addr6->sin6_family = AF_INET6;
-        sock_addr6->sin6_port = htons(port_);
-        protocol_ = Protocol::IP_V6;
-        native_addr_size_ = sizeof(struct sockaddr_in6);
-
-    } else {
+        has_native_addr_ = true;
         return;
     }
-
-    has_native_addr_ = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
