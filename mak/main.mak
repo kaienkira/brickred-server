@@ -8,8 +8,8 @@ AR_ ?= ar cr
 RM_ ?= rm -f
 SED_ ?= sed
 
-CFLAGS ?= -Wall -c -std=c11 $(C_FLAG)
-CPPFLAGS ?= -Wall -c -std=c++17 $(CPP_FLAG)
+CFLAGS ?= -Wall -std=c11 $(C_FLAG)
+CPPFLAGS ?= -Wall -std=c++17 $(CPP_FLAG)
 ELFLAGS ?= $(EL_FLAG)
 DLFLAGS ?= -shared -fPIC
 INCLUDES += $(INCLUDE)
@@ -26,7 +26,7 @@ endef
 define make_c_rule
 $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .o, $(basename $1)))): $1
 	@$(call ECHO, "[compiling $$@ ...]")
-	@$(CC_) -o $$@ $$(CFLAGS) $$(INCLUDES) $$<
+	@$(CC_) -o $$@ -c $$(CFLAGS) $$(INCLUDES) $$<
 $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .d, $(basename $1)))): $1
 	@$(CC_) -M $$(CFLAGS) $$(INCLUDES) $$< | \
 		$(SED_) '1s,^[^:]*:,$$@ $$@:,' | $(SED_) '1s/\.d/\.o/' >$$@
@@ -36,7 +36,7 @@ endef
 define make_cc_rule
 $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .o, $(basename $1)))): $1
 	@$(call ECHO, "[compiling $$@ ...]")
-	@$(CXX_) -o $$@ $$(CPPFLAGS) $$(INCLUDES) $$<
+	@$(CXX_) -o $$@ -c $$(CPPFLAGS) $$(INCLUDES) $$<
 $(addprefix $(BUILD_DIR), $(subst /,_, $(addsuffix .d, $(basename $1)))): $1
 	@$(CXX_) -M $$(CPPFLAGS) $$(INCLUDES) $$< | \
 		$(SED_) '1s,^[^:]*:,$$@ $$@:,' | $(SED_) '1s/\.d/\.o/' >$$@

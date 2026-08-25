@@ -34,7 +34,7 @@ do
 done
 
 # check compiler
-which g++ >/dev/null 2>&1
+g++ --help >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
     echo 'can not find g++'
@@ -42,7 +42,7 @@ then
 fi
 
 # check make
-which make >/dev/null 2>&1
+make --help >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
     echo 'can not find make'
