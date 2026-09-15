@@ -382,6 +382,11 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             return -1;
         }
     } else {
+        if (message_->getMessageType() == HttpMessage::MessageType::REQUEST) {
+            status_ = Status::FINISHED;
+            return 1;
+        }
+
         return -1;
     }
 }
