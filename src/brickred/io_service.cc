@@ -175,22 +175,29 @@ void IOService::Impl::loop()
                 if (checkIODeviceExist(io_device) == false) {
                     continue;
                 }
-                (io_device->getWriteCallback())(io_device);
+                IODevice::WriteCallback cb = io_device->getWriteCallback();
+                if (cb) {
+                    cb(io_device);
+                }
             }
 
             if (event->events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)) {
                 if (checkIODeviceExist(io_device) == false) {
                     continue;
                 }
-                (io_device->getReadCallback())(io_device);
+                IODevice::ReadCallback cb = io_device->getReadCallback();
+                if (cb) {
+                    cb(io_device);
+                }
             }
 
             if (event->events & (EPOLLERR | EPOLLHUP)) {
                 if (checkIODeviceExist(io_device) == false) {
                     continue;
                 }
-                if (io_device->getErrorCallback()) {
-                    (io_device->getErrorCallback())(io_device);
+                IODevice::ErrorCallback cb = io_device->getErrorCallback();
+                if (cb) {
+                    cb(io_device);
                 }
             }
         }
