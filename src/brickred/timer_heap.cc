@@ -43,7 +43,7 @@ public:
     TimerId getId() const { return id_; }
     const Timestamp &getTimestamp() const { return timestamp_; }
     Timestamp &getTimestamp() { return timestamp_; }
-    int getTimeout() const { return timeout_; }
+    int64_t getTimeout() const { return timeout_; }
     int getHeapPos() const { return heap_pos_; }
     void setHeapPos(int heap_pos) { heap_pos_ = heap_pos; }
     int getCallTimes() const { return call_times_; }
