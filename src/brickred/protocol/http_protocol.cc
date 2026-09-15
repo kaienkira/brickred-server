@@ -178,8 +178,8 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
         response->setReasonPhrase(start_line_parts[2]);
 
         buffer->read(line_length + 2);
-        this->message_ = response.release();
-        this->status_ = Status::READING_HEADER;
+        message_ = response.release();
+        status_ = Status::READING_HEADER;
 
         return 1;
 
@@ -205,8 +205,8 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
         request->setVersion(version);
 
         buffer->read(line_length + 2);
-        this->message_ = request.release();
-        this->status_ = Status::READING_HEADER;
+        message_ = request.release();
+        status_ = Status::READING_HEADER;
 
         return 1;
     }
@@ -220,7 +220,11 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     if (::memcmp(buffer->readBegin(), "\r\n", 2) == 0) {
         buffer->read(2);
-        this->status_ = Status::FINISHED;
+        if (status_ == Status::READING_TRAILER_HEADER) {
+            status_ = Status::FINISHED;
+        } else {
+            status_ = Status::READING_BODY;
+        }
         return 1;
     }
 
@@ -256,43 +260,39 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     }
 
     buffer->read(header_length + 4);
-    if (this->status_ == Status::READING_TRAILER_HEADER) {
-        this->status_ = Status::FINISHED;
+    if (status_ == Status::READING_TRAILER_HEADER) {
+        status_ = Status::FINISHED;
     } else {
-        this->status_ = Status::READING_BODY;
+        status_ = Status::READING_BODY;
     }
     return 1;
 }
 
 int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 {
-    if (message_->hasHeader("Content-Length")) {
-        // header content-length exists
-        int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
-        if (content_length > 0) {
-            // exceed max size
-            if ((size_t)content_length > body_max_size_) {
-                return -1;
-            }
-            if (buffer->readableBytes() < (size_t)content_length) {
-                // wait for more data
-                return 0;
-            }
-
-            message_->setBody(buffer->readBegin(), content_length);
-
-            buffer->read(content_length);
-            this->status_ = Status::FINISHED;
+    if (message_->getMessageType() == HttpMessage::MessageType::RESPONSE) {
+        const HttpResponse *response = static_cast<HttpResponse *>(message_);
+        int status_code = response->getStatusCode();
+        if ((status_code >= 100 && status_code < 200) ||
+            status_code == 204 ||
+            status_code == 304) {
+            status_ = Status::FINISHED;
             return 1;
-        } else if (content_length == 0) {
-            this->status_ = Status::FINISHED;
-            return 1;
-        } else {
+        }
+    }
+
+    bool has_transfer_encoding = message_->hasHeader("Transfer-Encoding");
+    bool has_content_length = message_->hasHeader("Content-Length");
+
+    if (has_transfer_encoding) {
+        // header transfer-encoding == "chunked"
+        if (has_content_length) {
+            return -1;
+        }
+        if (message_->headerEqual("Transfer-Encoding", "chunked") == false) {
             return -1;
         }
 
-    } else if (message_->headerContain("Transfer-Encoding", "chunked")) {
-        // header transfer-encoding == "chunked"
         if (nullptr == chunk_buffer_) {
             chunk_buffer_ = new DynamicBuffer();
         }
@@ -353,9 +353,33 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 message_->removeHeader("Transfer-Encoding");
 
                 // read tailer header
-                this->status_ = Status::READING_TRAILER_HEADER;
+                status_ = Status::READING_TRAILER_HEADER;
                 return 1;
             }
+        }
+    } else if (has_content_length) {
+        // header content-length exists
+        int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
+        if (content_length > 0) {
+            // exceed max size
+            if ((size_t)content_length > body_max_size_) {
+                return -1;
+            }
+            if (buffer->readableBytes() < (size_t)content_length) {
+                // wait for more data
+                return 0;
+            }
+
+            message_->setBody(buffer->readBegin(), content_length);
+
+            buffer->read(content_length);
+            status_ = Status::FINISHED;
+            return 1;
+        } else if (content_length == 0) {
+            status_ = Status::FINISHED;
+            return 1;
+        } else {
+            return -1;
         }
     } else {
         return -1;
@@ -374,7 +398,7 @@ bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
         return false;
     }
 
-    request->swap(*static_cast<HttpRequest *>(this->message_));
+    request->swap(*static_cast<HttpRequest *>(message_));
     reset();
 
     return true;
@@ -392,7 +416,7 @@ bool HttpProtocol::Impl::retrieveResponse(HttpResponse *response)
         return false;
     }
 
-    response->swap(*static_cast<HttpResponse *>(this->message_));
+    response->swap(*static_cast<HttpResponse *>(message_));
     reset();
 
     return true;
