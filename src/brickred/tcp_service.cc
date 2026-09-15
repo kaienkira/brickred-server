@@ -452,7 +452,12 @@ void TcpService::Impl::onListenSocketRead(IODevice *io_device)
         }
 
         if (new_conn_cb_) {
-            new_conn_cb_(thiz_, listen_socket->getId(), socket_id);
+            SocketId listen_socket_id = listen_socket->getId();
+            new_conn_cb_(thiz_, listen_socket_id, socket_id);
+            // listen socket is closed in callback, break loop
+            if (sockets_.find(listen_socket_id) == sockets_.end()) {
+                return;
+            }
         }
     }
 }
