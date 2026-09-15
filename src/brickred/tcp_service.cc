@@ -226,6 +226,10 @@ TcpService::Impl::Impl(TcpService *thiz, IOService &io_service) :
 
 TcpService::Impl::~Impl()
 {
+    for (TimerId_SocketId_Map::iterator iter = timer_to_socket_map_.begin();
+         iter != timer_to_socket_map_.end(); ++iter) {
+        io_service_->stopTimer(iter->first);
+    }
     for (TcpConnectionMap::iterator iter = connections_.begin();
          iter != connections_.end(); ++iter) {
         delete iter->second;
