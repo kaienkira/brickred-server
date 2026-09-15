@@ -564,11 +564,13 @@ void TcpService::Impl::onSocketRead(IODevice *io_device)
     bool peer_close = false;
 
     for (;;) {
-        int bytes_to_read = std::max(1, socket->readableBytes());
+        int socket_readable_bytes = socket->readableBytes();
+        // for eof detect
+        int bytes_to_read = std::max(1, socket_readable_bytes);
 
         // check buffer overflow
         if (conn_read_buffer_max_size_ > 0 &&
-            bytes_to_read + read_buffer.readableBytes() >
+            socket_readable_bytes + read_buffer.readableBytes() >
                 conn_read_buffer_max_size_) {
             peer_close = true;
             break;
