@@ -37,8 +37,11 @@ LogFileSink::Impl::~Impl()
 
 bool LogFileSink::Impl::openFile()
 {
-    char actual_file_path[2048];
+    if (file_path_.empty()) {
+        return false;
+    }
 
+    char actual_file_path[2048];
     Timestamp now;
     now.setNow();
     Timestamp::format(actual_file_path, sizeof(actual_file_path),
@@ -50,6 +53,9 @@ bool LogFileSink::Impl::openFile()
 
     FILE *fp = ::fopen(actual_file_path, "a");
     if (nullptr == fp) {
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "open file %s failed: %s",
+            actual_file_path, ::strerror(errno));
         return false;
     }
     if (fp_ != nullptr) {
@@ -65,9 +71,6 @@ bool LogFileSink::Impl::openFile()
 void LogFileSink::Impl::log(const char *buffer, size_t size)
 {
     if (openFile() == false) {
-        BRICKRED_INTERNAL_LOG_ERROR(
-            "open file %s failed: %s",
-            actual_file_path_.c_str(), ::strerror(errno));
         return;
     }
 
