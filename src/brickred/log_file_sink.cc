@@ -44,8 +44,14 @@ bool LogFileSink::Impl::openFile()
     char actual_file_path[2048];
     Timestamp now;
     now.setNow();
-    Timestamp::format(actual_file_path, sizeof(actual_file_path),
-                      file_path_.c_str(), now.getSecond());
+    if (Timestamp::format(
+            actual_file_path, sizeof(actual_file_path),
+            file_path_.c_str(), now.getSecond()) == 0) {
+        BRICKRED_INTERNAL_LOG_ERROR(
+            "file path %s too long",
+            file_path_.c_str());
+        return false;
+    }
 
     if (actual_file_path_ == actual_file_path) {
         return true;
