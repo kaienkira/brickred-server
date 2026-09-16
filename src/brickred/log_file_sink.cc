@@ -48,9 +48,7 @@ bool LogFileSink::Impl::openFile()
         return true;
     }
 
-    actual_file_path_ = actual_file_path;
-
-    FILE *fp = ::fopen(actual_file_path_.c_str(), "a");
+    FILE *fp = ::fopen(actual_file_path, "a");
     if (nullptr == fp) {
         return false;
     }
@@ -58,6 +56,7 @@ bool LogFileSink::Impl::openFile()
         ::fclose(fp_);
     }
     ::setbuf(fp, nullptr);
+    actual_file_path_ = actual_file_path;
     fp_ = fp;
 
     return true;
