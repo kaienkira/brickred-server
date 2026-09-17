@@ -71,20 +71,7 @@ bool HttpMessage::hasHeader(const std::string &key) const
     }
 }
 
-bool HttpMessage::headerFirstEqual(
-    const std::string &key, const std::string &value) const
-{
-    return string_util::caseInsensitiveEqual(getHeader(key), value);
-}
-
-bool HttpMessage::headerFirstContain(
-    const std::string &key, const std::string &value) const
-{
-    return string_util::toLower(getHeader(key)).find(
-        string_util::toLower(value)) != std::string::npos;
-}
-
-bool HttpMessage::headerOneEqual(
+bool HttpMessage::headerEqual(
     const std::string &key, const std::string &value) const
 {
     HeaderMap::const_iterator iter = headers_.find(key);
@@ -93,29 +80,29 @@ bool HttpMessage::headerOneEqual(
     }
 
     const std::vector<std::string> &header_list = iter->second;
-    for (int i = 0; i < header_list.size(); ++i) {
+    if (header_list.size() != 1) {
+        return false;
+    }
+
+    if (string_util::caseInsensitiveEqual(header_list[0], value)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool HttpMessage::headerListOneEqual(
+    const std::string &key, const std::string &value) const
+{
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return false;
+    }
+
+    const std::vector<std::string> &header_list = iter->second;
+    for (size_t i = 0; i < header_list.size(); ++i) {
         const std::string &header = header_list[i];
         if (string_util::caseInsensitiveEqual(header, value)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool HttpMessage::headerOneContain(
-    const std::string &key, const std::string &value) const
-{
-    HeaderMap::const_iterator iter = headers_.find(key);
-    if (iter == headers_.end()) {
-        return false;
-    }
-
-    const std::vector<std::string> &header_list = iter->second;
-    for (int i = 0; i < header_list.size(); ++i) {
-        const std::string &header = header_list[i];
-        if (string_util::toLower(header).find(
-                string_util::toLower(value)) != std::string::npos) {
             return true;
         }
     }
@@ -161,17 +148,21 @@ void HttpMessage::setBody(const std::string &body)
 
 bool HttpMessage::isConnectionKeepAlive() const
 {
-    return headerFirstEqual("Connection", "Keep-Alive");
+    return headerListOneEqual("Connection", "Keep-Alive");
 }
 
 void HttpMessage::setConnectionKeepAlive()
 {
-    setHeader("Connection", "Keep-Alive");
+    if (headerListOneEqual("Connection", "Keep-Alive") == false) {
+        addHeader("Connection", "Keep-Alive");
+    }
 }
 
 void HttpMessage::setConnectionClose()
 {
-    setHeader("Connection", "Close");
+    if (headerListOneEqual("Connection", "Close") == false) {
+        addHeader("Connection", "Close");
+    }
 }
 
 void HttpMessage::setDate(time_t now)

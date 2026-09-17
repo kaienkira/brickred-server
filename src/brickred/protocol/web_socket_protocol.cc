@@ -218,11 +218,11 @@ bool WebSocketProtocol::Impl::checkHandshakeRequestValid(
         return false;
     }
     // check header 'Upgrade'
-    if (request.headerFirstContain("Upgrade", "websocket") == false) {
+    if (request.headerEqual("Upgrade", "websocket") == false) {
         return false;
     }
     // check header 'Connection'
-    if (request.headerOneContain("Connection", "Upgrade") == false) {
+    if (request.headerListOneEqual("Connection", "Upgrade") == false) {
         return false;
     }
     // check header 'Sec-WebSocket-Key'
@@ -231,7 +231,7 @@ bool WebSocketProtocol::Impl::checkHandshakeRequestValid(
         return false;
     }
     // check header 'Sec-WebSocket-Version'
-    if (request.headerFirstEqual("Sec-WebSocket-Version", "13") == false) {
+    if (request.headerEqual("Sec-WebSocket-Version", "13") == false) {
         return false;
     }
 
@@ -314,19 +314,19 @@ bool WebSocketProtocol::Impl::checkHandshakeResponseValid(
     }
 
     // check header 'Upgrade'
-    if (response.headerFirstContain("Upgrade", "websocket") == false) {
+    if (response.headerEqual("Upgrade", "websocket") == false) {
         return false;
     }
 
     // check header 'Connection'
-    if (response.headerFirstContain("Connection", "Upgrade") == false) {
+    if (response.headerListOneEqual("Connection", "Upgrade") == false) {
         return false;
     }
 
     // check header 'Sec-WebSocket-Accept'
     std::string sec_accept = codec::base64Encode(codec::sha1Binary(sec_key +
         "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
-    if (response.headerFirstEqual("Sec-WebSocket-Accept", sec_accept) == false) {
+    if (response.headerEqual("Sec-WebSocket-Accept", sec_accept) == false) {
         return false;
     }
 

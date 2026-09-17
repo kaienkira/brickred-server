@@ -37,13 +37,9 @@ public:
     const std::string &getHeader(const std::string &key) const;
     const std::vector<std::string> *getHeaderList(const std::string &key) const;
     bool hasHeader(const std::string &key) const;
-    bool headerFirstEqual(
+    bool headerEqual(
         const std::string &key, const std::string &value) const;
-    bool headerFirstContain(
-        const std::string &key, const std::string &value) const;
-    bool headerOneEqual(
-        const std::string &key, const std::string &value) const;
-    bool headerOneContain(
+    bool headerListOneEqual(
         const std::string &key, const std::string &value) const;
     const std::string &getBody() const { return body_; }
 
