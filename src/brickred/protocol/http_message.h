@@ -37,10 +37,14 @@ public:
     const std::string &getHeader(const std::string &key) const;
     const std::vector<std::string> *getHeaderList(const std::string &key) const;
     bool hasHeader(const std::string &key) const;
-    bool headerEqual(const std::string &key,
-                     const std::string &value) const;
-    bool headerContain(const std::string &key,
-                       const std::string &value) const;
+    bool headerFirstEqual(
+        const std::string &key, const std::string &value) const;
+    bool headerFirstContain(
+        const std::string &key, const std::string &value) const;
+    bool headerOneEqual(
+        const std::string &key, const std::string &value) const;
+    bool headerOneContain(
+        const std::string &key, const std::string &value) const;
     const std::string &getBody() const { return body_; }
 
     void setVersion(Version version);

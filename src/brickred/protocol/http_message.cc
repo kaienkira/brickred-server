@@ -71,17 +71,56 @@ bool HttpMessage::hasHeader(const std::string &key) const
     }
 }
 
-bool HttpMessage::headerEqual(const std::string &key,
-                              const std::string &value) const
+bool HttpMessage::headerFirstEqual(
+    const std::string &key, const std::string &value) const
 {
     return string_util::caseInsensitiveEqual(getHeader(key), value);
 }
 
-bool HttpMessage::headerContain(const std::string &key,
-                                const std::string &value) const
+bool HttpMessage::headerFirstContain(
+    const std::string &key, const std::string &value) const
 {
     return string_util::toLower(getHeader(key)).find(
-               string_util::toLower(value)) != std::string::npos;
+        string_util::toLower(value)) != std::string::npos;
+}
+
+bool HttpMessage::headerOneEqual(
+    const std::string &key, const std::string &value) const
+{
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return false;
+    }
+
+    const std::vector<std::string> &header_list = iter->second;
+    for (int i = 0; i < header_list.size(); ++i) {
+        const std::string &header = header_list[i];
+        if (string_util::caseInsensitiveEqual(header, value)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool HttpMessage::headerOneContain(
+    const std::string &key, const std::string &value) const
+{
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return false;
+    }
+
+    const std::vector<std::string> &header_list = iter->second;
+    for (int i = 0; i < header_list.size(); ++i) {
+        const std::string &header = header_list[i];
+        if (string_util::toLower(header).find(
+                string_util::toLower(value)) != std::string::npos) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void HttpMessage::setVersion(Version version)
@@ -122,7 +161,7 @@ void HttpMessage::setBody(const std::string &body)
 
 bool HttpMessage::isConnectionKeepAlive() const
 {
-    return headerEqual("Connection", "Keep-Alive");
+    return headerFirstEqual("Connection", "Keep-Alive");
 }
 
 void HttpMessage::setConnectionKeepAlive()
