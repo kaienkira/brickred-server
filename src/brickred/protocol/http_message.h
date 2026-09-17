@@ -24,7 +24,7 @@ public:
         RESPONSE
     };
 
-    using HeaderMap = std::map<std::string, std::string,
+    using HeaderMap = std::map<std::string, std::vector<std::string>,
                                string_util::CaseInsensitiveLess>;
 
     HttpMessage();
@@ -35,6 +35,7 @@ public:
     Version getVersion() const { return version_; }
     const HeaderMap &getHeaders() const { return headers_; }
     const std::string &getHeader(const std::string &key) const;
+    const std::vector<std::string> *getHeaderList(const std::string &key) const;
     bool hasHeader(const std::string &key) const;
     bool headerEqual(const std::string &key,
                      const std::string &value) const;

@@ -1,5 +1,6 @@
 #include <brickred/protocol/http_message.h>
 
+#include <cstddef>
 #include <utility>
 
 #include <brickred/timestamp.h>
@@ -35,13 +36,39 @@ const std::string &HttpMessage::getHeader(const std::string &key) const
     if (iter == headers_.end()) {
         return s_cstr_empty_string;
     } else {
-        return iter->second;
+        const std::vector<std::string> &header_list = iter->second;
+        if (header_list.empty()) {
+            return s_cstr_empty_string;
+        } else {
+            return header_list[0];
+        }
+    }
+}
+
+const std::vector<std::string> *HttpMessage::getHeaderList(
+    const std::string &key) const
+{
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return nullptr;
+    } else {
+        return &iter->second;
     }
 }
 
 bool HttpMessage::hasHeader(const std::string &key) const
 {
-    return headers_.find(key) != headers_.end();
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return false;
+    }
+
+    const std::vector<std::string> &header_list = iter->second;
+    if (header_list.empty()) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 bool HttpMessage::headerEqual(const std::string &key,
@@ -64,7 +91,9 @@ void HttpMessage::setVersion(Version version)
 
 void HttpMessage::setHeader(const std::string &key, const std::string &value)
 {
-    headers_[key] = value;
+    std::pair<HeaderMap::iterator, bool> p = headers_.try_emplace(key);
+    std::vector<std::string> &header_list = p.first->second;
+    header_list.push_back(value);
 }
 
 void HttpMessage::removeHeader(const std::string &key)

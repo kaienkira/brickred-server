@@ -92,8 +92,12 @@ public:
         for (HttpMessage::HeaderMap::const_iterator iter =
                  response.getHeaders().begin();
              iter != response.getHeaders().end(); ++iter) {
-            ::printf("    %s: %s\n",
-                     iter->first.c_str(), iter->second.c_str());
+            const std::vector<std::string> &header_list = iter->second;
+            for (size_t i = 0; i < header_list.size(); ++i) {
+                const std::string &header = header_list[i];
+                ::printf("    %s: %s\n",
+                         iter->first.c_str(), header.c_str());
+            }
         }
         // print body
         ::printf("\n--- body ---\n\n");

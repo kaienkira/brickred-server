@@ -576,13 +576,18 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
     for (HttpMessage::HeaderMap::const_iterator iter =
              message.getHeaders().begin();
          iter != message.getHeaders().end(); ++iter) {
-        buffer->reserveWritableBytes(
-            32 + iter->first.size() + iter->second.size());
-        count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(),
-            "%s: %s\r\n", iter->first.c_str(), iter->second.c_str());
-        if (count > 0) {
-            buffer->write(count);
+        const std::vector<std::string> &header_list = iter->second;
+        for (size_t i = 0; i < header_list.size(); ++i) {
+            const std::string &header = header_list[i];
+            buffer->reserveWritableBytes(
+                32 + iter->first.size() + header.size());
+            count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(),
+                "%s: %s\r\n", iter->first.c_str(), header.c_str());
+            if (count > 0) {
+                buffer->write(count);
+            }
         }
+
     }
     buffer->reserveWritableBytes(2);
     ::snprintf(buffer->writeBegin(), buffer->writableBytes(), "\r\n");
