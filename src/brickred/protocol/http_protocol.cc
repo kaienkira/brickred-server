@@ -260,8 +260,10 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
         }
 
         message_->addHeader(
-            string_util::trim(std::string(header.data(), colon)),
-            string_util::trim(std::string(colon + 1, *header.end())));
+            string_util::trim(std::string(
+                header.data(), colon)),
+            string_util::trim(std::string(
+                colon + 1, header.data() + header.size())));
     }
 
     buffer->read(header_length + 4);
