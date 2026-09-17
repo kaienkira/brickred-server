@@ -45,6 +45,7 @@ public:
 
     void setVersion(Version version);
     void setHeader(const std::string &key, const std::string &value);
+    void addHeader(const std::string &key, const std::string &value);
     void removeHeader(const std::string &key);
     void setBody(const char *buffer, size_t size);
     void setBody(const std::string &body);

@@ -93,6 +93,14 @@ void HttpMessage::setHeader(const std::string &key, const std::string &value)
 {
     std::pair<HeaderMap::iterator, bool> p = headers_.try_emplace(key);
     std::vector<std::string> &header_list = p.first->second;
+    header_list.clear();
+    header_list.push_back(value);
+}
+
+void HttpMessage::addHeader(const std::string &key, const std::string &value)
+{
+    std::pair<HeaderMap::iterator, bool> p = headers_.try_emplace(key);
+    std::vector<std::string> &header_list = p.first->second;
     header_list.push_back(value);
 }
 

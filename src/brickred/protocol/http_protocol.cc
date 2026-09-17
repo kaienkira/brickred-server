@@ -252,15 +252,16 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     string_util::split(buffer->readBegin(), header_length, "\r\n", &headers);
 
     for (size_t i = 0; i < headers.size(); ++i) {
+        const std::string &header = headers[i];
         const char *colon = string_util::find(
-            headers[i].c_str(), headers[i].size(), ":");
+            header.c_str(), header.size(), ":");
         if (nullptr == colon) {
             return -1;
         }
 
-        message_->setHeader(
-            string_util::trim(std::string(headers[i].c_str(), colon)),
-            string_util::trim(std::string(colon + 1)));
+        message_->addHeader(
+            string_util::trim(std::string(header.c_str(), colon)),
+            string_util::trim(std::string(colon + 1, &header.back())));
     }
 
     buffer->read(header_length + 4);
@@ -285,15 +286,23 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
         }
     }
 
-    bool has_transfer_encoding = message_->hasHeader("Transfer-Encoding");
-    bool has_content_length = message_->hasHeader("Content-Length");
+    const std::vector<std::string> *transfer_encoding_header_list =
+        message_->getHeaderList("Transfer-Encoding");
+    const std::vector<std::string> *content_length_header_list =
+        message_->getHeaderList("Content-Length");
+    bool has_transfer_encoding = transfer_encoding_header_list != nullptr;
+    bool has_content_length = content_length_header_list != nullptr; 
 
     if (has_transfer_encoding) {
         // header transfer-encoding == "chunked"
         if (has_content_length) {
             return -1;
         }
-        if (message_->headerEqual("Transfer-Encoding", "chunked") == false) {
+        if (transfer_encoding_header_list->size() != 1) {
+            return -1;
+        }
+        if (brickred::string_util::caseInsensitiveEqual(
+            (*transfer_encoding_header_list)[0], "chunked") == false) {
             return -1;
         }
 
@@ -363,9 +372,12 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
         }
     } else if (has_content_length) {
         // header content-length exists
+        if (content_length_header_list->size() != 1) {
+            return -1;
+        }
         size_t content_length = 0;
         if (brickred::string_util::strictFromString(
-                message_->getHeader("Content-Length"),
+                (*content_length_header_list)[0],
                 content_length) == false) {
             return -1;
         }
