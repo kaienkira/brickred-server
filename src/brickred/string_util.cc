@@ -5,6 +5,8 @@
 #include <cstring>
 #include <cctype>
 #include <algorithm>
+#include <charconv>
+#include <system_error>
 
 namespace brickred::string_util {
 
@@ -149,38 +151,39 @@ std::string replace(const std::string &str,
     return ret;
 }
 
-std::string toString(int i)
+///////////////////////////////////////////////////////////////////////////////
+std::string toString(int v)
 {
     char buffer[32];
-    ::snprintf(buffer, sizeof(buffer), "%d", i);
+    ::snprintf(buffer, sizeof(buffer), "%d", v);
     return std::string(buffer);
 }
 
-std::string toString(long l)
+std::string toString(long v)
 {
     char buffer[64];
-    ::snprintf(buffer, sizeof(buffer), "%ld", l);
+    ::snprintf(buffer, sizeof(buffer), "%ld", v);
     return std::string(buffer);
 }
 
-std::string toString(long long ll)
+std::string toString(long long v)
 {
     char buffer[64];
-    ::snprintf(buffer, sizeof(buffer), "%lld", ll);
+    ::snprintf(buffer, sizeof(buffer), "%lld", v);
     return std::string(buffer);
 }
 
-std::string toString(unsigned ui)
+std::string toString(unsigned v)
 {
     char buffer[32];
-    ::snprintf(buffer, sizeof(buffer), "%u", ui);
+    ::snprintf(buffer, sizeof(buffer), "%u", v);
     return std::string(buffer);
 }
 
-std::string toString(unsigned long ul)
+std::string toString(unsigned long v)
 {
     char buffer[64];
-    ::snprintf(buffer, sizeof(buffer), "%lu", ul);
+    ::snprintf(buffer, sizeof(buffer), "%lu", v);
     return std::string(buffer);
 }
 
@@ -191,6 +194,103 @@ std::string toString(unsigned long long ull)
     return std::string(buffer);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+template<typename T>
+inline static bool strictFromStringTemplate(
+    const char *str, size_t str_len, T &v, int base)
+{
+    const char *end = str + str_len;
+    T tmp_v = 0;
+    std::from_chars_result ret = std::from_chars(str, end, tmp_v, base);
+    if (ret.ec != std::errc() || ret.ptr != end) {
+        return false;
+    } else {
+        v = tmp_v;
+        return true;
+    }
+}
+
+bool strictFromString(const char *str, size_t str_len, short &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, int &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, long long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, unsigned short &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, unsigned &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, unsigned long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const char *str, size_t str_len, unsigned long long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 10);
+}
+
+bool strictFromString(const std::string &str, short &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, int &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, long long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, unsigned short &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, unsigned &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, unsigned long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+bool strictFromString(const std::string &str, unsigned long long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 10);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 const char *find(const char *str, size_t str_len, const char *keyword)
 {
     size_t keyword_len = ::strlen(keyword);

@@ -22,12 +22,29 @@ std::string replace(const std::string &str,
                     const std::string &replace,
                     int max_replace = -1);
 
-std::string toString(int i);
-std::string toString(long l);
-std::string toString(long long ll);
-std::string toString(unsigned ui);
-std::string toString(unsigned long ul);
-std::string toString(unsigned long long ull);
+std::string toString(int v);
+std::string toString(long v);
+std::string toString(long long v);
+std::string toString(unsigned v);
+std::string toString(unsigned long v);
+std::string toString(unsigned long long v);
+
+bool strictFromString(const char *str, size_t str_len, short &v);
+bool strictFromString(const char *str, size_t str_len, int &v);
+bool strictFromString(const char *str, size_t str_len, long &v);
+bool strictFromString(const char *str, size_t str_len, long long &v);
+bool strictFromString(const char *str, size_t str_len, unsigned short &v);
+bool strictFromString(const char *str, size_t str_len, unsigned &v);
+bool strictFromString(const char *str, size_t str_len, unsigned long &v);
+bool strictFromString(const char *str, size_t str_len, unsigned long long &v);
+bool strictFromString(const std::string &str, short &v);
+bool strictFromString(const std::string &str, int &v);
+bool strictFromString(const std::string &str, long &v);
+bool strictFromString(const std::string &str, long long &v);
+bool strictFromString(const std::string &str, unsigned short &v);
+bool strictFromString(const std::string &str, unsigned &v);
+bool strictFromString(const std::string &str, unsigned long &v);
+bool strictFromString(const std::string &str, unsigned long long &v);
 
 const char *find(const char *str, size_t str_len, const char *keyword);
 bool caseInsensitiveEqual(const std::string &lhs, const std::string &rhs);

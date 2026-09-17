@@ -166,7 +166,11 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
         }
 
         // response status code
-        int status_code = ::atoi(start_line_parts[1].c_str());
+        int status_code = 0;
+        if (brickred::string_util::strictFromString(
+                start_line_parts[1], status_code) == false) {
+            return -1;
+        }
         if (status_code <= 0) {
             return -1;
         }
@@ -359,7 +363,12 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
         }
     } else if (has_content_length) {
         // header content-length exists
-        int content_length = ::atoi(message_->getHeader("Content-Length").c_str());
+        size_t content_length = 0;
+        if (brickred::string_util::strictFromString(
+                message_->getHeader("Content-Length"),
+                content_length) == false) {
+            return -1;
+        }
         if (content_length > 0) {
             // exceed max size
             if ((size_t)content_length > body_max_size_) {
