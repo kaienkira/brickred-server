@@ -167,7 +167,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
 
         // response status code
         int status_code = 0;
-        if (brickred::string_util::strictFromString(
+        if (string_util::strictFromString(
                 start_line_parts[1], status_code) == false) {
             return -1;
         }
@@ -258,6 +258,10 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
         if (nullptr == colon) {
             return -1;
         }
+        if (string_util::find(
+                header.c_str(), header.size(), "\0") != nullptr) {
+            return -1;
+        }
 
         message_->addHeader(
             string_util::trim(std::string(
@@ -303,7 +307,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
         if (transfer_encoding_header_list->size() != 1) {
             return -1;
         }
-        if (brickred::string_util::caseInsensitiveEqual(
+        if (string_util::caseInsensitiveEqual(
             (*transfer_encoding_header_list)[0], "chunked") == false) {
             return -1;
         }
@@ -378,7 +382,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             return -1;
         }
         size_t content_length = 0;
-        if (brickred::string_util::strictFromString(
+        if (string_util::strictFromString(
                 (*content_length_header_list)[0],
                 content_length) == false) {
             return -1;

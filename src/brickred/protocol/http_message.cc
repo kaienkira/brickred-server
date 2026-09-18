@@ -121,9 +121,9 @@ bool HttpMessage::headerListOneTokenEqual(
     for (size_t i = 0; i < header_list.size(); ++i) {
         const std::string &header = header_list[i];
         std::vector<std::string> tokens;
-        brickred::string_util::split(header.data(), ",", &tokens);
+        string_util::split(header.data(), header.size(), ",", &tokens);
         for (size_t j = 0; j < tokens.size(); ++j) {
-            std::string token = brickred::string_util::trim(tokens[j]);
+            std::string token = string_util::trim(tokens[j]);
             if (string_util::caseInsensitiveEqual(token, value)) {
                 return true;
             }
