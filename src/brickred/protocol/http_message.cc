@@ -110,6 +110,29 @@ bool HttpMessage::headerListOneEqual(
     return false;
 }
 
+bool HttpMessage::headerListOneTokenEqual(
+    const std::string &key, const std::string &value) const
+{
+    HeaderMap::const_iterator iter = headers_.find(key);
+    if (iter == headers_.end()) {
+        return false;
+    }
+    const std::vector<std::string> &header_list = iter->second;
+    for (size_t i = 0; i < header_list.size(); ++i) {
+        const std::string &header = header_list[i];
+        std::vector<std::string> tokens;
+        brickred::string_util::split(header.data(), ",", &tokens);
+        for (size_t j = 0; j < tokens.size(); ++j) {
+            std::string token = brickred::string_util::trim(tokens[j]);
+            if (string_util::caseInsensitiveEqual(token, value)) {
+                return true;
+            }
+        }
+    }
+
+    return true;
+}
+
 void HttpMessage::setVersion(Version version)
 {
     version_ = version;
@@ -144,39 +167,6 @@ void HttpMessage::setBody(const char *buffer, size_t size)
 void HttpMessage::setBody(const std::string &body)
 {
     body_ = body;
-}
-
-bool HttpMessage::isConnectionKeepAlive() const
-{
-    return headerListOneEqual("Connection", "Keep-Alive");
-}
-
-void HttpMessage::setConnectionKeepAlive()
-{
-    if (headerListOneEqual("Connection", "Keep-Alive") == false) {
-        addHeader("Connection", "Keep-Alive");
-    }
-}
-
-void HttpMessage::setConnectionClose()
-{
-    if (headerListOneEqual("Connection", "Close") == false) {
-        addHeader("Connection", "Close");
-    }
-}
-
-void HttpMessage::setDate(time_t now)
-{
-    if (0 == now) {
-        Timestamp ts;
-        ts.setNow();
-        now = ts.getSecond();
-    }
-
-    char date_string[256];
-    Timestamp::format(date_string, sizeof(date_string),
-                      "%a, %d %b %Y %H:%M:%S %Z", now);
-    setHeader("Date", date_string);
 }
 
 HttpMessage::Version HttpMessage::VersionStrToEnum(

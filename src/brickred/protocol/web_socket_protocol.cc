@@ -267,11 +267,6 @@ void WebSocketProtocol::Impl::sendHandshakeSuccessResponse(
         response.setHeader(iter->first, iter->second);
     }
 
-    // process header 'date'
-    if (response.hasHeader("Date")) {
-        response.setDate();
-    }
-
     http_protocol_.sendMessage(response);
 }
 
@@ -319,7 +314,7 @@ bool WebSocketProtocol::Impl::checkHandshakeResponseValid(
     }
 
     // check header 'Connection'
-    if (response.headerListOneEqual("Connection", "Upgrade") == false) {
+    if (response.headerListOneTokenEqual("Connection", "Upgrade") == false) {
         return false;
     }
 

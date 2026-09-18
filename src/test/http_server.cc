@@ -100,7 +100,7 @@ public:
                          socket_id, request.getRequestUri().c_str());
                 printHttpRequest(request);
 
-                if (request.isConnectionKeepAlive()) {
+                if (request.headerListOneTokenEqual("Connection", "Keep-Alive")) {
                     tcp_service_.sendMessage(socket_id,
                         s_http_200, sizeof(s_http_200) - 1);
                 } else {

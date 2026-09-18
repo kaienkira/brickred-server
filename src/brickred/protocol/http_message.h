@@ -41,6 +41,8 @@ public:
         const std::string &key, const std::string &value) const;
     bool headerListOneEqual(
         const std::string &key, const std::string &value) const;
+    bool headerListOneTokenEqual(
+        const std::string &key, const std::string &value) const;
     const std::string &getBody() const { return body_; }
 
     void setVersion(Version version);
@@ -49,11 +51,6 @@ public:
     void removeHeader(const std::string &key);
     void setBody(const char *buffer, size_t size);
     void setBody(const std::string &body);
-
-    bool isConnectionKeepAlive() const;
-    void setConnectionKeepAlive();
-    void setConnectionClose();
-    void setDate(time_t now = 0);
 
     static Version VersionStrToEnum(const std::string &version_str);
     static const std::string &VersionEnumToStr(Version version_enum);
