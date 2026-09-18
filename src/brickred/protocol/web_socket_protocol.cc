@@ -222,7 +222,7 @@ bool WebSocketProtocol::Impl::checkHandshakeRequestValid(
         return false;
     }
     // check header 'Connection'
-    if (request.headerListOneEqual("Connection", "Upgrade") == false) {
+    if (request.headerListOneTokenEqual("Connection", "Upgrade") == false) {
         return false;
     }
     // check header 'Sec-WebSocket-Key'

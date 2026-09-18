@@ -130,7 +130,7 @@ bool HttpMessage::headerListOneTokenEqual(
         }
     }
 
-    return true;
+    return false;
 }
 
 void HttpMessage::setVersion(Version version)

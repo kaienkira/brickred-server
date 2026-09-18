@@ -82,7 +82,6 @@ public:
         UniquePtr<Context> context(new Context(service, socket_id));
         context->getProtocol().setOutputCallback(BRICKRED_BIND_MEM_FUNC(
             &WsEchoServer::Context::sendMessage, context.get()));
-        context->getProtocol().setHandshakeHeader("Date", "");
         context->getProtocol().startAsServer();
 
         if (service->setContext(socket_id, context.get()) == false) {
