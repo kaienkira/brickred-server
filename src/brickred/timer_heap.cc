@@ -118,7 +118,7 @@ TimerHeap::Impl::~Impl()
 int64_t TimerHeap::Impl::getNextTimeoutMillisecond(const Timestamp &now) const
 {
     Timer *timer = minHeapTop();
-    if (nullptr == timer) {
+    if (timer == nullptr) {
         return -1;
     }
 
@@ -178,7 +178,7 @@ void TimerHeap::Impl::checkTimeout(const Timestamp &now)
 {
     for (;;) {
         Timer *timer = minHeapTop();
-        if (nullptr == timer) {
+        if (timer == nullptr) {
             return;
         }
 

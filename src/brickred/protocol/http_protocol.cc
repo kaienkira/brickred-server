@@ -107,7 +107,7 @@ HttpProtocol::Impl::RetCode HttpProtocol::Impl::recvMessage(
 {
     for (;;) {
         StatusHandler func = s_status_handler_[(int)status_];
-        if (nullptr == func) {
+        if (func == nullptr) {
             return RetCode::ERROR;
         }
 
@@ -134,7 +134,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
     // get a http line
     const char *crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n");
-    if (nullptr == crlf) {
+    if (crlf == nullptr) {
         // exceed max size
         if (buffer->readableBytes() > start_line_max_size_) {
             return -1;
@@ -234,7 +234,7 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     const char *double_crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n\r\n");
-    if (nullptr == double_crlf) {
+    if (double_crlf == nullptr) {
         if (buffer->readableBytes() > header_max_size_) {
             return -1;
         }
@@ -253,13 +253,12 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     for (size_t i = 0; i < headers.size(); ++i) {
         const std::string &header = headers[i];
-        const char *colon = string_util::find(
-            header.c_str(), header.size(), ":");
-        if (nullptr == colon) {
+        if (header.find('\0') != std::string::npos) {
             return -1;
         }
-        if (string_util::find(
-                header.c_str(), header.size(), "\0") != nullptr) {
+        const char *colon = string_util::find(
+            header.c_str(), header.size(), ":");
+        if (colon == nullptr) {
             return -1;
         }
 
@@ -312,7 +311,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             return -1;
         }
 
-        if (nullptr == chunk_buffer_) {
+        if (chunk_buffer_ == nullptr) {
             chunk_buffer_ = new DynamicBuffer();
         }
 
@@ -328,7 +327,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 
             const char *crlf =
                 string_util::find(buffer_start, buffer_size, "\r\n");
-            if (nullptr == crlf) {
+            if (crlf == nullptr) {
                 // wait for more data
                 return 0;
             }
@@ -423,7 +422,7 @@ bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
     if (status_ != Status::FINISHED) {
         return false;
     }
-    if (nullptr == message_) {
+    if (message_ == nullptr) {
         return false;
     }
     if (message_->getMessageType() != HttpMessage::MessageType::REQUEST) {
@@ -441,7 +440,7 @@ bool HttpProtocol::Impl::retrieveResponse(HttpResponse *response)
     if (status_ != Status::FINISHED) {
         return false;
     }
-    if (nullptr == message_) {
+    if (message_ == nullptr) {
         return false;
     }
     if (message_->getMessageType() != HttpMessage::MessageType::RESPONSE) {

@@ -28,7 +28,7 @@ void split(const char *str, const char *sep,
         }
 
         const char *next = ::strstr(last, sep);
-        if (nullptr == next) {
+        if (next == nullptr) {
             result->push_back(std::string(last));
             break;
         }

@@ -38,7 +38,7 @@ void InternalLogger::setLogFunc(LogFunc log_func)
 
 void InternalLogger::log(int level, const char *format, ...)
 {
-    if (nullptr == log_func_) {
+    if (log_func_ == nullptr) {
         return;
     }
 

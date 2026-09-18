@@ -67,7 +67,7 @@ void LogAsyncSink::Impl::logThreadFunc()
         DynamicBuffer *queue_buffer_raw = nullptr;
         queue_.pop(queue_buffer_raw);
 
-        if (nullptr == queue_buffer_raw) {
+        if (queue_buffer_raw == nullptr) {
             break;
         }
         UniquePtr<DynamicBuffer> queue_buffer(queue_buffer_raw);

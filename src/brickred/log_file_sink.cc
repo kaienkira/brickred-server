@@ -58,7 +58,7 @@ bool LogFileSink::Impl::openFile()
     }
 
     FILE *fp = ::fopen(actual_file_path, "a");
-    if (nullptr == fp) {
+    if (fp == nullptr) {
         BRICKRED_INTERNAL_LOG_ERROR(
             "open file %s failed: %s",
             actual_file_path, ::strerror(errno));

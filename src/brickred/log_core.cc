@@ -82,7 +82,7 @@ void Logger::log(int level, const char *filename, int line,
 
         // lazy format
         if (!buffer_ready) {
-            if (nullptr == formatter_) {
+            if (formatter_ == nullptr) {
                 count = ::vsnprintf(buffer.get(), max_log_size_,
                     format, args);
                 if (count < 0) {
@@ -220,7 +220,7 @@ void LogCore::Impl::removeLogger(int logger_id)
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return;
     }
-    if (nullptr == loggers_[logger_id]) {
+    if (loggers_[logger_id] == nullptr) {
         return;
     }
 
@@ -233,7 +233,7 @@ bool LogCore::Impl::addSink(int logger_id, LogSink *sink, int level_filter)
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return false;
     }
-    if (nullptr == loggers_[logger_id]) {
+    if (loggers_[logger_id] == nullptr) {
         return false;
     }
 
@@ -247,7 +247,7 @@ void LogCore::Impl::log(int logger_id, int level, const char *filename,
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return;
     }
-    if (nullptr == loggers_[logger_id]) {
+    if (loggers_[logger_id] == nullptr) {
         return;
     }
 
@@ -260,7 +260,7 @@ void LogCore::Impl::plainLog(int logger_id, int level,
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return;
     }
-    if (nullptr == loggers_[logger_id]) {
+    if (loggers_[logger_id] == nullptr) {
         return;
     }
 
@@ -272,7 +272,7 @@ void LogCore::Impl::setLevelFilter(int logger_id, int level_filter)
     if (logger_id < 0 || logger_id >= (int)loggers_.size()) {
         return;
     }
-    if (nullptr == loggers_[logger_id]) {
+    if (loggers_[logger_id] == nullptr) {
         return;
     }
 

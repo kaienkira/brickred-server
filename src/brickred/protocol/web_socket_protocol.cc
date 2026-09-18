@@ -183,7 +183,7 @@ WebSocketProtocol::RetCode WebSocketProtocol::Impl::recvMessage(
 {
     for (;;) {
         StatusHandler func = s_status_handler_[(int)status_];
-        if (nullptr == func) {
+        if (func == nullptr) {
             return RetCode::ERROR;
         }
 

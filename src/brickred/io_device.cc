@@ -43,7 +43,7 @@ bool IODevice::attachIOService(IOService &io_service)
 
 void IODevice::detachIOService()
 {
-    if (nullptr == io_service_) {
+    if (io_service_ == nullptr) {
         return;
     }
     io_service_->removeIODevice(this);
