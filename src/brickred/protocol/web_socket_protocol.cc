@@ -218,7 +218,7 @@ bool WebSocketProtocol::Impl::checkHandshakeRequestValid(
         return false;
     }
     // check header 'Upgrade'
-    if (request.headerEqual("Upgrade", "websocket") == false) {
+    if (request.headerListOneTokenEqual("Upgrade", "websocket") == false) {
         return false;
     }
     // check header 'Connection'
