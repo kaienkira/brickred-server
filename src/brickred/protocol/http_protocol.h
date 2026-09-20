@@ -50,6 +50,7 @@ public:
     void setStartLineMaxSize(size_t size = 8 * 1024);
     void setHeaderMaxSize(size_t size = 32 * 1024);
     void setBodyMaxSize(size_t size = 1024 * 1024);
+    void setChunkHeadLineMaxSize(size_t size = 1024);
 
     static void writeMessage(const HttpMessage &message,
                              DynamicBuffer *buffer);

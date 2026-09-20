@@ -38,6 +38,7 @@ public:
     void setStartLineMaxSize(size_t size);
     void setHeaderMaxSize(size_t size);
     void setBodyMaxSize(size_t size);
+    void setChunkHeadLineMaxSize(size_t size);
 
 private:
     static bool parseChunkSize(
@@ -57,6 +58,7 @@ private:
     size_t start_line_max_size_;
     size_t header_max_size_;
     size_t body_max_size_;
+    size_t chunk_head_line_max_size_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -75,7 +77,8 @@ HttpProtocol::Impl::Impl() :
     chunk_buffer_(nullptr),
     start_line_max_size_(0),
     header_max_size_(0),
-    body_max_size_(0)
+    body_max_size_(0),
+    chunk_head_line_max_size_(0)
 {
 }
 
@@ -203,6 +206,15 @@ void HttpProtocol::Impl::setBodyMaxSize(size_t size)
     body_max_size_ = size;
 }
 
+void HttpProtocol::Impl::setChunkHeadLineMaxSize(size_t size)
+{
+    // single crlf
+    if (size < 2) {
+        return;
+    }
+    chunk_head_line_max_size_ = size;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 bool HttpProtocol::Impl::parseChunkSize(
     const std::string &chunk_head_line, unsigned int &chunk_size)
@@ -225,12 +237,14 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
 {
     // get a http line
     const char *crlf = string_util::find(buffer->readBegin(),
-        buffer->readableBytes(), "\r\n");
+        std::min(buffer->readableBytes(), start_line_max_size_),
+        "\r\n");
     if (crlf == nullptr) {
         // exceed max size
         if (buffer->readableBytes() > start_line_max_size_) {
             return -1;
         }
+        // wait for more data
         return 0;
     }
 
@@ -407,19 +421,19 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             chunk_buffer_ = new DynamicBuffer();
         }
 
-        // exceed max size
-        if (chunk_buffer_->readableBytes() + buffer->readableBytes() >
-                body_max_size_) {
-            return -1;
-        }
 
         for (;;) {
             const char *buffer_start = buffer->readBegin();
             size_t buffer_size = buffer->readableBytes();
 
-            const char *crlf =
-                string_util::find(buffer_start, buffer_size, "\r\n");
+            const char *crlf = string_util::find(buffer_start,
+                std::min(buffer_size, chunk_head_line_max_size_),
+                "\r\n");
             if (crlf == nullptr) {
+                // exceed max size
+                if (buffer_size > chunk_head_line_max_size_) {
+                    return -1;
+                }
                 // wait for more data
                 return 0;
             }
@@ -429,7 +443,11 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             if (parseChunkSize(chunk_head_line, chunk_size) == false) {
                 return -1;
             }
+            // exceed max size
             if (chunk_size > body_max_size_) {
+                return -1;
+            }
+            if (chunk_buffer_->readableBytes() > body_max_size_ - chunk_size) {
                 return -1;
             }
 
@@ -570,6 +588,11 @@ void HttpProtocol::setHeaderMaxSize(size_t size)
 void HttpProtocol::setBodyMaxSize(size_t size)
 {
     pimpl_->setBodyMaxSize(size);
+}
+
+void HttpProtocol::setChunkHeadLineMaxSize(size_t size)
+{
+    pimpl_->setChunkHeadLineMaxSize(size);
 }
 
 void HttpProtocol::writeMessage(const HttpMessage &message,
