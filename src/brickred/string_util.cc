@@ -290,6 +290,94 @@ bool strictFromString(const std::string &str, unsigned long long &v)
     return strictFromStringTemplate(str.data(), str.length(), v, 10);
 }
 
+bool strictFromHexString(
+    const char *str, size_t str_len, short &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, int &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, long long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, unsigned short &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, unsigned &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, unsigned long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(
+    const char *str, size_t str_len, unsigned long long &v)
+{
+    return strictFromStringTemplate(str, str_len, v, 16);
+}
+
+bool strictFromHexString(const std::string &str, short &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, int &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, long long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, unsigned short &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, unsigned &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, unsigned long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
+bool strictFromHexString(const std::string &str, unsigned long long &v)
+{
+    return strictFromStringTemplate(str.data(), str.length(), v, 16);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 const char *find(const char *str, size_t str_len, const char *keyword)
 {

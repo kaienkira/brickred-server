@@ -39,7 +39,9 @@ public:
     void setHeaderMaxSize(size_t size);
     void setBodyMaxSize(size_t size);
 
-public:
+private:
+    static bool parseChunkSize(
+        const std::string &chunk_head_line, unsigned int &chunk_size);
     int readStartLine(DynamicBuffer *buffer);
     int readHeader(DynamicBuffer *buffer);
     int readBody(DynamicBuffer *buffer);
@@ -127,6 +129,96 @@ HttpProtocol::Impl::RetCode HttpProtocol::Impl::recvMessage(
             return RetCode::MESSAGE_READY;
         }
     }
+}
+
+
+bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
+{
+    if (status_ != Status::FINISHED) {
+        return false;
+    }
+    if (message_ == nullptr) {
+        return false;
+    }
+    if (message_->getMessageType() != HttpMessage::MessageType::REQUEST) {
+        return false;
+    }
+
+    request->swap(*static_cast<HttpRequest *>(message_));
+    reset();
+
+    return true;
+}
+
+bool HttpProtocol::Impl::retrieveResponse(HttpResponse *response)
+{
+    if (status_ != Status::FINISHED) {
+        return false;
+    }
+    if (message_ == nullptr) {
+        return false;
+    }
+    if (message_->getMessageType() != HttpMessage::MessageType::RESPONSE) {
+        return false;
+    }
+
+    response->swap(*static_cast<HttpResponse *>(message_));
+    reset();
+
+    return true;
+}
+
+void HttpProtocol::Impl::sendMessage(const HttpMessage &message)
+{
+    if (output_cb_) {
+        DynamicBuffer buffer;
+        HttpProtocol::writeMessage(message, &buffer);
+        output_cb_(buffer.readBegin(), buffer.readableBytes());
+    }
+}
+
+void HttpProtocol::Impl::setStartLineMaxSize(size_t size)
+{
+    // single crlf
+    if (size < 2) {
+        return;
+    }
+    start_line_max_size_ = size;
+}
+
+void HttpProtocol::Impl::setHeaderMaxSize(size_t size)
+{
+    // double crlf
+    if (size < 4) {
+        return;
+    }
+    header_max_size_ = size;
+}
+
+void HttpProtocol::Impl::setBodyMaxSize(size_t size)
+{
+    if (size == 0) {
+        return;
+    }
+    body_max_size_ = size;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool HttpProtocol::Impl::parseChunkSize(
+    const std::string &chunk_head_line, unsigned int &chunk_size)
+{
+    const char *begin = chunk_head_line.data();
+    const char *end = begin + chunk_head_line.size();
+    const char *semicolon = static_cast<const char *>(
+        ::memchr(begin, ';', chunk_head_line.size()));
+    if (semicolon != nullptr) {
+        end = semicolon;
+        while (end > begin && (end[-1] == ' ' || end[-1] == '\t')) {
+            --end;
+        }
+    }
+
+    return string_util::strictFromHexString(begin, end - begin, chunk_size);
 }
 
 int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
@@ -334,7 +426,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 
             std::string chunk_head_line(buffer_start, crlf);
             unsigned int chunk_size = 0;
-            if (::sscanf(chunk_head_line.c_str(), "%x", &chunk_size) != 1) {
+            if (parseChunkSize(chunk_head_line, chunk_size) == false) {
                 return -1;
             }
             if (chunk_size > body_max_size_) {
@@ -415,77 +507,6 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
 
         return -1;
     }
-}
-
-bool HttpProtocol::Impl::retrieveRequest(HttpRequest *request)
-{
-    if (status_ != Status::FINISHED) {
-        return false;
-    }
-    if (message_ == nullptr) {
-        return false;
-    }
-    if (message_->getMessageType() != HttpMessage::MessageType::REQUEST) {
-        return false;
-    }
-
-    request->swap(*static_cast<HttpRequest *>(message_));
-    reset();
-
-    return true;
-}
-
-bool HttpProtocol::Impl::retrieveResponse(HttpResponse *response)
-{
-    if (status_ != Status::FINISHED) {
-        return false;
-    }
-    if (message_ == nullptr) {
-        return false;
-    }
-    if (message_->getMessageType() != HttpMessage::MessageType::RESPONSE) {
-        return false;
-    }
-
-    response->swap(*static_cast<HttpResponse *>(message_));
-    reset();
-
-    return true;
-}
-
-void HttpProtocol::Impl::sendMessage(const HttpMessage &message)
-{
-    if (output_cb_) {
-        DynamicBuffer buffer;
-        HttpProtocol::writeMessage(message, &buffer);
-        output_cb_(buffer.readBegin(), buffer.readableBytes());
-    }
-}
-
-void HttpProtocol::Impl::setStartLineMaxSize(size_t size)
-{
-    // single crlf
-    if (size < 2) {
-        return;
-    }
-    start_line_max_size_ = size;
-}
-
-void HttpProtocol::Impl::setHeaderMaxSize(size_t size)
-{
-    // double crlf
-    if (size < 4) {
-        return;
-    }
-    header_max_size_ = size;
-}
-
-void HttpProtocol::Impl::setBodyMaxSize(size_t size)
-{
-    if (size == 0) {
-        return;
-    }
-    body_max_size_ = size;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

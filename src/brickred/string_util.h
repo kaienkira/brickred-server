@@ -46,6 +46,23 @@ bool strictFromString(const std::string &str, unsigned &v);
 bool strictFromString(const std::string &str, unsigned long &v);
 bool strictFromString(const std::string &str, unsigned long long &v);
 
+bool strictFromHexString(const char *str, size_t str_len, short &v);
+bool strictFromHexString(const char *str, size_t str_len, int &v);
+bool strictFromHexString(const char *str, size_t str_len, long &v);
+bool strictFromHexString(const char *str, size_t str_len, long long &v);
+bool strictFromHexString(const char *str, size_t str_len, unsigned short &v);
+bool strictFromHexString(const char *str, size_t str_len, unsigned &v);
+bool strictFromHexString(const char *str, size_t str_len, unsigned long &v);
+bool strictFromHexString(const char *str, size_t str_len, unsigned long long &v);
+bool strictFromHexString(const std::string &str, short &v);
+bool strictFromHexString(const std::string &str, int &v);
+bool strictFromHexString(const std::string &str, long &v);
+bool strictFromHexString(const std::string &str, long long &v);
+bool strictFromHexString(const std::string &str, unsigned short &v);
+bool strictFromHexString(const std::string &str, unsigned &v);
+bool strictFromHexString(const std::string &str, unsigned long &v);
+bool strictFromHexString(const std::string &str, unsigned long long &v);
+
 const char *find(const char *str, size_t str_len, const char *keyword);
 bool caseInsensitiveEqual(const std::string &lhs, const std::string &rhs);
 
