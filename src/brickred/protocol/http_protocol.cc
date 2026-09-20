@@ -241,7 +241,7 @@ int HttpProtocol::Impl::readStartLine(DynamicBuffer *buffer)
         "\r\n");
     if (crlf == nullptr) {
         // exceed max size
-        if (buffer->readableBytes() > start_line_max_size_) {
+        if (buffer->readableBytes() >= start_line_max_size_) {
             return -1;
         }
         // wait for more data
@@ -421,7 +421,6 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
             chunk_buffer_ = new DynamicBuffer();
         }
 
-
         for (;;) {
             const char *buffer_start = buffer->readBegin();
             size_t buffer_size = buffer->readableBytes();
@@ -431,7 +430,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 "\r\n");
             if (crlf == nullptr) {
                 // exceed max size
-                if (buffer_size > chunk_head_line_max_size_) {
+                if (buffer_size >= chunk_head_line_max_size_) {
                     return -1;
                 }
                 // wait for more data
@@ -534,6 +533,7 @@ HttpProtocol::HttpProtocol() :
     setStartLineMaxSize();
     setHeaderMaxSize();
     setBodyMaxSize();
+    setChunkHeadLineMaxSize();
 }
 
 HttpProtocol::~HttpProtocol()
