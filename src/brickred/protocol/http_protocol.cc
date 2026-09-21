@@ -341,7 +341,7 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
     const char *double_crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n\r\n");
     if (double_crlf == nullptr) {
-        if (buffer->readableBytes() > header_max_size_) {
+        if (buffer->readableBytes() >= header_max_size_) {
             return -1;
         }
         return 0;
@@ -359,20 +359,21 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     for (size_t i = 0; i < headers.size(); ++i) {
         const std::string &header = headers[i];
-        if (header.find('\0') != std::string::npos) {
-            return -1;
-        }
-        const char *colon = string_util::find(
-            header.c_str(), header.size(), ":");
+        const char *colon = static_cast<const char *>(
+            ::memchr(header.data(), ':', header.size()));
         if (colon == nullptr) {
             return -1;
         }
-
-        message_->addHeader(
-            string_util::trim(std::string(
-                header.data(), colon)),
-            string_util::trim(std::string(
-                colon + 1, header.data() + header.size())));
+        std::string key(header.data(), colon);
+        if (HttpMessage::checkHeaderKeyValid(key) == false) {
+            return -1;
+        }
+        std::string value(colon + 1, header.data() + header.size());
+        value = string_util::trim(value);
+        if (HttpMessage::checkHeaderValueValid(value) == false) {
+            return -1;
+        }
+        message_->addHeader(key, value);
     }
 
     buffer->read(header_length + 4);

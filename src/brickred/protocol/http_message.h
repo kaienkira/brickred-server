@@ -49,11 +49,15 @@ public:
     void setHeader(const std::string &key, const std::string &value);
     void addHeader(const std::string &key, const std::string &value);
     void removeHeader(const std::string &key);
-    void setBody(const char *buffer, size_t size);
+    void setBody(const char *body, size_t size);
     void setBody(const std::string &body);
 
     static Version VersionStrToEnum(const std::string &version_str);
     static const std::string &VersionEnumToStr(Version version_enum);
+    static bool checkHeaderKeyValid(const char *key, size_t size);
+    static bool checkHeaderKeyValid(const std::string &key);
+    static bool checkHeaderValueValid(const char *value, size_t size);
+    static bool checkHeaderValueValid(const std::string &value);
 
 protected:
     MessageType message_type_;

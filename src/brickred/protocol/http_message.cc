@@ -159,9 +159,9 @@ void HttpMessage::removeHeader(const std::string &key)
     headers_.erase(key);
 }
 
-void HttpMessage::setBody(const char *buffer, size_t size)
+void HttpMessage::setBody(const char *body, size_t size)
 {
-    body_.assign(buffer, size);
+    body_.assign(body, size);
 }
 
 void HttpMessage::setBody(const std::string &body)
@@ -191,6 +191,53 @@ const std::string &HttpMessage::VersionEnumToStr(Version version_enum)
     } else {
         return s_cstr_unknown;
     }
+}
+
+bool HttpMessage::checkHeaderKeyValid(const char *key, size_t size)
+{
+    if (size == 0) {
+        return false;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+        unsigned char c = static_cast<unsigned char>(key[i]);
+        if ((c >= '0' && c <= '9') ||
+            (c >= 'a' && c <= 'z') ||
+            (c >= 'A' && c <= 'Z')) {
+            continue;
+        }
+        if (c == '!' || c == '#' || c == '$' || c == '%' || c == '&' ||
+            c == '\'' || c == '*' || c == '+' || c == '-' || c == '.' ||
+            c == '^' || c == '_' || c == '`' || c == '|' || c == '~') {
+            continue;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+bool HttpMessage::checkHeaderKeyValid(const std::string &key)
+{
+    return checkHeaderKeyValid(key.data(), key.size());
+}
+
+bool HttpMessage::checkHeaderValueValid(const char *value, size_t size)
+{
+    for (size_t i = 0; i < size; ++i) {
+        unsigned char c = static_cast<unsigned char>(value[i]);
+        // only accept tab in control char, and deny del
+        if ((c < 0x20 && c != '\t') || c == 0x7f) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool HttpMessage::checkHeaderValueValid(const std::string &value)
+{
+    return checkHeaderValueValid(value.data(), value.size());
 }
 
 } // namespace brickred::protocol
