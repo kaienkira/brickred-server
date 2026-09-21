@@ -28,6 +28,7 @@ void HttpMessage::swap(HttpMessage &other)
     std::swap(version_, other.version_);
     headers_.swap(other.headers_);
     body_.swap(other.body_);
+    trailers_.swap(other.trailers_);
 }
 
 const std::string &HttpMessage::getHeader(const std::string &key) const

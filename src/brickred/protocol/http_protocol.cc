@@ -685,23 +685,6 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
     ::memcpy(buffer->writeBegin(), message.getBody().data(),
         message.getBody().size());
     buffer->write(message.getBody().size());
-
-    // trailer
-    for (HttpMessage::HeaderMap::const_iterator iter =
-             message.getTrailers().begin();
-         iter != message.getTrailers().end(); ++iter) {
-        const std::vector<std::string> &trailer_list = iter->second;
-        for (size_t i = 0; i < trailer_list.size(); ++i) {
-            const std::string &trailer = trailer_list[i];
-            buffer->reserveWritableBytes(
-                32 + iter->first.size() + trailer.size());
-            count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(),
-                "%s: %s\r\n", iter->first.c_str(), trailer.c_str());
-            if (count > 0) {
-                buffer->write(count);
-            }
-        }
-    }
 }
 
 } // namespace brickred::protocol
