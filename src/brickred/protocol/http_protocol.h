@@ -20,7 +20,7 @@ public:
         READING_START_LINE = 0,
         READING_HEADER,
         READING_BODY,
-        READING_TRAILER_HEADER,
+        READING_TRAILER,
         FINISHED,
         PENDING_ERROR,
         MAX
@@ -51,6 +51,7 @@ public:
     void setHeaderMaxSize(size_t size = 32 * 1024);
     void setBodyMaxSize(size_t size = 1024 * 1024);
     void setChunkHeadLineMaxSize(size_t size = 1024);
+    void setTrailerMaxSize(size_t size = 32 * 1024);
 
     static void writeMessage(const HttpMessage &message,
                              DynamicBuffer *buffer);

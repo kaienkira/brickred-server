@@ -133,6 +133,33 @@ bool HttpMessage::headerListOneTokenEqual(
     return false;
 }
 
+const std::string &HttpMessage::getTrailer(const std::string &key) const
+{
+    HeaderMap::const_iterator iter = trailers_.find(key);
+    if (iter == trailers_.end()) {
+        return s_cstr_empty_string;
+    } else {
+        const std::vector<std::string> &trailer_list = iter->second;
+        if (trailer_list.empty()) {
+            return s_cstr_empty_string;
+        } else {
+            return trailer_list[0];
+        }
+    }
+}
+
+const std::vector<std::string> *HttpMessage::getTrailerList(
+    const std::string &key) const
+{
+    HeaderMap::const_iterator iter = trailers_.find(key);
+    if (iter == trailers_.end()) {
+        return nullptr;
+    } else {
+        return &iter->second;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 void HttpMessage::setVersion(Version version)
 {
     version_ = version;
@@ -169,6 +196,28 @@ void HttpMessage::setBody(const std::string &body)
     body_ = body;
 }
 
+void HttpMessage::setTrailer(const std::string &key, const std::string &value)
+{
+    std::pair<HeaderMap::iterator, bool> p = trailers_.try_emplace(key);
+    std::vector<std::string> &trailer_list = p.first->second;
+    std::string v = value;
+    trailer_list.clear();
+    trailer_list.push_back(v);
+}
+
+void HttpMessage::addTrailer(const std::string &key, const std::string &value)
+{
+    std::pair<HeaderMap::iterator, bool> p = trailers_.try_emplace(key);
+    std::vector<std::string> &trailer_list = p.first->second;
+    trailer_list.push_back(value);
+}
+
+void HttpMessage::removeTrailer(const std::string &key)
+{
+    trailers_.erase(key);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 HttpMessage::Version HttpMessage::VersionStrToEnum(
     const std::string &version_str)
 {

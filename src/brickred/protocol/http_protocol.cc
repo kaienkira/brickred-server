@@ -39,6 +39,7 @@ public:
     void setHeaderMaxSize(size_t size);
     void setBodyMaxSize(size_t size);
     void setChunkHeadLineMaxSize(size_t size);
+    void setTrailerMaxSize(size_t size);
 
 private:
     static bool parseChunkSize(
@@ -59,6 +60,7 @@ private:
     size_t header_max_size_;
     size_t body_max_size_;
     size_t chunk_head_line_max_size_;
+    size_t trailer_max_size_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,8 @@ HttpProtocol::Impl::Impl() :
     start_line_max_size_(0),
     header_max_size_(0),
     body_max_size_(0),
-    chunk_head_line_max_size_(0)
+    chunk_head_line_max_size_(0),
+    trailer_max_size_(0)
 {
 }
 
@@ -215,6 +218,15 @@ void HttpProtocol::Impl::setChunkHeadLineMaxSize(size_t size)
     chunk_head_line_max_size_ = size;
 }
 
+void HttpProtocol::Impl::setTrailerMaxSize(size_t size)
+{
+    // double crlf
+    if (size < 4) {
+        return;
+    }
+    trailer_max_size_ = size;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 bool HttpProtocol::Impl::parseChunkSize(
     const std::string &chunk_head_line, unsigned int &chunk_size)
@@ -328,9 +340,11 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
         return 0;
     }
 
+    bool isReadingTrailer = status_ == Status::READING_TRAILER;
+
     if (::memcmp(buffer->readBegin(), "\r\n", 2) == 0) {
         buffer->read(2);
-        if (status_ == Status::READING_TRAILER_HEADER) {
+        if (isReadingTrailer) {
             status_ = Status::FINISHED;
         } else {
             status_ = Status::READING_BODY;
@@ -338,10 +352,12 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
         return 1;
     }
 
+    size_t header_max_size =
+        isReadingTrailer ? trailer_max_size_ : header_max_size_;
     const char *double_crlf = string_util::find(buffer->readBegin(),
         buffer->readableBytes(), "\r\n\r\n");
     if (double_crlf == nullptr) {
-        if (buffer->readableBytes() >= header_max_size_) {
+        if (buffer->readableBytes() >= header_max_size) {
             return -1;
         }
         return 0;
@@ -349,7 +365,7 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
 
     size_t header_length = double_crlf - buffer->readBegin();
     // exceed max size
-    if (header_length > header_max_size_ - 4) {
+    if (header_length > header_max_size - 4) {
         return -1;
     }
 
@@ -373,11 +389,15 @@ int HttpProtocol::Impl::readHeader(DynamicBuffer *buffer)
         if (HttpMessage::checkHeaderValueValid(value) == false) {
             return -1;
         }
-        message_->addHeader(key, value);
+        if (isReadingTrailer) {
+            message_->addTrailer(key, value);
+        } else {
+            message_->addHeader(key, value);
+        }
     }
 
     buffer->read(header_length + 4);
-    if (status_ == Status::READING_TRAILER_HEADER) {
+    if (isReadingTrailer) {
         status_ = Status::FINISHED;
     } else {
         status_ = Status::READING_BODY;
@@ -481,7 +501,7 @@ int HttpProtocol::Impl::readBody(DynamicBuffer *buffer)
                 message_->removeHeader("Transfer-Encoding");
 
                 // read tailer header
-                status_ = Status::READING_TRAILER_HEADER;
+                status_ = Status::READING_TRAILER;
                 return 1;
             }
         }
@@ -535,6 +555,7 @@ HttpProtocol::HttpProtocol() :
     setHeaderMaxSize();
     setBodyMaxSize();
     setChunkHeadLineMaxSize();
+    setTrailerMaxSize();
 }
 
 HttpProtocol::~HttpProtocol()
@@ -596,6 +617,11 @@ void HttpProtocol::setChunkHeadLineMaxSize(size_t size)
     pimpl_->setChunkHeadLineMaxSize(size);
 }
 
+void HttpProtocol::setTrailerMaxSize(size_t size)
+{
+    pimpl_->setTrailerMaxSize(size);
+}
+
 void HttpProtocol::writeMessage(const HttpMessage &message,
                                 DynamicBuffer *buffer)
 {
@@ -649,7 +675,6 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
                 buffer->write(count);
             }
         }
-
     }
     buffer->reserveWritableBytes(2);
     ::snprintf(buffer->writeBegin(), buffer->writableBytes(), "\r\n");
@@ -660,6 +685,23 @@ void HttpProtocol::writeMessage(const HttpMessage &message,
     ::memcpy(buffer->writeBegin(), message.getBody().data(),
         message.getBody().size());
     buffer->write(message.getBody().size());
+
+    // trailer
+    for (HttpMessage::HeaderMap::const_iterator iter =
+             message.getTrailers().begin();
+         iter != message.getTrailers().end(); ++iter) {
+        const std::vector<std::string> &trailer_list = iter->second;
+        for (size_t i = 0; i < trailer_list.size(); ++i) {
+            const std::string &trailer = trailer_list[i];
+            buffer->reserveWritableBytes(
+                32 + iter->first.size() + trailer.size());
+            count = ::snprintf(buffer->writeBegin(), buffer->writableBytes(),
+                "%s: %s\r\n", iter->first.c_str(), trailer.c_str());
+            if (count > 0) {
+                buffer->write(count);
+            }
+        }
+    }
 }
 
 } // namespace brickred::protocol

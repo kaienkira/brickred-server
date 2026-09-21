@@ -35,7 +35,8 @@ public:
     Version getVersion() const { return version_; }
     const HeaderMap &getHeaders() const { return headers_; }
     const std::string &getHeader(const std::string &key) const;
-    const std::vector<std::string> *getHeaderList(const std::string &key) const;
+    const std::vector<std::string> *getHeaderList(
+        const std::string &key) const;
     bool hasHeader(const std::string &key) const;
     bool headerEqual(
         const std::string &key, const std::string &value) const;
@@ -44,6 +45,10 @@ public:
     bool headerListOneTokenEqual(
         const std::string &key, const std::string &value) const;
     const std::string &getBody() const { return body_; }
+    const HeaderMap &getTrailers() const { return trailers_; }
+    const std::string &getTrailer(const std::string &key) const;
+    const std::vector<std::string> *getTrailerList(
+        const std::string &key) const;
 
     void setVersion(Version version);
     void setHeader(const std::string &key, const std::string &value);
@@ -51,6 +56,9 @@ public:
     void removeHeader(const std::string &key);
     void setBody(const char *body, size_t size);
     void setBody(const std::string &body);
+    void setTrailer(const std::string &key, const std::string &value);
+    void addTrailer(const std::string &key, const std::string &value);
+    void removeTrailer(const std::string &key);
 
     static Version VersionStrToEnum(const std::string &version_str);
     static const std::string &VersionEnumToStr(Version version_enum);
@@ -64,6 +72,7 @@ protected:
     Version version_;
     HeaderMap headers_;
     std::string body_;
+    HeaderMap trailers_;
 };
 
 } // namespace brickred::protocol
