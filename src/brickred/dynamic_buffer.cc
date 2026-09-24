@@ -107,7 +107,9 @@ void DynamicBuffer::clear()
 
 bool DynamicBuffer::peekInt8(uint8_t &v, size_t offset)
 {
-    if (readableBytes() < offset + 1) {
+    size_t readable_bytes = readableBytes();
+    if (offset > readable_bytes ||
+        readable_bytes - offset < 1) {
         return false;
     }
     const char *p = readBegin() + offset;
@@ -155,7 +157,9 @@ bool DynamicBuffer::peekInt8(uint64_t &v, size_t offset)
 
 bool DynamicBuffer::peekInt16(uint16_t &v, size_t offset, bool littleEndian)
 {
-    if (readableBytes() < offset + 2) {
+    size_t readable_bytes = readableBytes();
+    if (offset > readable_bytes ||
+        readable_bytes - offset < 2) {
         return false;
     }
     const char *p = readBegin() + offset;
@@ -197,7 +201,9 @@ bool DynamicBuffer::peekInt16(uint64_t &v, size_t offset, bool littleEndian)
 
 bool DynamicBuffer::peekInt32(uint32_t &v, size_t offset, bool littleEndian)
 {
-    if (readableBytes() < offset + 4) {
+    size_t readable_bytes = readableBytes();
+    if (offset > readable_bytes ||
+        readable_bytes - offset < 4) {
         return false;
     }
     const char *p = readBegin() + offset;
@@ -231,7 +237,9 @@ bool DynamicBuffer::peekInt32(uint64_t &v, size_t offset, bool littleEndian)
 
 bool DynamicBuffer::peekInt64(uint64_t &v, size_t offset, bool littleEndian)
 {
-    if (readableBytes() < offset + 8) {
+    size_t readable_bytes = readableBytes();
+    if (offset > readable_bytes ||
+        readable_bytes - offset < 8) {
         return false;
     }
     const char *p = readBegin() + offset;
