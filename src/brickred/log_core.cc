@@ -85,13 +85,13 @@ void Logger::log(int level, const char *filename, int line,
             if (formatter_ == nullptr) {
                 count = ::vsnprintf(buffer.get(), max_log_size_,
                     format, args);
-                if (count < 0) {
-                    count = 0;
-                }
             } else {
                 count = formatter_(buffer.get(), max_log_size_,
                     level, filename, line, function,
                     format, args);
+            }
+            if (count < 0) {
+                count = 0;
             }
             count = std::min(count, max_log_size_ - 1);
             buffer_ready = true;
